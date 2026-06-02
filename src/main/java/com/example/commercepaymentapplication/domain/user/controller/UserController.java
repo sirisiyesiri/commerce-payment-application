@@ -20,6 +20,6 @@ public class UserController {
     @GetMapping("/me")
     public ResponseEntity<ApiResponse<GetUserResponse>> getMyInfo(@AuthenticationPrincipal Long userId) {
         GetUserResponse response = userService.getMyInfo(userId);
-        return ResponseEntity.ok(ApiResponse.ok(response));
+        return ResponseEntity.status(HttpStatus.OK).body(ApiResponse.ok(response));
     }
 }
