@@ -6,18 +6,12 @@ import jakarta.validation.constraints.Size;
 import lombok.Getter;
 
 @Getter
-public class SignupRequest {
+public class LoginRequest {
+
     @NotBlank
     @Email
     private String email;
 
     @NotBlank
-    @Size(min = 8)
     private String password;
-
-    @NotBlank
-    String name;
-
-    @NotBlank
-    String phoneNumber;
 }
