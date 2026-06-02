@@ -38,9 +38,7 @@ out/
 
 # 환경 설정 파일
 application-local.yaml
-application-local.yml
-application-prod.yaml
-application-prod.yml
+
 
 # 테스트 파일
 test.http
