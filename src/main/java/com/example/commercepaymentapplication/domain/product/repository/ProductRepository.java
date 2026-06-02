@@ -1,6 +1,7 @@
 package com.example.commercepaymentapplication.domain.product.repository;
 
 import com.example.commercepaymentapplication.domain.product.entity.Product;
+import com.example.commercepaymentapplication.domain.product.entity.ProductCategory;
 import com.example.commercepaymentapplication.domain.product.entity.ProductStatus;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -18,7 +19,7 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
             "AND (:maxPrice IS NULL OR p.price <= :maxPrice) " +
             "AND (:status IS NULL OR p.status = :status)")
     Page<Product> findProducts(
-            @Param("category") String category,
+            @Param("category") ProductCategory category,
             @Param("minPrice") Integer minPrice,
             @Param("maxPrice") Integer maxPrice,
             @Param("status") ProductStatus status,

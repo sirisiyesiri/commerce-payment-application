@@ -28,13 +28,14 @@ public class Product extends BaseTimeEntity {
     @Column(nullable = false, length = 20)
     private ProductStatus status;
 
+    @Enumerated(EnumType.STRING)
     @Column(nullable = false, length = 20)
-    private String category;
+    private ProductCategory category;
 
     @Column(nullable = false, columnDefinition = "TEXT")
     private String description;
 
-    public Product(String name, Integer price, Integer stockQuantity, ProductStatus status, String category, String description) {
+    public Product(String name, Integer price, Integer stockQuantity, ProductStatus status, ProductCategory category, String description) {
         if (price < 0) {
             throw new IllegalArgumentException("가격은 0 이상이어야 합니다");
         }
