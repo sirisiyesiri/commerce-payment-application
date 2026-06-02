@@ -36,7 +36,7 @@ public class AuthService {
     }
 
     @Transactional(readOnly = true)
-    public LoginResult login(LoginRequest request) {
+    public LoginResponse login(LoginRequest request) {
         User user = userRepository.findByEmail(request.getEmail())
                 .orElseThrow(() -> new BusinessException(ErrorCode.INVALID_CREDENTIALS));
 
@@ -45,6 +45,6 @@ public class AuthService {
         }
 
         String token = jwtProvider.generateToken(user.getId(), user.getEmail());
-        return new LoginResult(token, LoginResponse.from(user));
+        return LoginResponse.of(user, token);
     }
 }
