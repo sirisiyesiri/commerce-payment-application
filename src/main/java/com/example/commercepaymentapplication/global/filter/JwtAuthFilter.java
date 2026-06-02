@@ -41,7 +41,7 @@ public class JwtAuthFilter extends OncePerRequestFilter {
         if (StringUtils.hasText(token)) {
 
             if (!jwtProvider.validateToken(token)) {
-                writeErrorResponse(response, ErrorCode.INVALID_TOKEN);
+                writeErrorResponse(response);
                 return;
             }
 
@@ -62,16 +62,15 @@ public class JwtAuthFilter extends OncePerRequestFilter {
     }
 
     private void writeErrorResponse(
-            HttpServletResponse response,
-            ErrorCode errorCode
+            HttpServletResponse response
     ) throws IOException {
 
-        response.setStatus(errorCode.getStatus().value());
+        response.setStatus(ErrorCode.UNAUTHORIZED.getStatus().value());
         response.setContentType("application/json;charset=UTF-8");
 
         response.getWriter().write(
                 objectMapper.writeValueAsString(
-                        ApiResponse.error(errorCode)
+                        ApiResponse.error(ErrorCode.UNAUTHORIZED)
                 )
         );
     }
