@@ -3,6 +3,13 @@ spring:
     name: commerce-payment-application
   profiles:
     active: local
+
+  jpa:
+    defer-datasource-initialization: true
+  sql:
+    init:
+      mode: always
+
   # aws region 설정
   cloud:
     aws:
