@@ -1,5 +1,6 @@
 package com.example.commercepaymentapplication.domain.product.controller;
 
+import com.example.commercepaymentapplication.domain.product.dto.GetOneProductResponse;
 import com.example.commercepaymentapplication.domain.product.dto.GetProductListResponse;
 import com.example.commercepaymentapplication.domain.product.entity.ProductStatus;
 import com.example.commercepaymentapplication.domain.product.service.ProductService;
@@ -28,5 +29,12 @@ public class ProductController {
         return ResponseEntity.status(HttpStatus.OK)
                 .body(productService.findAll(category, minPrice, maxPrice, status, sort, page, size)
         );
+    }
+
+    @GetMapping("/{productId}")
+    public ResponseEntity<GetOneProductResponse> findOne(
+            @PathVariable Long productId) {
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(productService.findOne(productId));
     }
 }

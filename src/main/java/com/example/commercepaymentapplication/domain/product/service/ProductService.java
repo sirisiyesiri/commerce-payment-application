@@ -1,5 +1,6 @@
 package com.example.commercepaymentapplication.domain.product.service;
 
+import com.example.commercepaymentapplication.domain.product.dto.GetOneProductResponse;
 import com.example.commercepaymentapplication.domain.product.dto.GetProductListResponse;
 import com.example.commercepaymentapplication.domain.product.entity.Product;
 import com.example.commercepaymentapplication.domain.product.entity.ProductStatus;
@@ -73,6 +74,24 @@ public class ProductService {
                 productPage.getTotalElements(),
                 productPage.getTotalPages()
         );
+    }
+
+    @Transactional(readOnly = true)
+    public GetOneProductResponse findOne(Long productId) {
+        Product product = productRepository.findById(productId)
+                .orElseThrow(() -> new IllegalArgumentException("상품 단건 조회 실패")
+                );
+
+        return new GetOneProductResponse(
+                product.getId(),
+                product.getName(),
+                product.getPrice(),
+                product.getStockQuantity(),
+                product.getCategory(),
+                product.getStatus(),
+                product.getDescription(),
+                product.getCreatedAt(),
+                product.getModifiedAt());
     }
 
     // 검증 메서드 분리
