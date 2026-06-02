@@ -27,9 +27,6 @@ public class AuthController {
     @PostMapping("/login")
     public ResponseEntity<ApiResponse<LoginResponse>> login(@Valid @RequestBody LoginRequest request) {
         LoginResponse response = authService.login(request);
-        HttpHeaders headers = new HttpHeaders();
-        headers.set(HttpHeaders.AUTHORIZATION, "Bearer " + response.getToken());
-        headers.set("Access-Control-Expose-Headers", HttpHeaders.AUTHORIZATION);
-        return ResponseEntity.status(HttpStatus.OK).headers(headers).body(ApiResponse.ok(response));
+        return ResponseEntity.ok(ApiResponse.ok(response));
     }
 }
