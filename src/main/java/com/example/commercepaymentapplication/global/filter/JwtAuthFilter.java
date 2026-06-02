@@ -19,45 +19,54 @@ import java.util.List;
 
 @Slf4j
 @RequiredArgsConstructor
-public class JwtAuthFilter extends OncePerRequestFilter {
+public class JwtAuthFilter extends OncePerRequestFilter 
 
-    private final JwtProvider jwtProvider;
+{
+private final JwtProvider jwtProvider;
+private final ObjectMapper objectMapper;
 
-    @Override
-    protected void doFilterInternal(HttpServletRequest request,
-                                    HttpServletResponse response,
-                                    FilterChain filterChain) throws ServletException, IOException {
+@Override
+protected void doFilterInternal(HttpServletRequest request,
+                                HttpServletResponse response,
+                                FilterChain filterChain) throws ServletException, IOException {
 
-        String token = resolveToken(request);
+    String token = resolveToken(request);
 
-        if (StringUtils.hasText(token)) {
-            if (!jwtProvider.validateToken(token)) {
-                response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-                response.setContentType("application/json;charset=UTF-8");
-                response.getWriter().write("{\"httpStatus\":401}");
-                return;
-            }
-
-            Claims claims = jwtProvider.getClaims(token);
-            Long userId = Long.parseLong(claims.getSubject());
-
-            UsernamePasswordAuthenticationToken authentication =
-                    new UsernamePasswordAuthenticationToken(
-                            userId,
-                            null,
-                            List.of(new SimpleGrantedAuthority("ROLE_USER"))
-                    );
-            SecurityContextHolder.getContext().setAuthentication(authentication);
+    if (StringUtils.hasText(token)) {
+        if (!jwtProvider.validateToken(token)) {
+            writeErrorResponse(response, ErrorCode.INVALID_TOKEN);
+            return;
         }
 
-        filterChain.doFilter(request, response);
+        Claims claims = jwtProvider.getClaims(token);
+        Long userId = Long.parseLong(claims.getSubject());
+
+        UsernamePasswordAuthenticationToken authentication =
+                new UsernamePasswordAuthenticationToken(
+                        userId,
+                        null,
+                        List.of(new SimpleGrantedAuthority("ROLE_USER"))
+                );
+
+        SecurityContextHolder.getContext().setAuthentication(authentication);
     }
 
-    private String resolveToken(HttpServletRequest request) {
-        String bearerToken = request.getHeader("Authorization");
-        if (StringUtils.hasText(bearerToken) && bearerToken.startsWith("Bearer ")) {
-            return bearerToken.substring(7);
-        }
-        return null;
+    filterChain.doFilter(request, response);
+}
+
+private void writeErrorResponse(HttpServletResponse response, ErrorCode errorCode) throws IOException {
+    response.setStatus(errorCode.getStatus().value());
+    response.setContentType("application/json;charset=UTF-8");
+
+    response.getWriter().write(
+            objectMapper.writeValueAsString(ApiResponse.error(errorCode))
+    );
+}
+
+private String resolveToken(HttpServletRequest request) {
+    String bearerToken = request.getHeader("Authorization");
+    if (StringUtils.hasText(bearerToken) && bearerToken.startsWith("Bearer ")) {
+        return bearerToken.substring(7);
     }
+    return null;
 }
