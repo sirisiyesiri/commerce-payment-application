@@ -1,0 +1,24 @@
+spring:
+  application:
+    name: commerce-payment-application
+  profiles:
+    active: local
+  # aws region 설정
+  cloud:
+    aws:
+      region:
+        static: ap-northeast-2
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health, info
+
+server:
+  port: 8080
+
+# 로깅 레벨 설정
+logging:
+  level:
+    root: INFO
