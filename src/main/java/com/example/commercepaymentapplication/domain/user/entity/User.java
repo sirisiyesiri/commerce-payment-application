@@ -1,11 +1,9 @@
 package com.example.commercepaymentapplication.domain.user.entity;
 
 import com.example.commercepaymentapplication.domain.membership.MembershipGrade;
+import com.example.commercepaymentapplication.global.entity.BaseTimeEntity;
 import jakarta.persistence.*;
 import lombok.*;
-import org.springframework.data.annotation.CreatedDate;
-import org.springframework.data.annotation.LastModifiedDate;
-import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import java.time.LocalDateTime;
 
@@ -14,8 +12,7 @@ import java.time.LocalDateTime;
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
-@EntityListeners(AuditingEntityListener.class)
-public class User {
+public class User extends BaseTimeEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -45,13 +42,6 @@ public class User {
 
     @Column
     private LocalDateTime gradeChangedAt;
-
-    @CreatedDate
-    @Column(updatable = false)
-    private LocalDateTime createdAt;
-
-    @LastModifiedDate
-    private LocalDateTime modifiedAt;
 
     @Builder
     public User(String email, String password, String name, String phoneNumber) {
