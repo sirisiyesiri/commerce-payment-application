@@ -6,6 +6,7 @@ import com.example.commercepaymentapplication.global.response.ApiResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -13,7 +14,6 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/api/auth")
 @RequiredArgsConstructor
 public class AuthController {
-
     private final AuthService authService;
 
     @PostMapping("/signup")
@@ -26,15 +26,12 @@ public class AuthController {
 
     @PostMapping("/login")
     public ResponseEntity<ApiResponse<LoginResponse>> login(@Valid @RequestBody LoginRequest request) {
-        LoginResult result = authService.login(request);
-
+        LoginResponse response = authService.login(request);
         HttpHeaders headers = new HttpHeaders();
-        headers.set(HttpHeaders.AUTHORIZATION, "Bearer " + result.getToken());
+        headers.set(HttpHeaders.AUTHORIZATION, "Bearer " + response.getToken());
         headers.set("Access-Control-Expose-Headers", HttpHeaders.AUTHORIZATION);
-
-        return ResponseEntity
-            .status(HttpStatus.OK)
-            .headers(headers)
-            .body(ApiResponse.ok(result));
+        return ResponseEntity.ok()
+                .headers(headers)
+                .body(ApiResponse.ok(response));
     }
 }
