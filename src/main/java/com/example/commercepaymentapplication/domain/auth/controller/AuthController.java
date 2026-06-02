@@ -20,7 +20,7 @@ public class AuthController {
     public ResponseEntity<ApiResponse<SignupResponse>> signup(@Valid @RequestBody SignupRequest request) {
         SignupResponse response = authService.signup(request);
         return ResponseEntity
-                .status(201)
+                .status(HttpStatus.CREATED)
                 .body(ApiResponse.created(response));
     }
 
