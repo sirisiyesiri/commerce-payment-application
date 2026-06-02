@@ -124,3 +124,14 @@ Content-Type: application/json
 # 예외 코드: INVALID_PRODUCT_STATUS
 GET http://localhost:8080/api/products?status=SALE&page=1&size=10
 Content-Type: application/json
+
+### 상품 단건 조회 - 정상 조회
+# 기대: 200 OK
+GET http://localhost:8080/api/products/1
+Content-Type: application/json
+
+### 상품 단건 조회 - 존재하지 않는 상품 ID
+# 기대: 404 Not Found
+# 예외 코드: PRODUCT_NOT_FOUND
+GET http://localhost:8080/api/products/9999
+Content-Type: application/json
