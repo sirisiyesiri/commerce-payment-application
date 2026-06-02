@@ -30,6 +30,6 @@ public class AuthController {
         HttpHeaders headers = new HttpHeaders();
         headers.set(HttpHeaders.AUTHORIZATION, "Bearer " + response.getToken());
         headers.set("Access-Control-Expose-Headers", HttpHeaders.AUTHORIZATION);
-        return ResponseEntity.status(HttpStatus.OK).headers(headers).body(ApiResponse.ok(result));
+        return ResponseEntity.status(HttpStatus.OK).headers(headers).body(ApiResponse.ok(response));
     }
 }
