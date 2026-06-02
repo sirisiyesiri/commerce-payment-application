@@ -36,3 +36,9 @@ out/
 ### VS Code ###
 .vscode/
 
+# 환경 설정 파일
+application-local.yaml
+
+
+# 테스트 파일
+test.http
