@@ -2,6 +2,7 @@ package com.example.commercepaymentapplication.domain.product.controller;
 
 import com.example.commercepaymentapplication.domain.product.dto.GetOneProductResponse;
 import com.example.commercepaymentapplication.domain.product.dto.GetProductListResponse;
+import com.example.commercepaymentapplication.domain.product.entity.ProductCategory;
 import com.example.commercepaymentapplication.domain.product.entity.ProductStatus;
 import com.example.commercepaymentapplication.domain.product.service.ProductService;
 import com.example.commercepaymentapplication.global.response.ApiResponse;
@@ -20,7 +21,7 @@ public class ProductController {
     // 상품 목록 조회 API
     @GetMapping
     public ResponseEntity<ApiResponse<GetProductListResponse>> findAll(
-            @RequestParam(required = false) String category,
+            @RequestParam(required = false) ProductCategory category,
             @RequestParam(required = false) Integer minPrice,
             @RequestParam(required = false) Integer maxPrice,
             @RequestParam(required = false) ProductStatus status,

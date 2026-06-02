@@ -3,6 +3,7 @@ package com.example.commercepaymentapplication.domain.product.service;
 import com.example.commercepaymentapplication.domain.product.dto.GetOneProductResponse;
 import com.example.commercepaymentapplication.domain.product.dto.GetProductListResponse;
 import com.example.commercepaymentapplication.domain.product.entity.Product;
+import com.example.commercepaymentapplication.domain.product.entity.ProductCategory;
 import com.example.commercepaymentapplication.domain.product.entity.ProductStatus;
 import com.example.commercepaymentapplication.domain.product.repository.ProductRepository;
 import com.example.commercepaymentapplication.global.error.BusinessException;
@@ -25,7 +26,7 @@ public class ProductService {
 
     @Transactional(readOnly = true)
     public GetProductListResponse findAll(
-            String category,
+            ProductCategory category,
             Integer minPrice,
             Integer maxPrice,
             ProductStatus status,

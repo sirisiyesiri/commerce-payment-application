@@ -1,6 +1,7 @@
 package com.example.commercepaymentapplication.domain.product.dto;
 
 
+import com.example.commercepaymentapplication.domain.product.entity.ProductCategory;
 import com.example.commercepaymentapplication.domain.product.entity.ProductStatus;
 
 import java.time.LocalDateTime;
@@ -11,7 +12,7 @@ public record GetOneProductResponse(
     String name,
     Integer price,
     Integer stockQuantity,
-    String category,
+    ProductCategory category,
     ProductStatus status,
     String description,
     LocalDateTime createdAt,
