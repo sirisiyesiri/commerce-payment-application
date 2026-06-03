@@ -20,4 +20,8 @@ Content-Type: application/json
 
 ### 내 정보 조회
 GET http://localhost:8080/api/users/me
-Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIxIiwiZW1haWwiOiJ0ZXN0MUBleGFtcGxlLmNvbSIsImlhdCI6MTc4MDM4NzIxOSwiZXhwIjoxNzgwMzkwODE5fQ.sP1iMjxCPiob4nCy5V5enxkeEzklgMsP6wty_cFziMQ
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIxIiwiZW1haWwiOiJ0ZXN0MUBleGFtcGxlLmNvbSIsImlhdCI6MTc4MDQ3NDY4MywiZXhwIjoxNzgwNDc4MjgzfQ.LqXjvbKjYNwhI28jgawx8wYwV5_TqjJdIg05Cvug7wc
+
+### 내 멤버십 정보 조회
+GET http://localhost:8080/api/users/me/memberships
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIxIiwiZW1haWwiOiJ0ZXN0MUBleGFtcGxlLmNvbSIsImlhdCI6MTc4MDQ3NDY4MywiZXhwIjoxNzgwNDc4MjgzfQ.LqXjvbKjYNwhI28jgawx8wYwV5_TqjJdIg05Cvug7wc
