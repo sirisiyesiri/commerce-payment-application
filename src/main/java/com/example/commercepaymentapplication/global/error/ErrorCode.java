@@ -47,7 +47,8 @@ public enum ErrorCode {
 
     // Auth
     UNAUTHORIZED(HttpStatus.UNAUTHORIZED),  // 인증되지 않은 사용자(ex 토큰 없음, 로그인 안됨)
-    INVALID_TOKEN(HttpStatus.UNAUTHORIZED); // 유효하지 않은 토큰(ex 토큰이 있는데 만료/변조/형식 오류)
+    INVALID_TOKEN(HttpStatus.UNAUTHORIZED), // 유효하지 않은 토큰(ex 토큰이 있는데 만료/변조/형식 오류)
+    FORBIDDEN(HttpStatus.FORBIDDEN); // 로그인은 되었지만 권한이 없을 때
 
     private final HttpStatus status;
 }
