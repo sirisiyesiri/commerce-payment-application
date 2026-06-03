@@ -81,8 +81,7 @@ public class ProductService {
 
     @Transactional(readOnly = true)
     public GetOneProductResponse findOne(Long productId) {
-        Product product = productRepository.findById(productId)
-                .orElseThrow(() -> new BusinessException(ErrorCode.PRODUCT_NOT_FOUND));
+        Product product = findProductEntity(productId);
 
         return new GetOneProductResponse(
                 product.getId(),
@@ -93,7 +92,14 @@ public class ProductService {
                 product.getStatus(),
                 product.getDescription(),
                 product.getCreatedAt(),
-                product.getModifiedAt());
+                product.getModifiedAt()
+        );
+    }
+
+    @Transactional(readOnly = true)
+    public Product findProductEntity(Long productId) {
+        return productRepository.findById(productId)
+                .orElseThrow(() -> new BusinessException(ErrorCode.PRODUCT_NOT_FOUND));
     }
 
     // 검증 메서드 분리

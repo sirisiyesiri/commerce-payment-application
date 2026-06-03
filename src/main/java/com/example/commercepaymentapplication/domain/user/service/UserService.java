@@ -21,4 +21,10 @@ public class UserService {
                 .orElseThrow(() -> new BusinessException(ErrorCode.MEMBER_NOT_FOUND));
         return GetUserResponse.from(user);
     }
+
+    @Transactional(readOnly = true)
+    public User findUserEntity(Long userId) {
+        return userRepository.findById(userId)
+                .orElseThrow(() -> new BusinessException(ErrorCode.MEMBER_NOT_FOUND));
+    }
 }
