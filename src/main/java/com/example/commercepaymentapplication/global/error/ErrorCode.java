@@ -22,6 +22,7 @@ public enum ErrorCode {
     INSUFFICIENT_STOCK(HttpStatus.CONFLICT),    // 상품 재고 부족
     INVALID_PRICE(HttpStatus.BAD_REQUEST),  // 유효하지 않은 상품 가격(ex 상품 가격이 음수)
     INVALID_STOCK(HttpStatus.BAD_REQUEST),  // 유효하지 않은 상품 재고(ex 상품 재고가 음수가 되는 모든 경우)
+    PRODUCT_NOT_AVAILABLE(HttpStatus.CONFLICT), // 판매중인 상품이 아님
 
     // Cart
     CART_EMPTY(HttpStatus.BAD_REQUEST), // 장바구니가 비어 있음
@@ -46,7 +47,8 @@ public enum ErrorCode {
 
     // Auth
     UNAUTHORIZED(HttpStatus.UNAUTHORIZED),  // 인증되지 않은 사용자(ex 토큰 없음, 로그인 안됨)
-    INVALID_TOKEN(HttpStatus.UNAUTHORIZED); // 유효하지 않은 토큰(ex 토큰이 있는데 만료/변조/형식 오류)
+    INVALID_TOKEN(HttpStatus.UNAUTHORIZED), // 유효하지 않은 토큰(ex 토큰이 있는데 만료/변조/형식 오류)
+    FORBIDDEN(HttpStatus.FORBIDDEN); // 로그인은 되었지만 권한이 없을 때
 
     private final HttpStatus status;
 }

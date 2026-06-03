@@ -1,6 +1,8 @@
 package com.example.commercepaymentapplication.global.config;
 
+import com.example.commercepaymentapplication.global.error.ErrorCode;
 import com.example.commercepaymentapplication.global.filter.JwtAuthFilter;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -26,6 +28,18 @@ public class SecurityConfig {
                 .formLogin(AbstractHttpConfigurer::disable)
                 .sessionManagement(session ->
                         session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+                .exceptionHandling(exception -> exception
+                        .authenticationEntryPoint((request, response, authException) -> {
+                            response.setStatus(ErrorCode.UNAUTHORIZED.getStatus().value());
+                            response.setContentType("application/json;charset=UTF-8");
+                            response.getWriter().write("{\"message\":\"인증이 필요합니다.\"}");
+                        })
+                        .accessDeniedHandler((request, response, accessDeniedException) -> {
+                            response.setStatus(ErrorCode.FORBIDDEN.getStatus().value());
+                            response.setContentType("application/json;charset=UTF-8");
+                            response.getWriter().write("{\"message\":\"권한이 없습니다.\"}");
+                        })
+                )
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/api/auth/**").permitAll()
                         .requestMatchers("/api/products/**").permitAll()
