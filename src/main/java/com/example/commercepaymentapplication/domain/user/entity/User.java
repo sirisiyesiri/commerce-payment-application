@@ -1,6 +1,5 @@
 package com.example.commercepaymentapplication.domain.user.entity;
 
-import com.example.commercepaymentapplication.domain.membership.MembershipGrade;
 import com.example.commercepaymentapplication.global.entity.BaseTimeEntity;
 import jakarta.persistence.*;
 import lombok.*;

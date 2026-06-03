@@ -1,6 +1,6 @@
 package com.example.commercepaymentapplication.domain.user.dto;
 
-import com.example.commercepaymentapplication.domain.membership.MembershipGrade;
+import com.example.commercepaymentapplication.domain.user.entity.MembershipGrade;
 import com.example.commercepaymentapplication.domain.user.entity.User;
 
 import java.time.LocalDateTime;
