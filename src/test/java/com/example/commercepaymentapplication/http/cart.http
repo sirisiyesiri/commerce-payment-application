@@ -151,3 +151,19 @@ Content-Type: application/json
   "productId": 1,
   "quantity": 2
 }
+
+### 장바구니 상품 담기 - 유효하지 않은 토큰
+# 기대: 401 Unauthorized
+POST http://localhost:8080/api/carts/items
+Content-Type: application/json
+Authorization: Bearer invalid-token
+
+{
+  "productId": 1,
+  "quantity": 2
+}
+
+### authToken 삭제
+GET http://localhost:8080/api/products
+
+> {% client.global.clear("authToken"); %}
