@@ -29,16 +29,16 @@ public class Payment extends BaseTimeEntity {
     @Column(nullable = false, unique = true, length = 100)
     private String portonePaymentId;
 
-    @Column(nullable = false, columnDefinition = "UNSIGNED")
+    @Column(nullable = false, columnDefinition = "INT UNSIGNED")
     private int orderAmount;
 
-    @Column(nullable = false, columnDefinition = "UNSIGNED DEFAULT 0")
+    @Column(nullable = false, columnDefinition = "INT UNSIGNED DEFAULT 0")
     private int usedPointAmount = 0;
 
-    @Column(nullable = false, columnDefinition = "UNSIGNED")
+    @Column(nullable = false, columnDefinition = "INT UNSIGNED")
     private int pgPaymentAmount;
 
-    @Column(nullable = false, columnDefinition = "UNSIGNED DEFAULT 0")
+    @Column(nullable = false, columnDefinition = "INT UNSIGNED DEFAULT 0")
     private int earnedPointAmount = 0;
 
     @Enumerated(EnumType.STRING)

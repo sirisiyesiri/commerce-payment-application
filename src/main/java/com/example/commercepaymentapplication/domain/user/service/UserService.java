@@ -1,6 +1,7 @@
 package com.example.commercepaymentapplication.domain.user.service;
 
-import com.example.commercepaymentapplication.domain.auth.dto.GetUserResponse;
+import com.example.commercepaymentapplication.domain.user.dto.GetUserResponse;
+import com.example.commercepaymentapplication.domain.user.dto.GetMembershipResponse;
 import com.example.commercepaymentapplication.domain.user.entity.User;
 import com.example.commercepaymentapplication.domain.user.repository.UserRepository;
 import com.example.commercepaymentapplication.global.error.BusinessException;
@@ -18,7 +19,14 @@ public class UserService {
     @Transactional(readOnly = true)
     public GetUserResponse getMyInfo(Long userId) {
         User user = userRepository.findById(userId)
-                .orElseThrow(() -> new BusinessException(ErrorCode.MEMBER_NOT_FOUND));
+            .orElseThrow(() -> new BusinessException(ErrorCode.MEMBER_NOT_FOUND));
         return GetUserResponse.from(user);
+    }
+
+    @Transactional(readOnly = true)
+    public GetMembershipResponse getMyMembership(Long userId) {
+        User user = userRepository.findById(userId)
+            .orElseThrow(() -> new BusinessException(ErrorCode.MEMBER_NOT_FOUND));
+        return GetMembershipResponse.from(user);
     }
 }

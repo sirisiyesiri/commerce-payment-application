@@ -1,4 +1,4 @@
-package com.example.commercepaymentapplication.domain.membership;
+package com.example.commercepaymentapplication.domain.user.entity;
 
 public enum MembershipGrade {
     NORMAL(0, 50_000, 1),
