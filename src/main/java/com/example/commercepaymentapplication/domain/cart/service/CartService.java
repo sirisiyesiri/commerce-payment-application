@@ -10,6 +10,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+
 @Service
 @RequiredArgsConstructor
 public class CartService {
@@ -49,6 +51,18 @@ public class CartService {
 
         return cartItem.getId();
     }
+
+    // 회원의 장바구니 목록 전체 조회
+    public List<CartItem> findCartEntities(Long userId) {
+        return cartItemRepository.findByUserId(userId);
+    }
+
+    // 회원의 장바구니 목록 중 특정 아이템 목록 조회.
+    public  List<CartItem> findCartEntitiesByIds(Long userId, List<Long> cartItemIds) {
+        return cartItemRepository.findByIdInAndUser_IdWithProduct(cartItemIds, userId);
+    }
+
+
 
     // 판매중인 상품인지 검증
     private void validateOnSale(Product product) {
