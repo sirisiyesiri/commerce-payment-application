@@ -1,4 +1,4 @@
-package com.example.commercepaymentapplication.domain.auth.dto;
+package com.example.commercepaymentapplication.domain.user.dto;
 
 import com.example.commercepaymentapplication.domain.user.entity.User;
 import lombok.Getter;
