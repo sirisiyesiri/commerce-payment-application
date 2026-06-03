@@ -1,0 +1,153 @@
+### 회원가입
+# 기대: 201 Created 또는 200 OK
+POST http://localhost:8080/api/auth/signup
+Content-Type: application/json
+
+{
+  "email": "test1@example.com",
+  "password": "sparta1234",
+  "name": "김르탄",
+  "phoneNumber": "010-1234-5678"
+}
+
+
+### 로그인
+# 기대: 200 OK
+# 설명: 로그인 성공 후 authToken 전역 변수 저장
+POST http://localhost:8080/api/auth/login
+Content-Type: application/json
+
+{
+  "email": "test1@example.com",
+  "password": "sparta1234"
+}
+
+> {% client.global.set("authToken", response.body.data.token); %}
+
+
+### 장바구니 상품 담기 - 성공
+# 기대: 201 Created
+POST http://localhost:8080/api/carts/items
+Content-Type: application/json
+Authorization: Bearer {{authToken}}
+
+{
+  "productId": 1,
+  "quantity": 2
+}
+
+
+### 장바구니 상품 담기 - 동일 상품 수량 합산
+# 기대: 201 Created
+POST http://localhost:8080/api/carts/items
+Content-Type: application/json
+Authorization: Bearer {{authToken}}
+
+{
+  "productId": 1,
+  "quantity": 3
+}
+
+
+### 장바구니 상품 담기 - 상품 ID 누락
+# 기대: 400 Bad Request
+# 예외 코드: INVALID_INPUT
+POST http://localhost:8080/api/carts/items
+Content-Type: application/json
+Authorization: Bearer {{authToken}}
+
+{
+  "quantity": 2
+}
+
+
+### 장바구니 상품 담기 - 수량 0
+# 기대: 400 Bad Request
+# 예외 코드: INVALID_QUANTITY 또는 INVALID_INPUT
+POST http://localhost:8080/api/carts/items
+Content-Type: application/json
+Authorization: Bearer {{authToken}}
+
+{
+  "productId": 1,
+  "quantity": 0
+}
+
+
+### 장바구니 상품 담기 - 수량 음수
+# 기대: 400 Bad Request
+# 예외 코드: INVALID_QUANTITY 또는 INVALID_INPUT
+POST http://localhost:8080/api/carts/items
+Content-Type: application/json
+Authorization: Bearer {{authToken}}
+
+{
+  "productId": 1,
+  "quantity": -1
+}
+
+
+### 장바구니 상품 담기 - 존재하지 않는 상품
+# 기대: 404 Not Found
+# 예외 코드: PRODUCT_NOT_FOUND
+POST http://localhost:8080/api/carts/items
+Content-Type: application/json
+Authorization: Bearer {{authToken}}
+
+{
+  "productId": 999999,
+  "quantity": 1
+}
+
+
+### 장바구니 상품 담기 - 재고 초과
+# 기대: 409 Conflict
+# 예외 코드: INSUFFICIENT_STOCK
+POST http://localhost:8080/api/carts/items
+Content-Type: application/json
+Authorization: Bearer {{authToken}}
+
+{
+  "productId": 1,
+  "quantity": 999999
+}
+
+
+### 장바구니 상품 담기 - 품절 상품
+# 기대: 409 Conflict
+# 예외 코드: PRODUCT_NOT_AVAILABLE
+# data.sql 기준 productId 9 = 오버핏 후드티, OUT_OF_STOCK
+POST http://localhost:8080/api/carts/items
+Content-Type: application/json
+Authorization: Bearer {{authToken}}
+
+{
+  "productId": 9,
+  "quantity": 1
+}
+
+
+### 장바구니 상품 담기 - 단종 상품
+# 기대: 409 Conflict
+# 예외 코드: PRODUCT_NOT_AVAILABLE
+# data.sql 기준 productId 38 = 단종 태블릿 케이스, DISCONTINUED
+POST http://localhost:8080/api/carts/items
+Content-Type: application/json
+Authorization: Bearer {{authToken}}
+
+{
+  "productId": 38,
+  "quantity": 1
+}
+
+
+### 장바구니 상품 담기 - 인증 토큰 없음
+# 기대: 401 Unauthorized
+# 예외 코드: UNAUTHORIZED 또는 INVALID_TOKEN
+POST http://localhost:8080/api/carts/items
+Content-Type: application/json
+
+{
+  "productId": 1,
+  "quantity": 2
+}
