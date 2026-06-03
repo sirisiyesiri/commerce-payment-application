@@ -4,26 +4,25 @@ import com.example.commercepaymentapplication.domain.user.entity.User;
 import lombok.Getter;
 
 @Getter
-public class GetUserResponse {
-
+public class LoginResponse {
     private final Long userId;
     private final String email;
     private final String name;
-    private final String phoneNumber;
+    private final String token;
 
-    public GetUserResponse(Long userId, String email, String name, String phoneNumber) {
+    public LoginResponse(Long userId, String email, String name, String token) {
         this.userId = userId;
         this.email = email;
         this.name = name;
-        this.phoneNumber = phoneNumber;
+        this.token = token;
     }
 
-    public static GetUserResponse from(User user) {
-        return new GetUserResponse(
+    public static LoginResponse of(User user, String token) {
+        return new LoginResponse(
                 user.getId(),
                 user.getEmail(),
                 user.getName(),
-                user.getPhoneNumber()
+                token
         );
     }
 }
