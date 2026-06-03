@@ -4,6 +4,7 @@ import com.example.commercepaymentapplication.domain.auth.dto.GetUserResponse;
 import com.example.commercepaymentapplication.domain.user.service.UserService;
 import com.example.commercepaymentapplication.global.response.ApiResponse;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.GetMapping;
