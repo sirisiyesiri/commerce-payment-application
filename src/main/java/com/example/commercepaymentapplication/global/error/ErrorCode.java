@@ -22,6 +22,7 @@ public enum ErrorCode {
     INSUFFICIENT_STOCK(HttpStatus.CONFLICT),    // 상품 재고 부족
     INVALID_PRICE(HttpStatus.BAD_REQUEST),  // 유효하지 않은 상품 가격(ex 상품 가격이 음수)
     INVALID_STOCK(HttpStatus.BAD_REQUEST),  // 유효하지 않은 상품 재고(ex 상품 재고가 음수가 되는 모든 경우)
+    PRODUCT_NOT_AVAILABLE(HttpStatus.CONFLICT), // 판매중인 상품이 아님
 
     // Cart
     CART_EMPTY(HttpStatus.BAD_REQUEST), // 장바구니가 비어 있음
