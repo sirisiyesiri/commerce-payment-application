@@ -1,0 +1,110 @@
+### 회원가입
+# 기대: 201 Created 또는 200 OK
+POST http://localhost:8080/api/auth/signup
+Content-Type: application/json
+
+{
+  "email": "test1@example.com",
+  "password": "sparta1234",
+  "name": "김르탄",
+  "phoneNumber": "010-1234-5678"
+}
+
+
+### 로그인
+# 기대: 200 OK
+# 설명: 로그인 성공 후 authToken 전역 변수 저장
+POST http://localhost:8080/api/auth/login
+Content-Type: application/json
+
+{
+  "email": "test1@example.com",
+  "password": "sparta1234"
+}
+
+> {% client.global.set("authToken", response.body.data.token); %}
+
+### 주문서 미리보기 - 인증 없이 요청
+# 기대: 401 Unauthorized
+GET http://localhost:8080/api/orders/preview
+
+
+### 주문서 미리보기 - 빈 장바구니
+# 기대: 400 Bad Request
+GET http://localhost:8080/api/orders/preview
+Authorization: Bearer {{authToken}}
+
+
+### 장바구니 상품 담기 - 주문서 미리보기 테스트 상품 1
+# 기대: 201 Created
+# data.sql 기준 productId 1
+POST http://localhost:8080/api/carts/items
+Content-Type: application/json
+Authorization: Bearer {{authToken}}
+
+{
+  "productId": 1,
+  "quantity": 2
+}
+
+> {% client.global.set("cartItemId1", response.body.data.cartItemId); %}
+
+
+### 장바구니 상품 담기 - 주문서 미리보기 테스트 상품 2
+# 기대: 201 Created
+# data.sql 기준 productId 2
+POST http://localhost:8080/api/carts/items
+Content-Type: application/json
+Authorization: Bearer {{authToken}}
+
+{
+  "productId": 2,
+  "quantity": 1
+}
+
+> {% client.global.set("cartItemId2", response.body.data.cartItemId); %}
+
+
+### 주문서 미리보기 - 전체 장바구니
+# 기대: 200 OK
+# cartItemIds 생략 시 현재 회원의 전체 장바구니 기준으로 주문서 미리보기
+GET http://localhost:8080/api/orders/preview
+Authorization: Bearer {{authToken}}
+
+
+### 주문서 미리보기 - 선택한 장바구니 상품 1개
+# 기대: 200 OK
+# 장바구니에 담긴 아이템들 중 상품 1개만 선택한 주문서 미리보기
+GET http://localhost:8080/api/orders/preview?cartItemIds={{cartItemId1}}
+Authorization: Bearer {{authToken}}
+
+
+### 주문서 미리보기 - 선택한 장바구니 상품 여러 개
+# 기대: 200 OK
+# 장바구니에 담긴 아이템들 중 여러개의 상품들을 선택한 주문서 미리보기
+GET http://localhost:8080/api/orders/preview?cartItemIds={{cartItemId1}}&cartItemIds={{cartItemId2}}
+Authorization: Bearer {{authToken}}
+
+
+### 주문서 미리보기 - 존재하지 않는 장바구니 상품 ID
+# 기대: 404 Not Found
+GET http://localhost:8080/api/orders/preview?cartItemIds=999999
+Authorization: Bearer {{authToken}}
+
+
+### 주문서 미리보기 - 존재하는 ID와 존재하지 않는 ID를 함께 요청
+# 기대: 404 Not Found
+GET http://localhost:8080/api/orders/preview?cartItemIds={{cartItemId1}}&cartItemIds=999999
+Authorization: Bearer {{authToken}}
+
+
+### 주문서 미리보기 - 잘못된 cartItemIds 타입
+# 기대: 400 Bad Request
+# cartItemIds는 Long 타입이어야 함
+GET http://localhost:8080/api/orders/preview?cartItemIds=abc
+Authorization: Bearer {{authToken}}
+
+### authToken 삭제
+GET http://localhost:8080/api/products
+
+> {% client.global.clear("authToken"); %}

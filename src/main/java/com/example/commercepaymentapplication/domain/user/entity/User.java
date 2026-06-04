@@ -1,10 +1,15 @@
 package com.example.commercepaymentapplication.domain.user.entity;
 
+import com.example.commercepaymentapplication.domain.cart.entity.CartItem;
 import com.example.commercepaymentapplication.global.entity.BaseTimeEntity;
+import com.example.commercepaymentapplication.global.error.BusinessException;
+import com.example.commercepaymentapplication.global.error.ErrorCode;
 import jakarta.persistence.*;
 import lombok.*;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Table(name = "users")
@@ -42,6 +47,9 @@ public class User extends BaseTimeEntity {
     @Column(name = "grade_changed_at")
     private LocalDateTime gradeChangedAt;
 
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<CartItem> cartItems = new ArrayList<>();
+
     @Builder
     public User(String email, String password, String name, String phoneNumber) {
         this.email = email;
@@ -69,6 +77,25 @@ public class User extends BaseTimeEntity {
 
     public int getMembershipPointRatePercent() {
         return this.membershipGrade.getPointRatePercent();
+    }
+
+    public List<CartItem> getOrderCartItems(List<Long> cartItemIds) {
+        if (cartItems == null || cartItems.isEmpty()) {
+            throw new BusinessException(ErrorCode.CART_EMPTY);
+        }
+
+        if (cartItemIds == null || cartItemIds.isEmpty()) {
+            return cartItems;
+        }
+        List<CartItem> selectedCartItems = cartItems.stream()
+                        .filter(cartItem -> cartItemIds.contains(cartItem.getId()))
+                        .toList();
+
+        if (selectedCartItems.size() != cartItemIds.size()) {
+            throw new BusinessException(ErrorCode.CART_ITEM_NOT_FOUND);
+        }
+
+        return selectedCartItems;
     }
 
     private void updateMembershipGrade() {
