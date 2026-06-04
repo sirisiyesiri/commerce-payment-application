@@ -98,6 +98,15 @@ public class CartService {
         return toResponse(cartItem);
     }
 
+    @Transactional
+    public void removeOneItem(Long userId, Long cartItemId) {
+        // 사용자 ID와 장바구니 상품 ID가 일치하는 장바구니 상품을 DB에서 삭제
+        int deleted = cartItemRepository.deleteByIdAndUserId(cartItemId,userId);
+        // 삭제된 row가 없으면 예외
+        if (deleted == 0) {
+            throw new BusinessException(ErrorCode.CART_ITEM_NOT_FOUND);
+        }
+    }
 
     // 판매중인 상품인지 검증
     private void validateOnSale(Product product) {

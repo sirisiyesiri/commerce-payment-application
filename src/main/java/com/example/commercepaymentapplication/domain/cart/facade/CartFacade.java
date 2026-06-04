@@ -53,5 +53,9 @@ public class CartFacade {
         );
     }
 
-
+    @Transactional
+    public void removeOntItem(Long userId, Long cartItemId) {
+        userService.findUserEntity(userId);
+        cartService.removeOneItem(userId, cartItemId);
+    }
 }
