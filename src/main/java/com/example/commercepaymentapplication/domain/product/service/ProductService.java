@@ -2,6 +2,7 @@ package com.example.commercepaymentapplication.domain.product.service;
 
 import com.example.commercepaymentapplication.domain.product.dto.GetOneProductResponse;
 import com.example.commercepaymentapplication.domain.product.dto.GetProductListResponse;
+import com.example.commercepaymentapplication.domain.product.dto.ProductDto;
 import com.example.commercepaymentapplication.domain.product.entity.Product;
 import com.example.commercepaymentapplication.domain.product.entity.ProductCategory;
 import com.example.commercepaymentapplication.domain.product.entity.ProductStatus;
@@ -57,8 +58,8 @@ public class ProductService {
                 pageable
         );
 
-        List<GetProductListResponse.ProductDto> productList = productPage.getContent().stream()
-                .map(product -> new GetProductListResponse.ProductDto(
+        List<ProductDto> productList = productPage.getContent().stream()
+                .map(product -> new ProductDto(
                         product.getId(),
                         product.getName(),
                         product.getPrice(),

@@ -1,6 +1,8 @@
 package com.example.commercepaymentapplication.domain.cart.service;
 
 
+import com.example.commercepaymentapplication.domain.cart.dto.CartItemDto;
+import com.example.commercepaymentapplication.domain.cart.dto.GetCartItemListResponse;
 import com.example.commercepaymentapplication.domain.cart.entity.CartItem;
 import com.example.commercepaymentapplication.domain.cart.repository.CartItemRepository;
 import com.example.commercepaymentapplication.domain.product.entity.Product;
@@ -9,6 +11,8 @@ import com.example.commercepaymentapplication.global.error.ErrorCode;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -50,6 +54,24 @@ public class CartService {
         return cartItem.getId();
     }
 
+    @Transactional(readOnly = true)
+    public GetCartItemListResponse getCartItems(Long userId) {
+        List<CartItem> cartItems = cartItemRepository.findByUserId(userId);
+
+        // cartItem 엔티티 목록을 응답 DTO 목록으로 변환
+        List<CartItemDto> cartItemList = cartItems.stream()
+                .map(this::toResponse)
+                .toList();
+
+        // 장바구니 전체 금액 계산 - stream으로 totalPrice만 꺼내서 더하기
+        Long totalAmount = cartItemList.stream()
+                .mapToLong(CartItemDto::totalPrice)
+                .sum();
+
+        return new GetCartItemListResponse(cartItemList, totalAmount);
+    }
+
+
     // 판매중인 상품인지 검증
     private void validateOnSale(Product product) {
         if (!product.getStatus().isPurchasable()) {
@@ -64,4 +86,22 @@ public class CartService {
             throw new BusinessException(ErrorCode.INSUFFICIENT_STOCK);
         }
     }
+
+    // 장바구니에 담긴 수량 * 상품 가격 구하는 메서드
+    private CartItemDto toResponse(CartItem cartItem) {
+        Product product = cartItem.getProduct();
+
+        Long totalPrice = (long) product.getPrice() * cartItem.getQuantity();
+
+        return new CartItemDto(
+                cartItem.getId(),
+                product.getId(),
+                product.getName(),
+                product.getPrice(),
+                cartItem.getQuantity(),
+                totalPrice
+        );
+    }
+
+
 }

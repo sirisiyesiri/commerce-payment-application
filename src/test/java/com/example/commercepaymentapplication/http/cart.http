@@ -167,3 +167,25 @@ Authorization: Bearer invalid-token
 GET http://localhost:8080/api/products
 
 > {% client.global.clear("authToken"); %}
+
+### 장바구니 조회 - 상품 담은 후 성공
+# 기대: 200 OK
+GET http://localhost:8080/api/carts
+Content-Type: application/json
+Authorization: Bearer {{authToken}}
+
+
+### 장바구니 조회 - 인증 토큰 없음
+# 기대: 401 Unauthorized
+# 예외 코드: UNAUTHORIZED 또는 INVALID_TOKEN
+GET http://localhost:8080/api/carts
+Content-Type: application/json
+
+
+### 장바구니 조회 - 잘못된 토큰
+# 기대: 401 Unauthorized
+# 예외 코드: INVALID_TOKEN
+GET http://localhost:8080/api/carts
+Content-Type: application/json
+Authorization: Bearer wrong.token.value
+
