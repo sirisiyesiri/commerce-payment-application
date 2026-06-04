@@ -6,15 +6,16 @@ public enum MembershipGrade {
     VVIP(100_000, Integer.MAX_VALUE, 10);
 
     private final int minAmount;
-    private final int nextAmount;
+    private final int nextGradeAmount;
     private final int pointRatePercent;
 
-    MembershipGrade(int minAmount, int nextAmount, int pointRatePercent) {
+    MembershipGrade(int minAmount, int nextGradeAmount, int pointRatePercent) {
         this.minAmount = minAmount;
-        this.nextAmount = nextAmount;
+        this.nextGradeAmount = nextGradeAmount;
         this.pointRatePercent = pointRatePercent;
     }
 
+    // 누적 결제 금액 기준으로 멤버십 등급을 반환한다.
     public static MembershipGrade fromTotalPaidAmount(int totalPaidAmount) {
         if (totalPaidAmount >= VVIP.minAmount) {
             return VVIP;
@@ -27,10 +28,12 @@ public enum MembershipGrade {
         return NORMAL;
     }
 
-    public int calculateEarnPoint(int pgPaymentAmount) {
+    // PG 실결제 금액 기준으로 적립 포인트를 계산한다.
+    public int calculateEarnedPoint(int pgPaymentAmount) {
         return pgPaymentAmount * pointRatePercent / 100;
     }
 
+    // 다음 등급까지 남은 결제 금액을 계산한다.
     public static int amountToNextGrade(int totalPaidAmount) {
         MembershipGrade grade = fromTotalPaidAmount(totalPaidAmount);
 
@@ -38,9 +41,10 @@ public enum MembershipGrade {
             return 0;
         }
 
-        return Math.max(0, grade.nextAmount - totalPaidAmount);
+        return Math.max(0, grade.nextGradeAmount - totalPaidAmount);
     }
 
+    // 현재 등급의 포인트 적립률을 반환한다.
     public int getPointRatePercent() {
         return pointRatePercent;
     }
