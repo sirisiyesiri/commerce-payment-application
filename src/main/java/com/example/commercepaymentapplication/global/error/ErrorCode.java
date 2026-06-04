@@ -41,6 +41,10 @@ public enum ErrorCode {
     PAYMENT_NOT_PAID(HttpStatus.BAD_REQUEST),   // 결제 완료 상태가 아님
     ALREADY_PROCESSED_PAYMENT(HttpStatus.CONFLICT), // 이미 처리된 결제
 
+    // Point
+    INSUFFICIENT_POINT(HttpStatus.BAD_REQUEST),      // 포인트 잔액이 부족함
+    INVALID_POINT_AMOUNT(HttpStatus.BAD_REQUEST),    // 유효하지 않은 포인트 금액
+
     // Webhook
     INVALID_WEBHOOK_SIGNATURE(HttpStatus.UNAUTHORIZED), // 웹혹 서명 검증 실패
     WEBHOOK_EVENT_NOT_FOUND(HttpStatus.NOT_FOUND),  // 웹혹 이벤트를 찾을 수 없음

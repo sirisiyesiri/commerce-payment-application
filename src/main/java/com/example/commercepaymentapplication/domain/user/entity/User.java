@@ -61,22 +61,60 @@ public class User extends BaseTimeEntity {
         this.totalPaidAmount = 0;
     }
 
+    // 결제 완료 금액을 누적하고 멤버십 등급을 재계산한다.
     public void completePayment(int paymentAmount) {
         this.totalPaidAmount += paymentAmount;
         updateMembershipGrade();
     }
 
+    // 환불 금액을 누적 결제 금액에서 차감하고 멤버십 등급을 재계산한다.
     public void refundPayment(int refundAmount) {
         this.totalPaidAmount = Math.max(0, this.totalPaidAmount - refundAmount);
         updateMembershipGrade();
     }
 
+    // 다음 멤버십 등급까지 남은 결제 금액을 반환한다.
     public int getAmountToNextGrade() {
         return MembershipGrade.amountToNextGrade(this.totalPaidAmount);
     }
 
+    // 현재 멤버십 등급의 포인트 적립률을 반환한다.
     public int getMembershipPointRatePercent() {
         return this.membershipGrade.getPointRatePercent();
+    }
+
+    // 포인트를 사용하고 잔액을 차감한다.
+    public void usePoint(int usedPointAmount) {
+        validatePointAmount(usedPointAmount);
+
+        if (this.pointBalance < usedPointAmount) {
+            throw new BusinessException(ErrorCode.INSUFFICIENT_POINT);
+        }
+
+        this.pointBalance -= usedPointAmount;
+    }
+
+    // 포인트를 적립하고 잔액을 증가시킨다.
+    public void earnPoint(int earnedPointAmount) {
+        validatePointAmount(earnedPointAmount);
+        this.pointBalance += earnedPointAmount;
+    }
+
+    // 환불 시 사용했던 포인트를 복구한다.
+    public void restoreUsedPoint(int usedPointAmount) {
+        validatePointAmount(usedPointAmount);
+        this.pointBalance += usedPointAmount;
+    }
+
+    // 환불 시 기존 적립 포인트를 회수한다.
+    public void revokeEarnedPoint(int earnedPointAmount) {
+        validatePointAmount(earnedPointAmount);
+
+        if (this.pointBalance < earnedPointAmount) {
+            throw new BusinessException(ErrorCode.INSUFFICIENT_POINT);
+        }
+
+        this.pointBalance -= earnedPointAmount;
     }
 
     public List<CartItem> getOrderCartItems(List<Long> cartItemIds) {
@@ -98,6 +136,14 @@ public class User extends BaseTimeEntity {
         return selectedCartItems;
     }
 
+    // 유효하지 않은 포인트 금액이면 예외를 던진다.
+    private void validatePointAmount(int pointAmount) {
+        if (pointAmount <= 0) {
+            throw new BusinessException(ErrorCode.INVALID_POINT_AMOUNT);
+        }
+    }
+
+    // 누적 결제 금액 기준으로 멤버십 등급을 갱신한다.
     private void updateMembershipGrade() {
         MembershipGrade newGrade = MembershipGrade.fromTotalPaidAmount(this.totalPaidAmount);
 
