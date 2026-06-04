@@ -1,6 +1,7 @@
 # 33 ~ 171번 > 장바구니 담기
 # 174 ~ 194 번 > 장바구니 조회
-# 198 ~ 321 번 > 장바구니 수량 변경
+# 198 ~ 289 번 > 장바구니 수량 변경
+# 291 ~ 354 번 > 장바구니 개별 삭제
 
 
 ### 회원가입
@@ -287,39 +288,67 @@ Authorization: Bearer {{authToken}}
   "quantity": 999999
 }
 
-
-### 다른 회원 회원가입
-# 기대: 201 Created 또는 200 OK
-POST http://localhost:8080/api/auth/signup
+### 장바구니 상품 담기 - 삭제 테스트용
+# 기대: 201 Created
+POST http://localhost:8080/api/carts/items
 Content-Type: application/json
+Authorization: Bearer {{authToken}}
 
 {
-  "email": "cart-other-test@example.com",
-  "password": "sparta1234",
-  "name": "박스파",
-  "phoneNumber": "010-3333-4444"
+  "productId": 1,
+  "quantity": 2
 }
 
-### 다른 회원 로그인
+> {% client.global.set("cartItemId", response.body.data.cartItemId); %}
+
+
+### 장바구니 조회 - 삭제 전 확인
 # 기대: 200 OK
-POST http://localhost:8080/api/auth/login
+GET http://localhost:8080/api/carts
+Content-Type: application/json
+Authorization: Bearer {{authToken}}
+
+
+### 장바구니 상품 개별 삭제 - 성공
+# 기대: 204 No Content
+DELETE http://localhost:8080/api/carts/items/{{cartItemId}}
+Content-Type: application/json
+Authorization: Bearer {{authToken}}
+
+
+### 장바구니 조회 - 삭제 후 확인
+# 기대: 200 OK
+GET http://localhost:8080/api/carts
+Content-Type: application/json
+Authorization: Bearer {{authToken}}
+
+
+### 장바구니 상품 개별 삭제 - 이미 삭제된 상품 재삭제
+# 기대: 404 Not Found
+# 예외 코드: CART_ITEM_NOT_FOUND
+DELETE http://localhost:8080/api/carts/items/{{cartItemId}}
+Content-Type: application/json
+Authorization: Bearer {{authToken}}
+
+
+### 장바구니 상품 개별 삭제 - 존재하지 않는 장바구니 상품
+# 기대: 404 Not Found
+# 예외 코드: CART_ITEM_NOT_FOUND
+DELETE http://localhost:8080/api/carts/items/999999
+Content-Type: application/json
+Authorization: Bearer {{authToken}}
+
+
+### 장바구니 상품 개별 삭제 - 인증 토큰 없음
+# 기대: 401 Unauthorized
+# 예외 코드: UNAUTHORIZED 또는 INVALID_TOKEN
+DELETE http://localhost:8080/api/carts/items/{{cartItemId}}
 Content-Type: application/json
 
-{
-  "email": "cart-other-test@example.com",
-  "password": "sparta1234"
-}
 
-> {% client.global.set("otherAuthToken", response.body.data.token); %}
-
-
-### 장바구니 수량 변경 - 타인의 장바구니 상품
-# 기대: 403 Forbidden
-# 예외 코드: FORBIDDEN
-PUT http://localhost:8080/api/carts/items/{{cartItemId}}
+### 장바구니 상품 개별 삭제 - 잘못된 토큰
+# 기대: 401 Unauthorized
+# 예외 코드: INVALID_TOKEN
+DELETE http://localhost:8080/api/carts/items/{{cartItemId}}
 Content-Type: application/json
-Authorization: Bearer {{otherAuthToken}}
-
-{
-  "quantity": 3
-}
+Authorization: Bearer wrong.token.value
