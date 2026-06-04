@@ -53,4 +53,14 @@ public class CartController {
         return ResponseEntity.status(HttpStatus.OK)
                 .body(ApiResponse.ok(response));
     }
+
+    @DeleteMapping("/items/{cartItemId}")
+    public  ResponseEntity<ApiResponse<Void>> removeOneItem(
+            @AuthenticationPrincipal Long userId,
+            @PathVariable Long cartItemId
+    ) {
+        cartFacade.removeOntItem(userId, cartItemId);
+
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+    }
 }
