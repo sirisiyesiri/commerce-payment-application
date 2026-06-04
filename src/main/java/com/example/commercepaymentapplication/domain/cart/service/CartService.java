@@ -10,11 +10,13 @@ import com.example.commercepaymentapplication.domain.product.entity.Product;
 import com.example.commercepaymentapplication.global.error.BusinessException;
 import com.example.commercepaymentapplication.global.error.ErrorCode;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class CartService {
@@ -69,6 +71,8 @@ public class CartService {
                 .mapToLong(CartItemDto::totalPrice)
                 .sum();
 
+        // 장바구니 생성일시 - 처음 담긴 상품
+
         return new GetCartItemListResponse(cartItemList, totalAmount);
     }
 
@@ -76,13 +80,8 @@ public class CartService {
     public CartItemDto updateCartItemQuantity(Long userId, Long cartItemId, UpdateCartItemQuantityRequest request) {
 
         // 장바구니 상품 조회 후 없으면 예외
-        CartItem cartItem = cartItemRepository.findById(cartItemId)
-                        .orElseThrow(() -> new BusinessException(ErrorCode.CART_ITEM_NOT_FOUND));
-
-        // 조회한 장바구니가 로그인한 유저의 것인지 확인 아니면 403(권한) 예외
-        if (!cartItem.getUserId().equals(userId)) {
-            throw new BusinessException(ErrorCode.FORBIDDEN);
-        }
+        CartItem cartItem = cartItemRepository.findByIdAndUser_Id(cartItemId, userId)
+                .orElseThrow(() -> new BusinessException(ErrorCode.CART_ITEM_NOT_FOUND));
 
         // 장바구니 상품에 연결된 상품 엔티티 조회
         Product product = cartItem.getProduct();
@@ -98,6 +97,15 @@ public class CartService {
         return toResponse(cartItem);
     }
 
+    @Transactional
+    public void removeOneItem(Long userId, Long cartItemId) {
+        // 사용자 ID와 장바구니 상품 ID가 일치하는 장바구니 상품을 DB에서 삭제
+        int deleted = cartItemRepository.deleteByIdAndUserId(cartItemId,userId);
+        if(deleted != 1) {
+            log.warn("장바구니 상품 삭제 실패: 유효하지 않은 상품 ID입니다. : expected=1, actual={}, userId={}, cartItemId={}"
+                    , deleted, userId, cartItemId);
+        }
+    }
 
     // 판매중인 상품인지 검증
     private void validateOnSale(Product product) {
@@ -126,7 +134,9 @@ public class CartService {
                 product.getName(),
                 product.getPrice(),
                 cartItem.getQuantity(),
-                totalPrice
+                totalPrice,
+                cartItem.getCreatedAt(),
+                cartItem.getModifiedAt()
         );
     }
 }

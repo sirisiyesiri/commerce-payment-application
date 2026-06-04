@@ -54,6 +54,16 @@ public class CartController {
                 .body(ApiResponse.ok(response));
     }
 
+    @DeleteMapping("/items/{cartItemId}")
+    public  ResponseEntity<ApiResponse<Void>> removeOneItem(
+            @AuthenticationPrincipal Long userId,
+            @PathVariable Long cartItemId
+    ) {
+        cartFacade.removeOntItem(userId, cartItemId);
+
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+    }
+
     @PostMapping("/orders")
     public ResponseEntity<ApiResponse<AddOrderResponse>> createCartItemOrder(
             @AuthenticationPrincipal Long userId,
