@@ -1,6 +1,7 @@
 package com.example.commercepaymentapplication.domain.cart.facade;
 
 import com.example.commercepaymentapplication.domain.cart.dto.AddCartRequest;
+import com.example.commercepaymentapplication.domain.cart.dto.GetCartItemListResponse;
 import com.example.commercepaymentapplication.domain.cart.entity.CartItem;
 import com.example.commercepaymentapplication.domain.cart.service.CartService;
 import com.example.commercepaymentapplication.domain.product.entity.Product;
@@ -29,4 +30,11 @@ public class CartFacade {
 
         return cartService.addItem(cartItem);
     }
+
+    @Transactional(readOnly = true)
+    public GetCartItemListResponse getCartItems(Long userId) {
+        return cartService.getCartItems(userId);
+    }
+
+
 }
