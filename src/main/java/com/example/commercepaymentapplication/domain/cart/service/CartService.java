@@ -1,6 +1,7 @@
 package com.example.commercepaymentapplication.domain.cart.service;
 
 
+import com.example.commercepaymentapplication.domain.cart.dto.CartItemDto;
 import com.example.commercepaymentapplication.domain.cart.dto.GetCartItemListResponse;
 import com.example.commercepaymentapplication.domain.cart.entity.CartItem;
 import com.example.commercepaymentapplication.domain.cart.repository.CartItemRepository;
@@ -58,13 +59,13 @@ public class CartService {
         List<CartItem> cartItems = cartItemRepository.findByUserId(userId);
 
         // cartItem 엔티티 목록을 응답 DTO 목록으로 변환
-        List<GetCartItemListResponse.CartItemDto> cartItemList = cartItems.stream()
+        List<CartItemDto> cartItemList = cartItems.stream()
                 .map(this::toResponse)
                 .toList();
 
         // 장바구니 전체 금액 계산 - stream으로 totalPrice만 꺼내서 더하기
         Long totalAmount = cartItemList.stream()
-                .mapToLong(GetCartItemListResponse.CartItemDto::totalPrice)
+                .mapToLong(CartItemDto::totalPrice)
                 .sum();
 
         return new GetCartItemListResponse(cartItemList, totalAmount);
@@ -87,12 +88,12 @@ public class CartService {
     }
 
     // 장바구니에 담긴 수량 * 상품 가격 구하는 메서드
-    private GetCartItemListResponse.CartItemDto toResponse(CartItem cartItem) {
+    private CartItemDto toResponse(CartItem cartItem) {
         Product product = cartItem.getProduct();
 
         Long totalPrice = (long) product.getPrice() * cartItem.getQuantity();
 
-        return new GetCartItemListResponse.CartItemDto(
+        return new CartItemDto(
                 cartItem.getId(),
                 product.getId(),
                 product.getName(),
