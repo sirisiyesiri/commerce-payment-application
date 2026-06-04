@@ -1,3 +1,8 @@
+# 33 ~ 171번 > 장바구니 담기
+# 174 ~ 194 번 > 장바구니 조회
+# 198 ~ 321 번 > 장바구니 수량 변경
+
+
 ### 회원가입
 # 기대: 201 Created 또는 200 OK
 POST http://localhost:8080/api/auth/signup
@@ -24,6 +29,10 @@ Content-Type: application/json
 
 > {% client.global.set("authToken", response.body.data.token); %}
 
+### authToken 삭제
+GET http://localhost:8080/api/products
+
+> {% client.global.clear("authToken"); %}
 
 ### 장바구니 상품 담기 - 성공
 # 기대: 201 Created
@@ -35,6 +44,8 @@ Authorization: Bearer {{authToken}}
   "productId": 1,
   "quantity": 2
 }
+
+> {% client.global.set("cartItemId", response.body.data.cartItemId); %}
 
 
 ### 장바구니 상품 담기 - 동일 상품 수량 합산
@@ -163,10 +174,6 @@ Authorization: Bearer invalid-token
   "quantity": 2
 }
 
-### authToken 삭제
-GET http://localhost:8080/api/products
-
-> {% client.global.clear("authToken"); %}
 
 ### 장바구니 조회 - 상품 담은 후 성공
 # 기대: 200 OK
@@ -189,3 +196,130 @@ GET http://localhost:8080/api/carts
 Content-Type: application/json
 Authorization: Bearer wrong.token.value
 
+
+### 장바구니 수량 변경 - 성공
+# 기대: 200 OK
+PUT http://localhost:8080/api/carts/items/{{cartItemId}}
+Content-Type: application/json
+Authorization: Bearer {{authToken}}
+
+{
+  "quantity": 3
+}
+
+
+### 장바구니 조회 - 수량 변경 확인
+# 기대: 200 OK
+GET http://localhost:8080/api/carts
+Content-Type: application/json
+Authorization: Bearer {{authToken}}
+
+
+### 장바구니 수량 변경 - 인증 토큰 없음
+# 기대: 401 Unauthorized
+# 예외 코드: UNAUTHORIZED 또는 INVALID_TOKEN
+PUT http://localhost:8080/api/carts/items/{{cartItemId}}
+Content-Type: application/json
+
+{
+  "quantity": 3
+}
+
+
+### 장바구니 수량 변경 - 잘못된 토큰
+# 기대: 401 Unauthorized
+# 예외 코드: INVALID_TOKEN
+PUT http://localhost:8080/api/carts/items/{{cartItemId}}
+Content-Type: application/json
+Authorization: Bearer wrong.token.value
+
+{
+  "quantity": 3
+}
+
+
+
+
+### 장바구니 수량 변경 - 수량 0
+# 기대: 400 Bad Request
+# 예외 코드: INVALID_QUANTITY 또는 INVALID_INPUT
+PUT http://localhost:8080/api/carts/items/{{cartItemId}}
+Content-Type: application/json
+Authorization: Bearer {{authToken}}
+
+{
+  "quantity": 0
+}
+
+
+### 장바구니 수량 변경 - 음수 수량
+# 기대: 400 Bad Request
+# 예외 코드: INVALID_QUANTITY 또는 INVALID_INPUT
+PUT http://localhost:8080/api/carts/items/{{cartItemId}}
+Content-Type: application/json
+Authorization: Bearer {{authToken}}
+
+{
+  "quantity": -1
+}
+
+
+### 장바구니 수량 변경 - 존재하지 않는 장바구니 상품
+# 기대: 404 Not Found
+# 예외 코드: CART_ITEM_NOT_FOUND
+PUT http://localhost:8080/api/carts/items/999999
+Content-Type: application/json
+Authorization: Bearer {{authToken}}
+
+{
+  "quantity": 3
+}
+
+
+### 장바구니 수량 변경 - 재고 초과
+# 기대: 409 Conflict
+# 예외 코드: INSUFFICIENT_STOCK
+PUT http://localhost:8080/api/carts/items/{{cartItemId}}
+Content-Type: application/json
+Authorization: Bearer {{authToken}}
+
+{
+  "quantity": 999999
+}
+
+
+### 다른 회원 회원가입
+# 기대: 201 Created 또는 200 OK
+POST http://localhost:8080/api/auth/signup
+Content-Type: application/json
+
+{
+  "email": "cart-other-test@example.com",
+  "password": "sparta1234",
+  "name": "박스파",
+  "phoneNumber": "010-3333-4444"
+}
+
+### 다른 회원 로그인
+# 기대: 200 OK
+POST http://localhost:8080/api/auth/login
+Content-Type: application/json
+
+{
+  "email": "cart-other-test@example.com",
+  "password": "sparta1234"
+}
+
+> {% client.global.set("otherAuthToken", response.body.data.token); %}
+
+
+### 장바구니 수량 변경 - 타인의 장바구니 상품
+# 기대: 403 Forbidden
+# 예외 코드: FORBIDDEN
+PUT http://localhost:8080/api/carts/items/{{cartItemId}}
+Content-Type: application/json
+Authorization: Bearer {{otherAuthToken}}
+
+{
+  "quantity": 3
+}

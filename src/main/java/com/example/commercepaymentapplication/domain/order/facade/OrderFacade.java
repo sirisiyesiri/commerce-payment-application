@@ -22,7 +22,7 @@ public class OrderFacade {
     public PreviewOrderResponse previewOrder(Long userId, List<Long> cartItemIds){
 
         // cartItemsIds가 비어 있으면 "전체 장바구니", 값이 있으면 "선택된 아이템"만 주문서에 담음
-        User user = userService.findUserEntity(userId);
+        User user = userService.findUserEntityWithCartItems(userId);
 
         List<CartItem> orderCartItems = user.getOrderCartItems(cartItemIds);
 

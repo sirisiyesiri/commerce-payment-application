@@ -3,6 +3,7 @@ package com.example.commercepaymentapplication.domain.cart.service;
 
 import com.example.commercepaymentapplication.domain.cart.dto.CartItemDto;
 import com.example.commercepaymentapplication.domain.cart.dto.GetCartItemListResponse;
+import com.example.commercepaymentapplication.domain.cart.dto.UpdateCartItemQuantityRequest;
 import com.example.commercepaymentapplication.domain.cart.entity.CartItem;
 import com.example.commercepaymentapplication.domain.cart.repository.CartItemRepository;
 import com.example.commercepaymentapplication.domain.product.entity.Product;
@@ -71,6 +72,32 @@ public class CartService {
         return new GetCartItemListResponse(cartItemList, totalAmount);
     }
 
+    @Transactional
+    public CartItemDto updateCartItemQuantity(Long userId, Long cartItemId, UpdateCartItemQuantityRequest request) {
+
+        // 장바구니 상품 조회 후 없으면 예외
+        CartItem cartItem = cartItemRepository.findById(cartItemId)
+                        .orElseThrow(() -> new BusinessException(ErrorCode.CART_ITEM_NOT_FOUND));
+
+        // 조회한 장바구니가 로그인한 유저의 것인지 확인 아니면 403(권한) 예외
+        if (!cartItem.getUserId().equals(userId)) {
+            throw new BusinessException(ErrorCode.FORBIDDEN);
+        }
+
+        // 장바구니 상품에 연결된 상품 엔티티 조회
+        Product product = cartItem.getProduct();
+
+        // 판매중인지, 변경수량이 재고 이하인지 검증
+        validateOnSale(product);
+        validateStock(product, request.quantity());
+
+        // 장바구니 상품 수량을 요청 수량으로 변경 후
+        cartItem.changeQuantity(request.quantity());
+
+        // DTO로 반환
+        return toResponse(cartItem);
+    }
+
 
     // 판매중인 상품인지 검증
     private void validateOnSale(Product product) {
@@ -102,6 +129,4 @@ public class CartService {
                 totalPrice
         );
     }
-
-
 }

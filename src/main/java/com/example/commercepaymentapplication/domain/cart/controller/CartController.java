@@ -1,8 +1,6 @@
 package com.example.commercepaymentapplication.domain.cart.controller;
 
-import com.example.commercepaymentapplication.domain.cart.dto.AddCartRequest;
-import com.example.commercepaymentapplication.domain.cart.dto.AddCartResponse;
-import com.example.commercepaymentapplication.domain.cart.dto.GetCartItemListResponse;
+import com.example.commercepaymentapplication.domain.cart.dto.*;
 import com.example.commercepaymentapplication.domain.cart.entity.CartItem;
 import com.example.commercepaymentapplication.domain.cart.facade.CartFacade;
 import com.example.commercepaymentapplication.domain.cart.repository.CartItemRepository;
@@ -39,6 +37,18 @@ public class CartController {
             @AuthenticationPrincipal Long userId
     ) {
         GetCartItemListResponse response = cartFacade.getCartItems(userId);
+
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(ApiResponse.ok(response));
+    }
+
+    @PutMapping("/items/{cartItemId}")
+    public ResponseEntity<ApiResponse<CartItemDto>> updateCartItemQuantity(
+            @AuthenticationPrincipal Long userId,
+            @PathVariable Long cartItemId,
+            @Valid @RequestBody UpdateCartItemQuantityRequest request
+            ) {
+        CartItemDto response = cartFacade.updateCartItem(userId, cartItemId, request);
 
         return ResponseEntity.status(HttpStatus.OK)
                 .body(ApiResponse.ok(response));
