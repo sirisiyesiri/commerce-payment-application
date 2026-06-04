@@ -103,3 +103,8 @@ Authorization: Bearer {{authToken}}
 # cartItemIds는 Long 타입이어야 함
 GET http://localhost:8080/api/orders/preview?cartItemIds=abc
 Authorization: Bearer {{authToken}}
+
+### authToken 삭제
+GET http://localhost:8080/api/products
+
+> {% client.global.clear("authToken"); %}

@@ -26,6 +26,7 @@ public class OrderController {
             @AuthenticationPrincipal Long userId,
             @RequestParam(required = false)List<Long> cartItemIds
             ) {
-        return ResponseEntity.status(HttpStatus.OK).body(ApiResponse.ok(orderFacade.previewOrder(userId, cartItemIds)));
+        ApiResponse<PreviewOrderResponse> response = ApiResponse.ok(orderFacade.previewOrder(userId, cartItemIds));
+        return ResponseEntity.status(HttpStatus.OK).body(response);
     }
 }
