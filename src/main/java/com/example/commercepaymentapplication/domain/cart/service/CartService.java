@@ -76,13 +76,8 @@ public class CartService {
     public CartItemDto updateCartItemQuantity(Long userId, Long cartItemId, UpdateCartItemQuantityRequest request) {
 
         // 장바구니 상품 조회 후 없으면 예외
-        CartItem cartItem = cartItemRepository.findById(cartItemId)
-                        .orElseThrow(() -> new BusinessException(ErrorCode.CART_ITEM_NOT_FOUND));
-
-        // 조회한 장바구니가 로그인한 유저의 것인지 확인 아니면 403(권한) 예외
-        if (!cartItem.getUserId().equals(userId)) {
-            throw new BusinessException(ErrorCode.FORBIDDEN);
-        }
+        CartItem cartItem = cartItemRepository.findByIdAndUser_Id(cartItemId, userId)
+                .orElseThrow(() -> new BusinessException(ErrorCode.CART_ITEM_NOT_FOUND));
 
         // 장바구니 상품에 연결된 상품 엔티티 조회
         Product product = cartItem.getProduct();
