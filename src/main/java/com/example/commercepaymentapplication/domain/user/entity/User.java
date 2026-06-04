@@ -84,37 +84,37 @@ public class User extends BaseTimeEntity {
     }
 
     // 포인트를 사용하고 잔액을 차감한다.
-    public void usePoint(int pointAmount) {
-        validatePointAmount(pointAmount);
+    public void usePoint(int usedPointAmount) {
+        validatePointAmount(usedPointAmount);
 
-        if (this.pointBalance < pointAmount) {
+        if (this.pointBalance < usedPointAmount) {
             throw new BusinessException(ErrorCode.INSUFFICIENT_POINT);
         }
 
-        this.pointBalance -= pointAmount;
+        this.pointBalance -= usedPointAmount;
     }
 
     // 포인트를 적립하고 잔액을 증가시킨다.
-    public void earnPoint(int pointAmount) {
-        validatePointAmount(pointAmount);
-        this.pointBalance += pointAmount;
+    public void earnPoint(int earnedPointAmount) {
+        validatePointAmount(earnedPointAmount);
+        this.pointBalance += earnedPointAmount;
     }
 
     // 환불 시 사용했던 포인트를 복구한다.
-    public void restoreUsedPoint(int pointAmount) {
-        validatePointAmount(pointAmount);
-        this.pointBalance += pointAmount;
+    public void restoreUsedPoint(int usedPointAmount) {
+        validatePointAmount(usedPointAmount);
+        this.pointBalance += usedPointAmount;
     }
 
     // 환불 시 기존 적립 포인트를 회수한다.
-    public void revokeEarnedPoint(int pointAmount) {
-        validatePointAmount(pointAmount);
+    public void revokeEarnedPoint(int earnedPointAmount) {
+        validatePointAmount(earnedPointAmount);
 
-        if (this.pointBalance < pointAmount) {
+        if (this.pointBalance < earnedPointAmount) {
             throw new BusinessException(ErrorCode.INSUFFICIENT_POINT);
         }
 
-        this.pointBalance -= pointAmount;
+        this.pointBalance -= earnedPointAmount;
     }
 
     public List<CartItem> getOrderCartItems(List<Long> cartItemIds) {
