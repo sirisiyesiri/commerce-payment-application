@@ -48,29 +48,23 @@ public class Payment extends BaseTimeEntity {
     @Column(name = "paid_at")
     private LocalDateTime paidAt;
 
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private PaymentType type;
+
     public Payment(Order order, int orderAmount, int usedPointAmount) {
-        validatePaymentAmount(orderAmount, usedPointAmount);
 
         this.order = order;
         this.portonePaymentId = generatePortonePaymentId();
         this.orderAmount = orderAmount;
         this.usedPointAmount = usedPointAmount;
         this.pgPaymentAmount = orderAmount - usedPointAmount;
+        this.type = PaymentType.checkPaymentType(orderAmount, usedPointAmount);
 
     }
 
     private static String generatePortonePaymentId() {
         return "pay_" + UUID.randomUUID();
-    }
-
-    private void validatePaymentAmount(int orderAmount, int usedPointAmount) {
-        if (orderAmount <= 0 || usedPointAmount < 0) {
-            throw new BusinessException(ErrorCode.INVALID_PAYMENT_AMOUNT);
-        }
-
-        if (usedPointAmount > orderAmount) {
-            throw new BusinessException(ErrorCode.INVALID_PAYMENT_AMOUNT);
-        }
     }
 
     public void markAsPaid(int earnedPointAmount) {
@@ -83,7 +77,7 @@ public class Payment extends BaseTimeEntity {
         changeStatus(PaymentStatus.FAILED);
     }
 
-    public void markAsCancelled() {
+    public void markAsRefund() {
         changeStatus(PaymentStatus.REFUND);
     }
 

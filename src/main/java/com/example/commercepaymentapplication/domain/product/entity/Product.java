@@ -1,6 +1,8 @@
 package com.example.commercepaymentapplication.domain.product.entity;
 
 import com.example.commercepaymentapplication.global.entity.BaseTimeEntity;
+import com.example.commercepaymentapplication.global.error.BusinessException;
+import com.example.commercepaymentapplication.global.error.ErrorCode;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -48,5 +50,21 @@ public class Product extends BaseTimeEntity {
         this.status = status;
         this.category = category;
         this.description = description;
+    }
+
+    public void deductStock(int orderStockQuantity) {
+        validate(stockQuantity, orderStockQuantity);
+
+        stockQuantity -= orderStockQuantity;
+    }
+
+    private void validate(int stockQuantity, int orderStockQuantity) {
+        if (orderStockQuantity <= 0) {
+            throw new BusinessException(ErrorCode.INVALID_QUANTITY);
+        }
+
+        if (orderStockQuantity > stockQuantity) {
+            throw new BusinessException(ErrorCode.INSUFFICIENT_STOCK);
+        }
     }
 }
