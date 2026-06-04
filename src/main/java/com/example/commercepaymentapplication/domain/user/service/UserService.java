@@ -23,8 +23,14 @@ public class UserService {
     }
 
     @Transactional(readOnly = true)
-    public User findUserEntity(Long userId) {
+    public User findUserEntityWithCartItems(Long userId) {
         return userRepository.findByIdWithCartItems(userId)
+                .orElseThrow(() -> new BusinessException(ErrorCode.MEMBER_NOT_FOUND));
+    }
+
+    @Transactional(readOnly = true)
+    public User findUserEntity(Long userId) {
+        return userRepository.findById(userId)
                 .orElseThrow(() -> new BusinessException(ErrorCode.MEMBER_NOT_FOUND));
     }
 
