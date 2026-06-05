@@ -108,4 +108,26 @@ public class OrderFacade {
 
         return GetOrderResponse.from(order);
     }
+
+    // 주문 취소
+    @Transactional
+    public CancelOrderResponse cancelOrder(Long userId, Long orderId) {
+        Order order = orderService.findOrderEntity(userId, orderId);
+
+        Payment payment = paymentService.findPaymentEntityByOrderId(order.getId());
+
+        // 재고 복구
+        orderService.cancelOrder(order);
+
+        // 결제 상태 failed로 변경
+        payment.markAsFailed();
+
+        return new CancelOrderResponse(
+                order.getId(),
+                order.getOrderNumber(),
+                order.getStatus(),
+                payment.getStatus(),
+                order.getCanceledAt()
+        );
+    }
 }
