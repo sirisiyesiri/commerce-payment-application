@@ -8,12 +8,14 @@ import com.example.commercepaymentapplication.domain.order.service.OrderService;
 import com.example.commercepaymentapplication.domain.payment.entity.Payment;
 import com.example.commercepaymentapplication.domain.payment.service.PaymentService;
 import com.example.commercepaymentapplication.domain.product.entity.Product;
+import com.example.commercepaymentapplication.domain.product.service.ProductService;
 import com.example.commercepaymentapplication.domain.user.entity.User;
 import com.example.commercepaymentapplication.domain.user.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Comparator;
 import java.util.List;
 
 @Component
@@ -23,6 +25,7 @@ public class OrderFacade {
     private final UserService userService;
     private final OrderService orderService;
     private final PaymentService paymentService;
+    private final ProductService productService;
 
     // 주문서 미리보기 : 재고 차감/주문 생성 없는 읽기 전용
     @Transactional(readOnly = true)
@@ -55,16 +58,24 @@ public class OrderFacade {
 
         user.validateUsablePoint(request.usedPointAmount());
 
-        List<CartItem> orderCartItems = user.getOrderCartItems(request.cartItemIds());
+        // 데드락 방지용 - productId가 작은 상품부터 순서대로 락 획득
+        // 같은 순서로 락을 잡게 하기 위한 오름차순 정렬
+        List<CartItem> orderCartItems = user.getOrderCartItems(request.cartItemIds()).stream()
+                .sorted(Comparator.comparing(CartItem::getProductId))
+                .toList();
 
         // CartItem → OrderItem 으로 변환
         List<OrderItem> orderItems = orderCartItems.stream()
                 .map(cartItem -> {
-                    Product product = cartItem.getProduct();
+                    // 주문 생성 트랜잭션 동안 상품 row를 잠가 동시 재고 차감을 막는다.
+                    Product product = productService.findProductEntityForUpdate(cartItem.getProductId());
 
                     product.deductStock(cartItem.getQuantity());
 
-                    return OrderItem.from(cartItem);
+                    return new OrderItem(
+                            product,
+                            product.getPrice(),
+                            cartItem.getQuantity());
                 })
                 .toList();
 
