@@ -22,8 +22,6 @@ management:
       exposure:
         include: health, info
 
-server:
-  port: 8080
 
 # 로깅 레벨 설정
 logging:
