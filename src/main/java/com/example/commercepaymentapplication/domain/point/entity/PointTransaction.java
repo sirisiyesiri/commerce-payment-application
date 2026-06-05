@@ -44,6 +44,9 @@ public class PointTransaction extends BaseTimeEntity {
 
 	// 포인트 거래를 생성한다.
 	public static PointTransaction of(User user, Payment payment, PointTransactionType pointTransactionType, Integer amount) {
+		validateUser(user);
+		validatePayment(payment);
+		validatePointTransactionType(pointTransactionType);
 		validateAmount(amount);
 
 		return new PointTransaction(
@@ -52,6 +55,27 @@ public class PointTransaction extends BaseTimeEntity {
 			pointTransactionType,
 			pointTransactionType.applySign(amount)
 		);
+	}
+
+	// 회원 정보가 없으면 예외를 던진다.
+	private static void validateUser(User user) {
+		if (user == null) {
+			throw new BusinessException(ErrorCode.MEMBER_NOT_FOUND);
+		}
+	}
+
+	// 결제 정보가 없으면 예외를 던진다.
+	private static void validatePayment(Payment payment) {
+		if (payment == null) {
+			throw new BusinessException(ErrorCode.PAYMENT_NOT_FOUND);
+		}
+	}
+
+	// 포인트 거래 타입이 없으면 예외를 던진다.
+	private static void validatePointTransactionType(PointTransactionType pointTransactionType) {
+		if (pointTransactionType == null) {
+			throw new BusinessException(ErrorCode.INVALID_POINT_TRANSACTION_TYPE);
+		}
 	}
 
 	// 유효하지 않은 포인트 거래 금액이면 예외를 던진다.
