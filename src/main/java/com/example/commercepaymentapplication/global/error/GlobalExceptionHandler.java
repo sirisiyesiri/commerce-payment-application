@@ -1,8 +1,11 @@
 package com.example.commercepaymentapplication.global.error;
 
 import com.example.commercepaymentapplication.global.response.ApiResponse;
+import jakarta.persistence.LockTimeoutException;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.dao.CannotAcquireLockException;
 import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.dao.PessimisticLockingFailureException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -60,5 +63,15 @@ public class GlobalExceptionHandler {
 
         return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                 .body(ApiResponse.error(ErrorCode.DUPLICATE_CART_ITEM));
+    }
+
+    @ExceptionHandler({
+            PessimisticLockingFailureException.class,
+            CannotAcquireLockException.class,
+            LockTimeoutException.class
+    })
+    public ResponseEntity<ApiResponse<Void>> handleLockException(Exception e) {
+        return ResponseEntity.status(HttpStatus.CONFLICT)
+                .body(ApiResponse.error(ErrorCode.LOCK_TIMEOUT));
     }
 }
