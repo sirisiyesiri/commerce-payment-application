@@ -20,6 +20,9 @@ jobs:
           java-version: '17'
           distribution: 'corretto'
 
+      # gradlew 실행 권한 부여
+      - name: Grant execute permission for gradlew
+        run: chmod +x gradlew
       # Gradle 빌드 (테스트 제외)
       - name: Build with Gradle
         run: ./gradlew build -x test
