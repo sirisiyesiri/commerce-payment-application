@@ -132,5 +132,9 @@ public class ProductService {
         };
     }
 
-
+    // 락 조회 메서드
+    public Product findProductEntityForUpdate(Long productId) {
+        return productRepository.findByIdForUpdate(productId)
+                .orElseThrow(() -> new BusinessException(ErrorCode.PRODUCT_NOT_FOUND));
+    }
 }
