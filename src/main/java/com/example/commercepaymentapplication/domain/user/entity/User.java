@@ -172,7 +172,9 @@ public class User extends BaseTimeEntity {
     }
 
     public void validateUsablePoint(int usedPointAmount) {
-        validatePointAmount(usedPointAmount);
+        if (usedPointAmount < 0) {
+            throw new BusinessException(ErrorCode.INVALID_POINT_AMOUNT);
+        }
 
         if (this.pointBalance < usedPointAmount) {
             throw new BusinessException(ErrorCode.INSUFFICIENT_POINT);
