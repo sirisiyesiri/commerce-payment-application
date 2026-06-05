@@ -63,12 +63,16 @@ public class User extends BaseTimeEntity {
 
     // 결제 완료 금액을 누적하고 멤버십 등급을 재계산한다.
     public void completePayment(int paymentAmount) {
+        validatePaymentAmount(paymentAmount);
+
         this.totalPaidAmount += paymentAmount;
         updateMembershipGrade();
     }
 
     // 환불 금액을 누적 결제 금액에서 차감하고 멤버십 등급을 재계산한다.
     public void refundPayment(int refundAmount) {
+        validateRefundAmount(refundAmount);
+
         this.totalPaidAmount = Math.max(0, this.totalPaidAmount - refundAmount);
         updateMembershipGrade();
     }
@@ -143,6 +147,20 @@ public class User extends BaseTimeEntity {
         }
     }
 
+    // 유효하지 않은 결제 완료 금액이면 예외를 던진다.
+    private void validatePaymentAmount(int paymentAmount) {
+        if (paymentAmount <= 0) {
+            throw new BusinessException(ErrorCode.INVALID_PAYMENT_AMOUNT);
+        }
+    }
+
+    // 유효하지 않은 환불 금액이면 예외를 던진다.
+    private void validateRefundAmount(int refundAmount) {
+        if (refundAmount <= 0) {
+            throw new BusinessException(ErrorCode.INVALID_PAYMENT_AMOUNT);
+        }
+    }
+
     // 누적 결제 금액 기준으로 멤버십 등급을 갱신한다.
     private void updateMembershipGrade() {
         MembershipGrade newGrade = MembershipGrade.fromTotalPaidAmount(this.totalPaidAmount);
@@ -154,6 +172,8 @@ public class User extends BaseTimeEntity {
     }
 
     public void validateUsablePoint(int usedPointAmount) {
+        validatePointAmount(usedPointAmount);
+
         if (this.pointBalance < usedPointAmount) {
             throw new BusinessException(ErrorCode.INSUFFICIENT_POINT);
         }
