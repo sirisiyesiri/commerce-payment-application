@@ -107,6 +107,17 @@ public class CartService {
         }
     }
 
+    @Transactional
+    public void removeAllItems(Long userId) {
+        // 사용자 ID 확인해서 장바구니 전체 삭제
+        int deleted = cartItemRepository.deleteAllByUserId(userId);
+        // 전체 비우기 시 멱등적으로 보기
+        // 비어도 성공, 있어도 삭제 성공 -> 결과적으로 비어있으면 성공
+        log.info("장바구니 전체 비우기 완료: deleted={}, userId={}", deleted, userId);
+
+    }
+
+
     // 판매중인 상품인지 검증
     private void validateOnSale(Product product) {
         if (!product.getStatus().isPurchasable()) {
