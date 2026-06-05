@@ -28,6 +28,7 @@ public enum ErrorCode {
     CART_EMPTY(HttpStatus.BAD_REQUEST), // 장바구니가 비어 있음
     CART_ITEM_NOT_FOUND(HttpStatus.NOT_FOUND),  // 장바구니 상품을 찾을 수 없음
     INVALID_QUANTITY(HttpStatus.BAD_REQUEST),   // 유효하지 않은 상품 수량(ex 수량이 0이하, 수량이 null)
+    DUPLICATE_CART_ITEM(HttpStatus.BAD_REQUEST), // 중복키 예외 처리 (uk_cart_item_user_product)
 
     // Order
     ORDER_NOT_FOUND(HttpStatus.NOT_FOUND),  // 주문을 찾을 수 없음

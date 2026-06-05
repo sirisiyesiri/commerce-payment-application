@@ -238,6 +238,50 @@ Authorization: Bearer {{authToken}}
 GET http://localhost:8080/api/orders/abc
 Authorization: Bearer {{authToken}}
 
+### 주문 취소 - 성공
+# 기대: 200 OK
+# 설명: 결제대기 상태 주문을 취소
+POST http://localhost:8080/api/orders/{{orderId}}/cancel
+Content-Type: application/json
+Authorization: Bearer {{authToken}}
+
+
+### 주문 상세 조회 - 주문 취소 후 상태 확인
+# 기대: 200 OK
+# 확인: status = ORDER_CANCELED
+GET http://localhost:8080/api/orders/{{orderId}}
+Authorization: Bearer {{authToken}}
+
+
+### 주문 취소 - 이미 취소된 주문 재취소
+# 기대: 400 Bad Request
+# 예외 코드: INVALID_ORDER_STATUS
+POST http://localhost:8080/api/orders/{{orderId}}/cancel
+Content-Type: application/json
+Authorization: Bearer {{authToken}}
+
+
+### 주문 취소 - 존재하지 않는 주문 ID
+# 기대: 404 Not Found
+# 예외 코드: ORDER_NOT_FOUND
+POST http://localhost:8080/api/orders/999999/cancel
+Content-Type: application/json
+Authorization: Bearer {{authToken}}
+
+
+### 주문 취소 - 잘못된 주문 ID 타입
+# 기대: 400 Bad Request
+# 예외 코드: INVALID_INPUT
+POST http://localhost:8080/api/orders/abc/cancel
+Content-Type: application/json
+Authorization: Bearer {{authToken}}
+
+
+### 주문 취소 - 인증 없이 요청
+# 기대: 401 Unauthorized
+POST http://localhost:8080/api/orders/{{orderId}}/cancel
+Content-Type: application/json
+
 ### authToken 삭제
 GET http://localhost:8080/api/products
 

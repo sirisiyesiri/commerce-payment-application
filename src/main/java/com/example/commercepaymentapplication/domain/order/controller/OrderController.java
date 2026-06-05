@@ -1,5 +1,6 @@
 package com.example.commercepaymentapplication.domain.order.controller;
 
+import com.example.commercepaymentapplication.domain.order.dto.CancelOrderResponse;
 import com.example.commercepaymentapplication.domain.order.dto.GetOrderResponse;
 import com.example.commercepaymentapplication.domain.order.dto.PreviewOrderResponse;
 import com.example.commercepaymentapplication.domain.order.facade.OrderFacade;
@@ -47,4 +48,15 @@ public class OrderController {
 
         return ResponseEntity.status(HttpStatus.OK).body(ApiResponse.ok(response));
     }
+
+    @PostMapping("/{orderId}/cancel")
+    public ResponseEntity<ApiResponse<CancelOrderResponse>> cancelOrder(
+            @AuthenticationPrincipal Long userId,
+            @PathVariable Long orderId
+    ) {
+        CancelOrderResponse response = orderFacade.cancelOrder(userId, orderId);
+
+        return ResponseEntity.status(HttpStatus.OK).body(ApiResponse.ok(response));
+    }
+
 }

@@ -58,6 +58,14 @@ public class Product extends BaseTimeEntity {
         stockQuantity -= orderStockQuantity;
     }
 
+    // 재고 복구 메서드
+    public void restoreStock(int quantity) {
+        if(quantity <= 0) {
+            throw new BusinessException(ErrorCode.INVALID_QUANTITY);
+        }
+        this.stockQuantity += quantity;
+    }
+
     private void validate(int stockQuantity, int orderStockQuantity) {
         if (orderStockQuantity <= 0) {
             throw new BusinessException(ErrorCode.INVALID_QUANTITY);

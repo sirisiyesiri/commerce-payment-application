@@ -9,6 +9,7 @@ import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -39,6 +40,9 @@ public class Order extends BaseTimeEntity {
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private OrderStatus status = OrderStatus.PAYMENT_PENDING;
+
+    @Column(name = "canceled_at")
+    private LocalDateTime canceledAt;
 
     @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<OrderItem> orderItems = new ArrayList<>();
@@ -71,6 +75,7 @@ public class Order extends BaseTimeEntity {
 
     public void markAsCancelled() {
         changeStatus(OrderStatus.ORDER_CANCELED);
+        this.canceledAt = LocalDateTime.now();
     }
 
     private static String generateOrderNumber() {
