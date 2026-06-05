@@ -1,0 +1,61 @@
+package com.example.commercepaymentapplication.domain.order.entity;
+
+import com.example.commercepaymentapplication.domain.cart.entity.CartItem;
+import com.example.commercepaymentapplication.domain.product.entity.Product;
+import jakarta.persistence.*;
+import lombok.AccessLevel;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+
+@Entity
+@Table(name = "order_items")
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@Getter
+public class OrderItem {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "order_id", nullable = false)
+    private Order order;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "product_id", nullable = false)
+    private Product product;
+
+    @Column(nullable = false, length = 50)
+    private String productName;
+
+    @Column(nullable = false, columnDefinition = "INT UNSIGNED")
+    private int orderPrice;
+
+    @Column(nullable = false, columnDefinition = "INT UNSIGNED")
+    private int quantity;
+
+    public OrderItem(Product product, int orderPrice, int quantity) {
+        this.product = product;
+        this.productName = product.getName();   // 스냅샷
+        this.orderPrice = orderPrice;
+        this.quantity = quantity;
+    }
+
+    public static OrderItem from(CartItem cartItem) {
+        Product product = cartItem.getProduct();
+
+        return new OrderItem(
+                product,
+                product.getPrice(),
+                cartItem.getQuantity()
+        );
+    }
+
+    void setOrder(Order order) {
+        this.order = order;
+    }
+
+    public int getSubtotal() {
+        return orderPrice * quantity;
+    }
+}

@@ -152,4 +152,10 @@ public class User extends BaseTimeEntity {
             this.gradeChangedAt = LocalDateTime.now();
         }
     }
+
+    public void validateUsablePoint(int usedPointAmount) {
+        if (this.pointBalance < usedPointAmount) {
+            throw new BusinessException(ErrorCode.INSUFFICIENT_POINT);
+        }
+    }
 }

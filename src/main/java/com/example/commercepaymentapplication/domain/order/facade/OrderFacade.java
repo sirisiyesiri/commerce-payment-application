@@ -1,8 +1,13 @@
 package com.example.commercepaymentapplication.domain.order.facade;
 
 import com.example.commercepaymentapplication.domain.cart.entity.CartItem;
-import com.example.commercepaymentapplication.domain.order.dto.PreviewOrderItemResponse;
-import com.example.commercepaymentapplication.domain.order.dto.PreviewOrderResponse;
+import com.example.commercepaymentapplication.domain.order.dto.*;
+import com.example.commercepaymentapplication.domain.order.entity.Order;
+import com.example.commercepaymentapplication.domain.order.entity.OrderItem;
+import com.example.commercepaymentapplication.domain.order.service.OrderService;
+import com.example.commercepaymentapplication.domain.payment.entity.Payment;
+import com.example.commercepaymentapplication.domain.payment.service.PaymentService;
+import com.example.commercepaymentapplication.domain.product.entity.Product;
 import com.example.commercepaymentapplication.domain.user.entity.User;
 import com.example.commercepaymentapplication.domain.user.service.UserService;
 import lombok.RequiredArgsConstructor;
@@ -16,6 +21,8 @@ import java.util.List;
 public class OrderFacade {
 
     private final UserService userService;
+    private final OrderService orderService;
+    private final PaymentService paymentService;
 
     // 주문서 미리보기 : 재고 차감/주문 생성 없는 읽기 전용
     @Transactional(readOnly = true)
@@ -37,5 +44,68 @@ public class OrderFacade {
                 .sum();
 
         return new PreviewOrderResponse(items, totalPrice);
+    }
+
+    // 주문 생성 + 결제 생성
+    @Transactional
+    public AddOrderResponse createOrder(Long userId, AddOrderRequest request) {
+
+        // 주문한 장바구니 상품 조회
+        User user = userService.findUserEntityWithCartItems(userId);
+
+        user.validateUsablePoint(request.usedPointAmount());
+
+        List<CartItem> orderCartItems = user.getOrderCartItems(request.cartItemIds());
+
+        // CartItem → OrderItem 으로 변환
+        List<OrderItem> orderItems = orderCartItems.stream()
+                .map(cartItem -> {
+                    Product product = cartItem.getProduct();
+
+                    product.deductStock(cartItem.getQuantity());
+
+                    return OrderItem.from(cartItem);
+                })
+                .toList();
+
+        int totalPrice = orderItems.stream()
+                .mapToInt(OrderItem::getSubtotal)
+                .sum();
+
+        Order order = orderService.createOrder(
+                user,
+                orderItems,
+                totalPrice,
+                request.usedPointAmount()
+        );
+
+        Payment payment = paymentService.createPayment(order);
+
+        return new AddOrderResponse(
+                order.getId(),
+                payment.getPortonePaymentId(),
+                totalPrice,
+                order.getOrderName(),
+                order.getStatus().name(),
+                order.getCreatedAt()
+        );
+    }
+
+    // 내 주문 내역 조회
+    @Transactional(readOnly = true)
+    public List<GetOrderResponse> getOrders(Long userId) {
+        List<Order> orders = orderService.findOrderEntities(userId);
+
+        return orders.stream()
+                .map(GetOrderResponse::from)
+                .toList();
+    }
+
+    // 주문 상세 조회
+    @Transactional(readOnly = true)
+    public GetOrderResponse getOrder(Long userId, Long orderId) {
+        Order order = orderService.findOrderEntity(userId, orderId);
+
+        return GetOrderResponse.from(order);
     }
 }

@@ -1,17 +1,16 @@
 package com.example.commercepaymentapplication.domain.cart.controller;
 
 import com.example.commercepaymentapplication.domain.cart.dto.*;
-import com.example.commercepaymentapplication.domain.cart.entity.CartItem;
 import com.example.commercepaymentapplication.domain.cart.facade.CartFacade;
-import com.example.commercepaymentapplication.domain.cart.repository.CartItemRepository;
-import com.example.commercepaymentapplication.domain.cart.service.CartService;
+import com.example.commercepaymentapplication.domain.order.dto.AddOrderRequest;
+import com.example.commercepaymentapplication.domain.order.dto.AddOrderResponse;
+import com.example.commercepaymentapplication.domain.order.facade.OrderFacade;
 import com.example.commercepaymentapplication.global.response.ApiResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.security.provisioning.UserDetailsManager;
 import org.springframework.web.bind.annotation.*;
 
 @RequiredArgsConstructor
@@ -20,6 +19,7 @@ import org.springframework.web.bind.annotation.*;
 public class CartController {
 
     private final CartFacade cartFacade;
+    private final OrderFacade orderFacade;
 
     @PostMapping("/items")
     public ResponseEntity<ApiResponse<AddCartResponse>> addCartItem(
@@ -71,5 +71,16 @@ public class CartController {
         cartFacade.removeAllItems(userId);
 
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+    }
+
+    @PostMapping("/orders")
+    public ResponseEntity<ApiResponse<AddOrderResponse>> createCartItemOrder(
+            @AuthenticationPrincipal Long userId,
+            @Valid @RequestBody AddOrderRequest request
+    ) {
+        AddOrderResponse response = orderFacade.createOrder(userId, request);
+
+        return ResponseEntity.status(HttpStatus.CREATED)
+                .body(ApiResponse.created(response));
     }
 }
