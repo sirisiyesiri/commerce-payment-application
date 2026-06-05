@@ -2,6 +2,7 @@ package com.example.commercepaymentapplication.global.error;
 
 import com.example.commercepaymentapplication.global.response.ApiResponse;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -43,5 +44,21 @@ public class GlobalExceptionHandler {
     ) {
         return ResponseEntity.badRequest()
                 .body(ApiResponse.error(ErrorCode.INVALID_INPUT));
+    }
+
+
+    @ExceptionHandler(DataIntegrityViolationException.class)
+    public ResponseEntity<ApiResponse<Void>> handleDataIntegrityViolation(
+            DataIntegrityViolationException e
+    ) {
+        String message = e.getMostSpecificCause().getMessage();
+
+        if (message != null && message.contains("uk_cart_item_user_product")) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body(ApiResponse.error(ErrorCode.DUPLICATE_CART_ITEM));
+        }
+
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                .body(ApiResponse.error(ErrorCode.DUPLICATE_CART_ITEM));
     }
 }
