@@ -24,10 +24,6 @@ public class ApiResponse<T> {
         return new ApiResponse<>(HttpStatus.CREATED, data);
     }
 
-    public static ApiResponse<Void> noContent() {
-        return new ApiResponse<>(HttpStatus.NO_CONTENT, null);
-    }
-
     public static ApiResponse<Void> error(ErrorCode errorCode) {
         return new ApiResponse<>(errorCode.getStatus(), null);
     }
