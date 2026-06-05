@@ -25,11 +25,13 @@ public class OrderService {
         return orderRepository.save(order);
     }
 
+    @Transactional(readOnly = true)
     // 내 주문 목록 조회(최신순)
     public List<Order> findOrderEntities(Long userId) {
         return orderRepository.findByUserIdOrderByCreatedAtDesc(userId);
     }
 
+    @Transactional(readOnly = true)
     // 주문 단 건 상세 조회
     public Order findOrderEntity(Long userId, Long orderId) {
         return orderRepository.findByIdWithOrderItems(userId, orderId)
