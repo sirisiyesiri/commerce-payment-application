@@ -149,14 +149,14 @@ public class User extends BaseTimeEntity {
 
     // 유효하지 않은 결제 완료 금액이면 예외를 던진다.
     private void validatePaymentAmount(int paymentAmount) {
-        if (paymentAmount <= 0) {
+        if (paymentAmount < 0) {
             throw new BusinessException(ErrorCode.INVALID_PAYMENT_AMOUNT);
         }
     }
 
     // 유효하지 않은 환불 금액이면 예외를 던진다.
     private void validateRefundAmount(int refundAmount) {
-        if (refundAmount <= 0) {
+        if (refundAmount < 0) {
             throw new BusinessException(ErrorCode.INVALID_PAYMENT_AMOUNT);
         }
     }
