@@ -36,10 +36,4 @@ public class PaymentService {
         return paymentRepository.findByOrderIdWithOrder(orderId)
                 .orElseThrow(() -> new BusinessException(ErrorCode.PAYMENT_NOT_FOUND));
     }
-
-    // 결제 상태 변경 (PENDING → PAID)
-    @Transactional
-    public void confirmPayment(Payment payment) {
-        payment.markAsPaid(payment.getEarnedPointAmount());
-    }
 }
