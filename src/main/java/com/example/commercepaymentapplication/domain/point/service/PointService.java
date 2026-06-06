@@ -54,15 +54,13 @@ public class PointService {
 
 	// 결제 완료 시 포인트를 적립하고 거래 내역을 기록한다.
 	@Transactional
-	public void earnPoint(Long userId, Payment payment, int earnedPointAmount) {
-		if (earnedPointAmount == 0) {
-			return;
-		}
+	public int earnPoint(Long userId, Payment payment) {
 
 		User user = findUserForUpdate(userId);
 
-		user.earnPoint(earnedPointAmount);
-		savePointTransaction(user, payment, PointTransactionType.EARNED, earnedPointAmount);
+		int earnedPoint = user.earnPoint(payment.getPgPaymentAmount());
+		savePointTransaction(user, payment, PointTransactionType.EARNED, earnedPoint);
+		return earnedPoint;
 	}
 
 	// 환불 시 결제에 사용했던 포인트를 복구하고 거래 내역을 기록한다.
