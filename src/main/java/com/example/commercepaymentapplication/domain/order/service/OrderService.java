@@ -4,7 +4,7 @@ import com.example.commercepaymentapplication.domain.order.entity.Order;
 import com.example.commercepaymentapplication.domain.order.entity.OrderItem;
 import com.example.commercepaymentapplication.domain.order.entity.OrderStatus;
 import com.example.commercepaymentapplication.domain.order.repository.OrderRepository;
-import com.example.commercepaymentapplication.domain.product.entity.Product;
+import com.example.commercepaymentapplication.domain.payment.entity.Payment;
 import com.example.commercepaymentapplication.domain.user.entity.User;
 import com.example.commercepaymentapplication.global.error.BusinessException;
 import com.example.commercepaymentapplication.global.error.ErrorCode;
@@ -22,8 +22,8 @@ public class OrderService {
 
     // 주문 생성
     @Transactional
-    public Order createOrder(User user, List<OrderItem> orderItems, int totalPrice, int usedPointAmount) {
-        Order order = new Order(user, totalPrice, usedPointAmount, orderItems);
+    public Order createOrder(User user, List<OrderItem> orderItems, int totalPrice, int usedPointAmount, List<Long> orderCartItemIds) {
+        Order order = new Order(user, totalPrice, usedPointAmount, orderItems, orderCartItemIds);
         return orderRepository.save(order);
     }
 
@@ -42,18 +42,19 @@ public class OrderService {
 
     @Transactional
     public void cancelOrder(Order order) {
-        // 결제 대기만 취소 가능
-        if (order.getStatus() != OrderStatus.PAYMENT_PENDING) {
-            throw new BusinessException(ErrorCode.INVALID_ORDER_STATUS);
-        }
-
         // 주문 상태 변경
         order.markAsCancelled();
 
         // 재고 복구
-        for(OrderItem orderItem : order.getOrderItems()) {
-            Product product = orderItem.getProduct();
-            product.restoreStock(orderItem.getQuantity());
-        }
+        restoreStock(order);
+    }
+
+    // 재고 복구
+    @Transactional
+    public void restoreStock(Order order) {
+        order.getOrderItems()
+                .forEach(orderItem ->
+                        orderItem.getProduct().restoreStock(orderItem.getQuantity())
+                );
     }
 }
