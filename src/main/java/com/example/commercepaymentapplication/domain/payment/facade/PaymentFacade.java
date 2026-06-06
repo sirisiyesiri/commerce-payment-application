@@ -35,7 +35,6 @@ public class PaymentFacade {
     private final PaymentGateway paymentGateway;
     private final CartService cartService;
 
-    @Transactional
     public ConfirmPaymentResponse confirmPayment(Long userId, ConfirmPaymentRequest request) {
         // 결제 조회 + 소유자 검증
         Payment payment = paymentService.findByOrderIdWithOrder(request.orderId());
