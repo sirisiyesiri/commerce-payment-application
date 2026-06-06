@@ -72,16 +72,11 @@ public class OrderFacade {
                 .mapToInt(OrderItem::getSubtotal)
                 .sum());
 
-        List<Long> orderCartItemIds = orderCartItems.stream()
-                .map(CartItem::getId)
-                .toList();
-
         Order order = orderService.createOrder(
                 user,
                 orderItems,
                 totalPrice,
-                request.usedPointAmount(),
-                orderCartItemIds
+                request.usedPointAmount()
         );
 
         Payment payment = paymentService.createPayment(order);

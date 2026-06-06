@@ -34,11 +34,15 @@ public class OrderItem {
     @Column(nullable = false, columnDefinition = "INT UNSIGNED")
     private int quantity;
 
-    public OrderItem(Product product, int orderPrice, int quantity) {
+    @Column(name = "cart_item_id", nullable = false)
+    private Long cartItemId;
+
+    public OrderItem(Product product, int orderPrice, int quantity, Long cartItemId) {
         this.product = product;
         this.productName = product.getName();   // 스냅샷
         this.orderPrice = orderPrice;
         this.quantity = quantity;
+        this.cartItemId = cartItemId;
     }
 
     public static OrderItem from(CartItem cartItem) {
@@ -47,7 +51,8 @@ public class OrderItem {
         return new OrderItem(
                 product,
                 product.getPrice(),
-                cartItem.getQuantity()
+                cartItem.getQuantity(),
+                cartItem.getId()
         );
     }
 

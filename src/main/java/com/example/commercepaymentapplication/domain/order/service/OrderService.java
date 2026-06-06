@@ -22,8 +22,8 @@ public class OrderService {
 
     // 주문 생성
     @Transactional
-    public Order createOrder(User user, List<OrderItem> orderItems, int totalPrice, int usedPointAmount, List<Long> orderCartItemIds) {
-        Order order = new Order(user, totalPrice, usedPointAmount, orderItems, orderCartItemIds);
+    public Order createOrder(User user, List<OrderItem> orderItems, int totalPrice, int usedPointAmount) {
+        Order order = new Order(user, totalPrice, usedPointAmount, orderItems);
         return orderRepository.save(order);
     }
 
