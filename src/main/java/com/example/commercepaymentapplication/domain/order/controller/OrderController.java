@@ -1,6 +1,7 @@
 package com.example.commercepaymentapplication.domain.order.controller;
 
 import com.example.commercepaymentapplication.domain.order.dto.CancelOrderResponse;
+import com.example.commercepaymentapplication.domain.order.dto.GetOrderListResponse;
 import com.example.commercepaymentapplication.domain.order.dto.GetOrderResponse;
 import com.example.commercepaymentapplication.domain.order.dto.PreviewOrderResponse;
 import com.example.commercepaymentapplication.domain.order.facade.OrderFacade;
@@ -31,10 +32,10 @@ public class OrderController {
     }
 
     @GetMapping
-    public ResponseEntity<ApiResponse<List<GetOrderResponse>>> getAllOrder(
+    public ResponseEntity<ApiResponse<List<GetOrderListResponse>>> getAllOrder(
             @AuthenticationPrincipal Long userId
     ) {
-        List<GetOrderResponse> response = orderFacade.getOrders(userId);
+        List<GetOrderListResponse> response = orderFacade.getOrders(userId);
 
         return ResponseEntity.status(HttpStatus.OK).body(ApiResponse.ok(response));
     }

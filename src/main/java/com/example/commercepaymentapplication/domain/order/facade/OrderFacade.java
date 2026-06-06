@@ -68,15 +68,20 @@ public class OrderFacade {
                 })
                 .toList();
 
-        int totalPrice = orderItems.stream()
+        int totalPrice = (orderItems.stream()
                 .mapToInt(OrderItem::getSubtotal)
-                .sum();
+                .sum());
+
+        List<Long> orderCartItemIds = orderCartItems.stream()
+                .map(CartItem::getId)
+                .toList();
 
         Order order = orderService.createOrder(
                 user,
                 orderItems,
                 totalPrice,
-                request.usedPointAmount()
+                request.usedPointAmount(),
+                orderCartItemIds
         );
 
         Payment payment = paymentService.createPayment(order);
@@ -84,7 +89,7 @@ public class OrderFacade {
         return new AddOrderResponse(
                 order.getId(),
                 payment.getPortonePaymentId(),
-                totalPrice,
+                payment.getPgPaymentAmount(),
                 order.getOrderName(),
                 order.getStatus().name(),
                 order.getCreatedAt()
@@ -93,11 +98,11 @@ public class OrderFacade {
 
     // 내 주문 내역 조회
     @Transactional(readOnly = true)
-    public List<GetOrderResponse> getOrders(Long userId) {
+    public List<GetOrderListResponse> getOrders(Long userId) {
         List<Order> orders = orderService.findOrderEntities(userId);
 
         return orders.stream()
-                .map(GetOrderResponse::from)
+                .map(GetOrderListResponse::from)
                 .toList();
     }
 

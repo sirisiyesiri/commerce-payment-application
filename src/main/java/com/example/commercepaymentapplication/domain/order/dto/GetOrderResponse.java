@@ -1,6 +1,7 @@
 package com.example.commercepaymentapplication.domain.order.dto;
 
 import com.example.commercepaymentapplication.domain.order.entity.Order;
+import com.example.commercepaymentapplication.domain.point.entity.PointTransactionType;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -8,8 +9,10 @@ import java.util.List;
 public record GetOrderResponse(
         Long orderId,
         int totalPrice,
+        int usedPointAmount,
+        int paymentAmount,
+        String pointTransactionType,
         String status,
-        String orderName,
         LocalDateTime createdAt,
         List<OrderItemResponse> orderItems
 ) {
@@ -18,11 +21,20 @@ public record GetOrderResponse(
                 .map(OrderItemResponse::from)
                 .toList();
 
+        int pgPaymentPrice = order.getTotalPrice() - order.getUsedPointAmount();
+
+        PointTransactionType pointTransactionType = PointTransactionType.USED;
+        if (order.getUsedPointAmount() == 0) {
+            pointTransactionType = PointTransactionType.EARNED;
+        }
+
         return new GetOrderResponse(
                 order.getId(),
                 order.getTotalPrice(),
+                order.getUsedPointAmount(),
+                pgPaymentPrice,
+                pointTransactionType.name(),
                 order.getStatus().name(),
-                order.getOrderName(),
                 order.getCreatedAt(),
                 orderItems
         );
