@@ -36,4 +36,10 @@ public class PaymentService {
         return paymentRepository.findByOrderIdWithOrder(orderId)
                 .orElseThrow(() -> new BusinessException(ErrorCode.PAYMENT_NOT_FOUND));
     }
+
+    // 결제 정보와 연관된 주문 정보를 paymentId 기반으로 조회
+    public Payment findByIdWithOrder(Long paymentId) {
+        return paymentRepository.findByIdWithOrder(paymentId)
+                .orElseThrow(() -> new BusinessException(ErrorCode.PAYMENT_NOT_FOUND));
+    }
 }

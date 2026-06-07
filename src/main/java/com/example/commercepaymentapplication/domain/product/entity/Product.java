@@ -52,10 +52,13 @@ public class Product extends BaseTimeEntity {
         this.description = description;
     }
 
+    // 재고 차감 메서드
     public void deductStock(int orderStockQuantity) {
         validate(stockQuantity, orderStockQuantity);
 
         stockQuantity -= orderStockQuantity;
+
+        changeProductStatus(stockQuantity);
     }
 
     // 재고 복구 메서드
@@ -64,6 +67,8 @@ public class Product extends BaseTimeEntity {
             throw new BusinessException(ErrorCode.INVALID_QUANTITY);
         }
         this.stockQuantity += quantity;
+
+        changeProductStatus(stockQuantity);
     }
 
     private void validate(int stockQuantity, int orderStockQuantity) {
@@ -73,6 +78,14 @@ public class Product extends BaseTimeEntity {
 
         if (orderStockQuantity > stockQuantity) {
             throw new BusinessException(ErrorCode.INSUFFICIENT_STOCK);
+        }
+    }
+
+    private void changeProductStatus(int stockQuantity) {
+        if (stockQuantity == 0) {
+            this.status = ProductStatus.OUT_OF_STOCK;
+        } else {
+            this.status = ProductStatus.ON_SALE;
         }
     }
 }
