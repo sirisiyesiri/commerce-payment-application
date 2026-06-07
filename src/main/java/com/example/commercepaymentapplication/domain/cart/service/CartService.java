@@ -150,4 +150,12 @@ public class CartService {
                 cartItem.getModifiedAt()
         );
     }
+
+    @Transactional
+    public void clearCartItems(List<Long> cartItemIds, Long memberId) {
+        int deleted = cartItemRepository.deleteAllByIdInAndUserId(cartItemIds, memberId);
+        if(deleted != cartItemIds.size()) {
+            log.warn("장바구니 삭제 불일치 : expected={}, actual={}, memberId={}", cartItemIds.size(), deleted, memberId);
+        }
+    }
 }

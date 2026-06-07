@@ -99,9 +99,11 @@ public class User extends BaseTimeEntity {
     }
 
     // 포인트를 적립하고 잔액을 증가시킨다.
-    public void earnPoint(int earnedPointAmount) {
-        validatePointAmount(earnedPointAmount);
-        this.pointBalance += earnedPointAmount;
+    public int earnPoint(int pgPaymentAmount) {
+        validatePointAmount(pgPaymentAmount);
+        int earnPoint = this.membershipGrade.calculateEarnedPoint(pgPaymentAmount);
+        this.pointBalance += earnPoint;
+        return earnPoint;
     }
 
     // 환불 시 사용했던 포인트를 복구한다.
