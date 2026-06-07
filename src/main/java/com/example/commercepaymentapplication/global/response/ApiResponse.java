@@ -20,6 +20,9 @@ public class ApiResponse<T> {
     public static <T> ApiResponse<T> ok(T data) {
         return new ApiResponse<>(HttpStatus.OK, data);
     }
+    public static ApiResponse<Void> ok() {
+        return new ApiResponse<>(HttpStatus.OK, null);
+    }
     public static <T> ApiResponse<T> created(T data) {
         return new ApiResponse<>(HttpStatus.CREATED, data);
     }
