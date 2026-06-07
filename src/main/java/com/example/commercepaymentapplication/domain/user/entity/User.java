@@ -144,7 +144,7 @@ public class User extends BaseTimeEntity {
 
     // 유효하지 않은 포인트 금액이면 예외를 던진다.
     private void validatePointAmount(int pointAmount) {
-        if (pointAmount <= 0) {
+        if (pointAmount < 0) {
             throw new BusinessException(ErrorCode.INVALID_POINT_AMOUNT);
         }
     }

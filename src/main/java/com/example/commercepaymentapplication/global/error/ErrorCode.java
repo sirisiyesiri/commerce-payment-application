@@ -47,6 +47,7 @@ public enum ErrorCode {
     INSUFFICIENT_POINT(HttpStatus.BAD_REQUEST),      // 포인트 잔액이 부족함
     INVALID_POINT_AMOUNT(HttpStatus.BAD_REQUEST),    // 유효하지 않은 포인트 금액
     INVALID_POINT_TRANSACTION_TYPE(HttpStatus.BAD_REQUEST), // 유효하지 않은 포인트 거래 타입
+    REFUND_NOT_FOUND(HttpStatus.NOT_FOUND),
 
     // Webhook
     INVALID_WEBHOOK_SIGNATURE(HttpStatus.UNAUTHORIZED), // 웹혹 서명 검증 실패

@@ -1,9 +1,10 @@
 package com.example.commercepaymentapplication.domain.payment.facade;
 
-import com.example.commercepaymentapplication.domain.cart.entity.CartItem;
 import com.example.commercepaymentapplication.domain.cart.service.CartService;
 import com.example.commercepaymentapplication.domain.order.entity.Order;
 import com.example.commercepaymentapplication.domain.order.entity.OrderItem;
+import com.example.commercepaymentapplication.domain.payment.dto.CancelPaymentRequest;
+import com.example.commercepaymentapplication.domain.payment.dto.CancelPaymentResponse;
 import com.example.commercepaymentapplication.domain.payment.dto.ConfirmPaymentRequest;
 import com.example.commercepaymentapplication.domain.payment.dto.ConfirmPaymentResponse;
 import com.example.commercepaymentapplication.domain.payment.entity.Payment;
@@ -18,7 +19,6 @@ import com.example.commercepaymentapplication.global.error.ErrorCode;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -58,19 +58,12 @@ public class PaymentFacade {
 
         // POINT_ONLY 결제 시 PG사 거치지 않고 서버 내에서 결제 완료 처리
         if (payment.getType() == PaymentType.POINT_ONLY) {
-            paymentCommandService.pointOnlyPayment(order.getUser().getId(), payment);
+            ConfirmPaymentResponse response = paymentCommandService.pointOnlyPayment(order.getUser().getId(), payment);
 
             // 장바구니 비우기
             clearOrderedCartItems(order, userId);
 
-            return new ConfirmPaymentResponse(
-                    payment.getId(),
-                    payment.getOrder().getId(),
-                    payment.getPgPaymentAmount(),
-                    payment.getUsedPointAmount(),
-                    payment.getOrder().getStatus().name(),
-                    payment.getStatus().name()
-            );
+            return response;
         }
 
         // PG사에서 실제 결제 정보 조회
@@ -98,19 +91,38 @@ public class PaymentFacade {
         }
 
         // 모든 검증 통과 → DB 상태를 최종 승인으로 전환
-        paymentCommandService.approvePaymentAndOrder(payment, order);
+        ConfirmPaymentResponse response = paymentCommandService.approvePaymentAndOrder(order.getId());
 
         // 장바구니 비우기
         clearOrderedCartItems(order, userId);
 
-        return new ConfirmPaymentResponse(
-                payment.getId(),
-                payment.getOrder().getId(),
-                payment.getPgPaymentAmount(),
-                payment.getUsedPointAmount(),
-                payment.getOrder().getStatus().name(),
-                payment.getStatus().name()
-        );
+        return response;
+    }
+
+    public CancelPaymentResponse cancelPayment(Long userId, Long paymentId, CancelPaymentRequest request) {
+
+        // 결제 조회 + 본인 검증
+        Payment payment = paymentService.findByIdWithOrder(paymentId);
+        if (!payment.getOrder().getUser().getId().equals(userId)) {
+            throw new BusinessException(ErrorCode.ORDER_NOT_FOUND);
+        }
+
+        // 결제 COMPLETED 상태만 취소 가능
+        if (payment.getStatus() != PaymentStatus.COMPLETED) {
+            throw new BusinessException(ErrorCode.INVALID_PAYMENT_STATUS);
+        }
+
+        // DB 상태 변경 + 재고 원복 + Refund 생성
+        CancelPaymentResponse response = paymentCommandService.cancelPaymentAndOrder(userId, paymentId, request.reason());
+
+        try {
+            paymentGateway.cancelPayment(response.portonePaymentId(), request.reason());
+        } catch (Exception e) {
+            log.error("PG 결제 취소 실패 : DB는 이미 CANCELLED 커밋됨, 수동 처리 필요 : portonePaymentId={}", response.portonePaymentId(), e);
+            paymentCommandService.cancelPaymentFail(payment.getId());
+        }
+
+        return response;
     }
 
     private void clearOrderedCartItems(Order order, Long userId) {
