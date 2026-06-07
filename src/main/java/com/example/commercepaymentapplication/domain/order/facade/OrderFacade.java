@@ -75,7 +75,8 @@ public class OrderFacade {
                     return new OrderItem(
                             product,
                             product.getPrice(),
-                            cartItem.getQuantity());
+                            cartItem.getQuantity(),
+                            cartItem.getId());
                 })
                 .toList();
 
