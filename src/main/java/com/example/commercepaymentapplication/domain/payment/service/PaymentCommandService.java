@@ -52,11 +52,11 @@ public class PaymentCommandService {
 
         int earnPoint = 0;
 
-        order.getUser().completePayment(payment.getPgPaymentAmount());
-
         if (payment.getType() == PaymentType.CARD_ONLY) {
             earnPoint = pointService.earnPoint(order.getUser().getId(), payment);
         }
+
+        order.getUser().completePayment(payment.getPgPaymentAmount());
 
         payment.markAsPaid(earnPoint);
         order.markAsCompleted();
