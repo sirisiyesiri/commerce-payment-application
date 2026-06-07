@@ -33,4 +33,15 @@ public interface PaymentRepository extends JpaRepository<Payment, Long> {
 """)
     Optional<Payment> findByIdWithOrder(@Param("paymentId") Long paymentId);
 
+    // PortOne 결제 ID로 Payment를 조회하면서 결제 완료 처리에 필요한 주문, 회원, 주문상품, 상품 정보를 함께 로딩한다.
+    @Query("""
+    SELECT p
+    FROM Payment p
+    JOIN FETCH p.order o
+    JOIN FETCH o.user
+    LEFT JOIN FETCH o.orderItems oi
+    LEFT JOIN FETCH oi.product
+    WHERE p.portonePaymentId = :portonePaymentId
+""")
+    Optional<Payment> findByPortonePaymentIdWithOrder(@Param("portonePaymentId") String portonePaymentId);
 }
