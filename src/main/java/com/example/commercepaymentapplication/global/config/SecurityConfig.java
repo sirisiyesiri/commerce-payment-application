@@ -44,6 +44,7 @@ public class SecurityConfig {
                         .requestMatchers("/actuator/**").permitAll()
                         .requestMatchers("/api/auth/**").permitAll()
                         .requestMatchers("/api/products/**").permitAll()
+                        .requestMatchers("/api/webhooks/**").permitAll()
                         .anyRequest().authenticated()
                 )
                 .addFilterBefore(
