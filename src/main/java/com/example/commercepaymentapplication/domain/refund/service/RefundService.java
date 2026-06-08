@@ -22,8 +22,8 @@ public class RefundService {
     private final RefundRepository refundRepository;
 
     @Transactional
-    public void createRefund(User user, Payment payment, String cancelReason) {
-        Refund refund = new Refund(user, payment, cancelReason);
+    public void createRefund(User user, Payment payment, String orderName, String cancelReason) {
+        Refund refund = new Refund(user, payment, orderName, cancelReason);
         refundRepository.save(refund);
     }
 
@@ -42,6 +42,8 @@ public class RefundService {
 
         return refunds.stream()
                 .map(refund -> new GetRefundListResponse(
+                        refund.getId(),
+                        refund.getOrderName(),
                         refund.getRefundRequestId(),
                         refund.getStatus().name(),
                         refund.getCreatedAt()
@@ -56,6 +58,8 @@ public class RefundService {
         );
 
         return new GetOneRefundResponse(
+                refund.getId(),
+                refund.getOrderName(),
                 refund.getReason(),
                 refund.getRefundedPointAmount(),
                 refund.getRefundedPgAmount(),

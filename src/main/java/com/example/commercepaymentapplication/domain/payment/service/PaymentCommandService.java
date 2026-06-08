@@ -98,7 +98,7 @@ public class PaymentCommandService {
         orderService.restoreStock(order);
 
         // 포인트 트랜잭션 생성
-        refundService.createRefund(user, payment, cancelReason);
+        refundService.createRefund(user, payment, order.getOrderName(),cancelReason);
 
         // 누적 결제 금액 차감 → 멤버쉽 등급 재계산
         order.getUser().refundPayment(payment.getPgPaymentAmount());
