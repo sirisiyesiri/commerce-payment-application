@@ -120,7 +120,7 @@ public class OrderFacade {
 
         Payment payment = paymentService.findPaymentEntityByOrderId(order.getId());
 
-        return GetOrderResponse.from(order, payment.getPortonePaymentId());
+        return GetOrderResponse.from(order, payment);
     }
 
     // 주문 취소
