@@ -8,6 +8,7 @@ import java.util.List;
 
 public record GetOrderResponse(
         Long orderId,
+        String portonePaymentId,
         int totalPrice,
         int usedPointAmount,
         int paymentAmount,
@@ -16,7 +17,7 @@ public record GetOrderResponse(
         LocalDateTime createdAt,
         List<OrderItemResponse> orderItems
 ) {
-    public static GetOrderResponse from(Order order) {
+    public static GetOrderResponse from(Order order, String portonePaymentId) {
         List<OrderItemResponse> orderItems = order.getOrderItems().stream()
                 .map(OrderItemResponse::from)
                 .toList();
@@ -30,6 +31,7 @@ public record GetOrderResponse(
 
         return new GetOrderResponse(
                 order.getId(),
+                portonePaymentId,
                 order.getTotalPrice(),
                 order.getUsedPointAmount(),
                 pgPaymentPrice,

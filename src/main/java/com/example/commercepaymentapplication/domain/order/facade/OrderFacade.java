@@ -118,7 +118,9 @@ public class OrderFacade {
     public GetOrderResponse getOrder(Long userId, Long orderId) {
         Order order = orderService.findOrderEntity(userId, orderId);
 
-        return GetOrderResponse.from(order);
+        Payment payment = paymentService.findPaymentEntityByOrderId(order.getId());
+
+        return GetOrderResponse.from(order, payment.getPortonePaymentId());
     }
 
     // 주문 취소
