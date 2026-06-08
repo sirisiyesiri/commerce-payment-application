@@ -63,4 +63,11 @@ public class RefundService {
                 refund.getCreatedAt()
         );
     }
+
+    // 결제 ID 기준으로 환불 이력이 존재하는지 검증한다.
+    @Transactional(readOnly = true)
+    public void validateRefundExists(Long paymentId) {
+        refundRepository.findByPaymentId(paymentId)
+                .orElseThrow(() -> new BusinessException(ErrorCode.REFUND_NOT_FOUND));
+    }
 }
