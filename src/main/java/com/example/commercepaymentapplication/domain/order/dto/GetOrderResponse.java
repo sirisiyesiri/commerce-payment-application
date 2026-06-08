@@ -8,11 +8,12 @@ import java.util.List;
 
 public record GetOrderResponse(
         Long orderId,
-        int totalPrice,
         int usedPointAmount,
+        int expectedEarnPointAmount,
         int paymentAmount,
         String pointTransactionType,
         String status,
+        String orderName,
         LocalDateTime createdAt,
         List<OrderItemResponse> orderItems
 ) {
@@ -22,6 +23,7 @@ public record GetOrderResponse(
                 .toList();
 
         int pgPaymentPrice = order.getTotalPrice() - order.getUsedPointAmount();
+        int expectedEarnPointAmount = (order.getUser().getMembershipPointRatePercent() * pgPaymentPrice) / 100;
 
         PointTransactionType pointTransactionType = PointTransactionType.USED;
         if (order.getUsedPointAmount() == 0) {
@@ -30,11 +32,12 @@ public record GetOrderResponse(
 
         return new GetOrderResponse(
                 order.getId(),
-                order.getTotalPrice(),
                 order.getUsedPointAmount(),
+                expectedEarnPointAmount,
                 pgPaymentPrice,
                 pointTransactionType.name(),
                 order.getStatus().name(),
+                order.getOrderName(),
                 order.getCreatedAt(),
                 orderItems
         );
