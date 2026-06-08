@@ -62,4 +62,8 @@ jobs:
               -e PROD_DB_USERNAME=${{ secrets.PROD_DB_USERNAME }} \
               -e PROD_DB_PASSWORD=${{ secrets.PROD_DB_PASSWORD }} \
               -e PROD_JWT_SECRET=${{ secrets.PROD_JWT_SECRET }} \
+              -e PROD_PORTONE_API_SECRET='${{ secrets.PROD_PORTONE_API_SECRET }}' \
+              -e PROD_PORTONE_STORE_ID='${{ secrets.PROD_PORTONE_STORE_ID }}' \
+              -e PROD_PORTONE_CHANNEL_KEY='${{ secrets.PROD_PORTONE_CHANNEL_KEY }}' \
+              -e PORTONE_WEBHOOK_SECRET='${{ secrets.PORTONE_WEBHOOK_SECRET }}' \
               ${{ secrets.DOCKER_USERNAME }}/commerce-payment:latest

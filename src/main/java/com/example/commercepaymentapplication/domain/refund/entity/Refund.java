@@ -1,5 +1,7 @@
-package com.example.commercepaymentapplication.domain.payment.entity;
+package com.example.commercepaymentapplication.domain.refund.entity;
 
+import com.example.commercepaymentapplication.domain.payment.entity.Payment;
+import com.example.commercepaymentapplication.domain.user.entity.User;
 import com.example.commercepaymentapplication.global.entity.BaseTimeEntity;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
@@ -17,6 +19,10 @@ public class Refund extends BaseTimeEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id", nullable = false)
+    private User user;
 
     @Column(name = "refund_request_id", nullable = false, unique = true, length = 50)
     private String refundRequestId;
@@ -38,7 +44,8 @@ public class Refund extends BaseTimeEntity {
     @Column(nullable = false)
     private RefundStatus status = RefundStatus.COMPLETED;
 
-    public Refund(Payment payment, String reason) {
+    public Refund(User user, Payment payment, String reason) {
+        this.user = user;
         this.payment = payment;
         this.reason = reason;
         this.refundedPointAmount = payment.getUsedPointAmount();
