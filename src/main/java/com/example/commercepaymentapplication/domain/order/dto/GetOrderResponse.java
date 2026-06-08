@@ -9,6 +9,7 @@ import java.util.List;
 
 public record GetOrderResponse(
         Long orderId,
+        Long paymentId,
         String portonePaymentId,
         int usedPointAmount,
         int expectedEarnPointAmount,
@@ -34,6 +35,7 @@ public record GetOrderResponse(
 
         return new GetOrderResponse(
                 order.getId(),
+                payment.getId(),
                 payment.getPortonePaymentId(),
                 order.getUsedPointAmount(),
                 expectedEarnPointAmount,
