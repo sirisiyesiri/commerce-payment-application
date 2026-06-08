@@ -23,7 +23,7 @@ public record GetOrderResponse(
                 .toList();
 
         int pgPaymentPrice = order.getTotalPrice() - order.getUsedPointAmount();
-        int expectedEarnPointAmount = order.getUser().getMembershipPointRatePercent() * pgPaymentPrice;
+        int expectedEarnPointAmount = (order.getUser().getMembershipPointRatePercent() * pgPaymentPrice) / 100;
 
         PointTransactionType pointTransactionType = PointTransactionType.USED;
         if (order.getUsedPointAmount() == 0) {
