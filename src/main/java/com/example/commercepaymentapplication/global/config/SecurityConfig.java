@@ -2,7 +2,6 @@ package com.example.commercepaymentapplication.global.config;
 
 import com.example.commercepaymentapplication.global.error.ErrorCode;
 import com.example.commercepaymentapplication.global.filter.JwtAuthFilter;
-import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -41,8 +40,10 @@ public class SecurityConfig {
                         })
                 )
                 .authorizeHttpRequests(auth -> auth
+                        .requestMatchers("/", "/index.html", "/favicon.ico").permitAll()
                         .requestMatchers("/actuator/**").permitAll()
                         .requestMatchers("/api/auth/**").permitAll()
+                        .requestMatchers("/api/config/portone").permitAll()
                         .requestMatchers("/api/products/**").permitAll()
                         .requestMatchers("/api/webhooks/**").permitAll()
                         .anyRequest().authenticated()
