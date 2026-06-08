@@ -9,6 +9,8 @@ import com.example.commercepaymentapplication.domain.payment.dto.ConfirmPaymentR
 import com.example.commercepaymentapplication.domain.payment.entity.Payment;
 import com.example.commercepaymentapplication.domain.payment.entity.PaymentType;
 import com.example.commercepaymentapplication.domain.point.service.PointService;
+import com.example.commercepaymentapplication.domain.refund.service.RefundService;
+import com.example.commercepaymentapplication.domain.user.entity.User;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -82,6 +84,7 @@ public class PaymentCommandService {
     public CancelPaymentResponse cancelPaymentAndOrder(Long userId, Long paymentId, String cancelReason) {
         Payment payment = paymentService.findByIdWithOrder(paymentId);
         Order order = payment.getOrder();
+        User user = order.getUser();
 
         // 결제 및 주문 상태 변경
         payment.markAsRefund();
@@ -95,7 +98,7 @@ public class PaymentCommandService {
         orderService.restoreStock(order);
 
         // 포인트 트랜잭션 생성
-        refundService.createRefund(payment, cancelReason);
+        refundService.createRefund(user, payment, cancelReason);
 
         // 누적 결제 금액 차감 → 멤버쉽 등급 재계산
         order.getUser().refundPayment(payment.getPgPaymentAmount());
