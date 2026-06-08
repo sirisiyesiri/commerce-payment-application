@@ -1,0 +1,2461 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>7ㅏ즈아샵</title>
+  <script src="https://cdn.portone.io/v2/browser-sdk.js"></script>
+
+  <style>
+    :root {
+      --ink: #12110f;
+      --ink-soft: #2d2923;
+      --paper: #fbfaf6;
+      --paper-deep: #f1eee7;
+      --line: #d9d2c6;
+      --muted: #6a6256;
+      --white: #fffdf8;
+      --danger: #9f2d20;
+      --success: #285a3f;
+      --shadow: 0 22px 50px rgba(31, 28, 23, 0.12);
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      font-family: ui-rounded, "Avenir Next", "Trebuchet MS", system-ui, sans-serif;
+      background: var(--paper);
+      color: var(--ink);
+    }
+
+    button,
+    input,
+    select {
+      font: inherit;
+    }
+
+    button {
+      min-height: 46px;
+      border: 1px solid var(--ink);
+      border-radius: 8px;
+      padding: 0 18px;
+      background: var(--ink);
+      color: var(--white);
+      font-weight: 900;
+      cursor: pointer;
+      transition: transform 160ms ease, opacity 160ms ease, background-color 160ms ease;
+    }
+
+    button:hover {
+      transform: scale(1.04);
+    }
+
+    button:disabled {
+      opacity: 0.55;
+      cursor: wait;
+      transform: none;
+    }
+
+    .ghost {
+      background: transparent;
+      color: var(--ink);
+    }
+
+    .danger {
+      border-color: var(--danger);
+      background: var(--danger);
+    }
+
+    .topbar {
+      position: sticky;
+      top: 0;
+      z-index: 20;
+      height: 68px;
+      display: grid;
+      grid-template-columns: 190px minmax(0, 1fr) auto;
+      align-items: center;
+      gap: 24px;
+      padding: 0 34px;
+      border-bottom: 1px solid var(--line);
+      background: rgba(251, 250, 246, 0.92);
+      backdrop-filter: blur(16px);
+    }
+
+    .brand {
+      color: var(--ink);
+      min-height: 0;
+      border: 0;
+      padding: 0;
+      background: transparent;
+      text-decoration: none;
+      font-size: 22px;
+      font-weight: 950;
+      letter-spacing: 0;
+    }
+
+    .nav {
+      display: flex;
+      gap: 18px;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .nav button {
+      min-height: 34px;
+      padding: 0;
+      border: 0;
+      background: transparent;
+      color: var(--ink-soft);
+      font-size: 14px;
+      font-weight: 900;
+    }
+
+    .nav button:hover {
+      transform: translateY(-1px);
+    }
+
+    .top-actions {
+      display: flex;
+      gap: 10px;
+      align-items: center;
+    }
+
+    .top-actions button {
+      white-space: nowrap;
+    }
+
+    .cart-count {
+      display: inline-flex;
+      min-width: 22px;
+      height: 22px;
+      align-items: center;
+      justify-content: center;
+      margin-left: 8px;
+      border-radius: 999px;
+      background: var(--white);
+      color: var(--ink);
+      font-size: 12px;
+      font-weight: 950;
+    }
+
+    .eyebrow {
+      margin: 0 0 14px;
+      color: var(--ink-soft);
+      font-size: 13px;
+      font-weight: 950;
+      letter-spacing: 0;
+      text-transform: uppercase;
+    }
+
+    h1,
+    h2,
+    h3,
+    p {
+      margin-top: 0;
+    }
+
+    .section {
+      padding: 46px 42px;
+      border-bottom: 1px solid var(--line);
+    }
+
+    .section-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: end;
+      gap: 24px;
+      margin-bottom: 28px;
+    }
+
+    .section-head h2 {
+      margin: 0;
+      font-size: clamp(30px, 4vw, 48px);
+      letter-spacing: 0;
+    }
+
+    .section-head p {
+      max-width: 520px;
+      margin: 8px 0 0;
+      color: var(--muted);
+      line-height: 1.65;
+    }
+
+    .filters {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+
+    .chip {
+      min-height: 38px;
+      border-color: var(--line);
+      background: transparent;
+      color: var(--ink);
+    }
+
+    .chip.active {
+      border-color: var(--ink);
+      background: var(--ink);
+      color: var(--white);
+    }
+
+    .category-strip {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 14px;
+      margin-top: 22px;
+    }
+
+    .category-tile {
+      min-height: 148px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      overflow: hidden;
+      background: var(--paper-deep);
+      color: var(--ink);
+      cursor: pointer;
+      transition: transform 160ms ease, box-shadow 160ms ease;
+    }
+
+    .category-tile:hover {
+      transform: translateY(-3px);
+      box-shadow: var(--shadow);
+    }
+
+    .category-image {
+      height: 96px;
+      background-position: center;
+      background-size: contain;
+      background-repeat: no-repeat;
+    }
+
+    .category-tile strong {
+      display: block;
+      padding: 13px 14px;
+      color: var(--ink);
+      font-size: 15px;
+    }
+
+    .toolbar {
+      display: flex;
+      justify-content: space-between;
+      gap: 14px;
+      align-items: center;
+      margin-bottom: 20px;
+    }
+
+    .toolbar select,
+    .toolbar input {
+      min-height: 42px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      padding: 0 12px;
+      background: var(--white);
+      color: var(--ink);
+    }
+
+    .product-grid {
+      display: grid;
+      grid-template-columns: repeat(5, minmax(0, 1fr));
+      gap: 18px 12px;
+    }
+
+    .pagination {
+      display: flex;
+      justify-content: center;
+      gap: 8px;
+      margin-top: 26px;
+    }
+
+    .pagination button {
+      min-width: 42px;
+      min-height: 42px;
+      padding: 0 12px;
+      border-color: var(--line);
+      background: transparent;
+      color: var(--ink);
+    }
+
+    .pagination button.active {
+      border-color: var(--ink);
+      background: var(--ink);
+      color: var(--white);
+    }
+
+    .product-card {
+      min-width: 0;
+      padding: 10px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: var(--white);
+      cursor: pointer;
+      transition: transform 160ms ease, box-shadow 160ms ease;
+    }
+
+    .product-card:hover {
+      transform: translateY(-3px);
+      box-shadow: var(--shadow);
+    }
+
+    .product-photo {
+      position: relative;
+      aspect-ratio: 1 / 1;
+      border-radius: 8px;
+      overflow: hidden;
+      background: var(--paper-deep);
+      background-position: center;
+      background-size: contain;
+      background-repeat: no-repeat;
+    }
+
+    .badge {
+      position: absolute;
+      top: 10px;
+      left: 10px;
+      min-height: 26px;
+      padding: 0 9px;
+      display: inline-flex;
+      align-items: center;
+      border-radius: 999px;
+      background: rgba(255, 253, 248, 0.88);
+      color: var(--ink);
+      font-size: 12px;
+      font-weight: 950;
+    }
+
+    .status-badge {
+      position: absolute;
+      right: 10px;
+      bottom: 10px;
+      min-height: 26px;
+      padding: 0 9px;
+      display: inline-flex;
+      align-items: center;
+      border-radius: 999px;
+      background: var(--ink);
+      color: var(--white);
+      font-size: 12px;
+      font-weight: 950;
+    }
+
+    .product-info {
+      padding-top: 12px;
+      display: grid;
+      gap: 7px;
+    }
+
+    .product-name {
+      color: var(--ink);
+      font-size: 16px;
+      font-weight: 950;
+      line-height: 1.35;
+    }
+
+    .product-meta {
+      display: flex;
+      justify-content: space-between;
+      gap: 8px;
+      color: var(--muted);
+      font-size: 13px;
+      font-weight: 800;
+    }
+
+    .product-price {
+      font-size: 17px;
+      font-weight: 950;
+    }
+
+    .product-actions {
+      display: grid;
+      grid-template-columns: 64px minmax(0, 1fr);
+      gap: 8px;
+      margin-top: 10px;
+    }
+
+    .product-actions button {
+      padding: 0 10px;
+      font-size: 13px;
+    }
+
+    .product-actions input {
+      min-width: 0;
+      height: 44px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      padding: 0 10px;
+      background: var(--white);
+      color: var(--ink);
+    }
+
+    .drawer {
+      position: fixed;
+      inset: 0 0 0 auto;
+      z-index: 40;
+      width: min(480px, 100%);
+      padding: 28px;
+      border-left: 1px solid var(--line);
+      background: var(--paper);
+      box-shadow: var(--shadow);
+      transform: translateX(102%);
+      transition: transform 180ms ease;
+      overflow: auto;
+    }
+
+    .detail-figure {
+      aspect-ratio: 1 / 1;
+      margin-bottom: 18px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: var(--paper-deep);
+      background-position: center;
+      background-size: contain;
+      background-repeat: no-repeat;
+    }
+
+    .detail-page {
+      min-height: calc(100vh - 68px);
+      display: grid;
+      grid-template-columns: minmax(280px, 0.9fr) minmax(0, 1.1fr);
+      gap: 34px;
+      align-items: start;
+    }
+
+    .detail-page .detail-figure {
+      margin: 0;
+    }
+
+    .detail-panel {
+      display: grid;
+      gap: 18px;
+    }
+
+    .payment-panel {
+      display: grid;
+      gap: 12px;
+      margin-top: 16px;
+      padding: 16px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: var(--white);
+    }
+
+    .payment-panel strong {
+      font-size: 18px;
+    }
+
+    .actions-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      align-items: center;
+    }
+
+    .item-list {
+      display: grid;
+      gap: 10px;
+      margin-top: 14px;
+    }
+
+    .item-line {
+      padding: 12px 0;
+      border-bottom: 1px solid var(--line);
+      display: flex;
+      justify-content: space-between;
+      gap: 14px;
+      color: var(--ink-soft);
+      font-weight: 850;
+    }
+
+    .mini-summary {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 10px;
+    }
+
+    .mini-item {
+      display: grid;
+      gap: 8px;
+      padding: 14px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: var(--paper);
+    }
+
+    .mini-icon {
+      width: 34px;
+      height: 34px;
+      display: inline-grid;
+      place-items: center;
+      border-radius: 999px;
+      background: var(--ink);
+      color: var(--white);
+      font-weight: 950;
+    }
+
+    .modal-backdrop {
+      position: fixed;
+      inset: 0;
+      z-index: 60;
+      display: grid;
+      place-items: center;
+      padding: 20px;
+      background: rgba(18, 17, 15, 0.34);
+    }
+
+    .modal {
+      width: min(420px, 100%);
+      padding: 22px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: var(--white);
+      box-shadow: var(--shadow);
+      display: grid;
+      gap: 16px;
+    }
+
+    .modal-actions {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+    }
+
+    .page {
+      min-height: calc(100vh - 68px);
+    }
+
+    .compact-head {
+      margin-bottom: 22px;
+    }
+
+    .compact-head h2 {
+      margin: 0;
+      font-size: clamp(30px, 4vw, 48px);
+    }
+
+    .cart-page-grid,
+    .checkout-layout {
+      display: grid;
+      grid-template-columns: minmax(0, 1.2fr) minmax(320px, 0.8fr);
+      gap: 28px;
+      align-items: start;
+    }
+
+    .checkout-box,
+    .auth-box,
+    .summary-box {
+      padding: 18px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: var(--white);
+      display: grid;
+      gap: 14px;
+    }
+
+    [hidden] {
+      display: none !important;
+    }
+
+    .detail-meta {
+      display: grid;
+      gap: 10px;
+      margin: 18px 0;
+      color: var(--ink-soft);
+      font-weight: 850;
+    }
+
+    .detail-description {
+      line-height: 1.7;
+      color: var(--ink-soft);
+    }
+
+    .drawer.open {
+      transform: translateX(0);
+    }
+
+    .drawer-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 22px;
+    }
+
+    .drawer-head h2 {
+      margin: 0;
+      font-size: 28px;
+    }
+
+    .drawer-list {
+      display: grid;
+      gap: 14px;
+    }
+
+    .cart-row,
+    .order-row,
+    .point-row {
+      padding: 14px 0;
+      border-bottom: 1px solid var(--line);
+      display: grid;
+      gap: 8px;
+    }
+
+    .row-main {
+      display: flex;
+      justify-content: space-between;
+      gap: 14px;
+      font-weight: 950;
+    }
+
+    .row-sub {
+      color: var(--muted);
+      font-size: 13px;
+      font-weight: 800;
+    }
+
+    .quantity-control {
+      display: flex;
+      gap: 8px;
+      align-items: center;
+    }
+
+    .quantity-control input {
+      width: 80px;
+      height: 40px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      padding: 0 10px;
+      background: var(--white);
+      color: var(--ink);
+    }
+
+    .summary {
+      margin-top: 22px;
+      padding-top: 18px;
+      border-top: 1px solid var(--ink);
+      display: grid;
+      gap: 14px;
+    }
+
+    .summary-line {
+      display: flex;
+      justify-content: space-between;
+      font-size: 18px;
+      font-weight: 950;
+    }
+
+    .account {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 20px;
+    }
+
+    .account-section {
+      border-top: 1px solid var(--line);
+      padding-top: 18px;
+      min-width: 0;
+    }
+
+    .account-section h3 {
+      margin-bottom: 14px;
+      font-size: 18px;
+    }
+
+    .login-panel {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 10px;
+      align-items: end;
+      margin-top: 24px;
+    }
+
+    label {
+      display: grid;
+      gap: 6px;
+      color: var(--ink-soft);
+      font-size: 13px;
+      font-weight: 950;
+    }
+
+    input,
+    select {
+      width: 100%;
+      min-height: 42px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      padding: 0 12px;
+      background: var(--white);
+      color: var(--ink);
+      outline: none;
+    }
+
+    input:focus,
+    select:focus {
+      border-color: var(--ink);
+    }
+
+    .status {
+      min-height: 24px;
+      margin-top: 14px;
+      color: var(--muted);
+      font-size: 14px;
+      font-weight: 850;
+    }
+
+    .status.error {
+      color: var(--danger);
+    }
+
+    .status.success {
+      color: var(--success);
+    }
+
+    .spinner {
+      width: 16px;
+      height: 16px;
+      border: 0;
+      background: var(--ink);
+      border-radius: 50%;
+      animation: pulse 820ms ease-in-out infinite;
+    }
+
+    .empty,
+    .loading {
+      min-height: 180px;
+      display: grid;
+      place-items: center;
+      border-top: 1px solid var(--line);
+      color: var(--muted);
+      font-weight: 850;
+      text-align: center;
+    }
+
+    @keyframes pulse {
+      0%,
+      100% {
+        opacity: 0.38;
+        transform: scale(0.76);
+      }
+
+      50% {
+        opacity: 1;
+        transform: scale(1);
+      }
+    }
+
+    @media (max-width: 1120px) {
+      .product-grid {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+      }
+
+      .account {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    @media (max-width: 760px) {
+      .topbar {
+        height: auto;
+        grid-template-columns: 1fr;
+        padding: 18px;
+      }
+
+      .nav {
+        justify-content: start;
+        overflow-x: auto;
+      }
+
+      .section {
+        padding: 34px 20px;
+      }
+
+      .category-strip,
+      .product-grid,
+      .login-panel,
+      .detail-page,
+      .cart-page-grid,
+      .checkout-layout {
+        grid-template-columns: 1fr;
+      }
+
+      .toolbar,
+      .section-head {
+        align-items: start;
+        flex-direction: column;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <header class="topbar">
+    <button type="button" class="brand ghost" id="homeButton">7ㅏ즈아샵</button>
+    <nav class="nav">
+      <button type="button" data-category="">ALL</button>
+      <button type="button" data-category="CLOTHING">CLOTHING</button>
+      <button type="button" data-category="ELECTRONICS">ELECTRONICS</button>
+      <button type="button" data-category="BEAUTY">BEAUTY</button>
+      <button type="button" data-category="FOOD">FOOD</button>
+    </nav>
+    <div class="top-actions">
+      <button type="button" class="ghost" id="topAuthButton">로그인</button>
+      <button type="button" class="ghost" id="accountButton">내정보</button>
+      <button type="button" id="cartButton">장바구니 <span class="cart-count" id="cartCount">0</span></button>
+    </div>
+  </header>
+
+  <main>
+    <section class="section" id="categories">
+      <div class="section-head">
+        <div>
+          <p class="eyebrow">Categories</p>
+          <h2>카테고리별로 빠르게 보기</h2>
+        </div>
+      </div>
+      <div class="category-strip" id="categoryStrip"></div>
+    </section>
+
+    <section class="section" id="shop">
+      <div class="section-head">
+        <div>
+          <p class="eyebrow">Shop</p>
+          <h2>상품</h2>
+        </div>
+        <div class="filters" id="categoryFilters"></div>
+      </div>
+
+      <div class="toolbar">
+        <div class="filters">
+          <select id="sortSelect">
+            <option value="latest">최신순</option>
+            <option value="priceAsc">가격 낮은 순</option>
+            <option value="priceDesc">가격 높은 순</option>
+          </select>
+          <select id="statusSelect">
+            <option value="">전체 상태</option>
+            <option value="ON_SALE">판매중</option>
+            <option value="OUT_OF_STOCK">품절</option>
+            <option value="DISCONTINUED">단종</option>
+          </select>
+        </div>
+        <button type="button" class="ghost" id="refreshProductsButton">새로고침</button>
+      </div>
+
+      <div id="productState" class="loading">
+        <div class="spinner"></div>
+      </div>
+      <div class="product-grid" id="productGrid"></div>
+      <div class="pagination" id="productPagination"></div>
+    </section>
+
+    <section class="section" id="productDetailPage" hidden>
+      <div id="productDetailPageContent"></div>
+    </section>
+
+    <section class="section page" id="account" hidden>
+      <div class="compact-head">
+        <p class="eyebrow">Account</p>
+        <h2>내정보</h2>
+      </div>
+
+      <div class="auth-box" id="authBox">
+        <div class="login-panel">
+          <label>이메일 <input id="emailInput" value="front-test@example.com" autocomplete="email"></label>
+          <label>비밀번호 <input id="passwordInput" type="password" value="sparta1234" autocomplete="current-password"></label>
+          <label>이름 <input id="nameInput" value="프론트테스트"></label>
+          <label>전화번호 <input id="phoneInput" value="010-9999-0000"></label>
+          <button type="button" id="signupButton">회원가입</button>
+          <button type="button" id="loginButton">로그인</button>
+        </div>
+      </div>
+      <div class="status" id="accountStatus"></div>
+
+      <div class="account">
+        <div class="account-section">
+          <h3>프로필</h3>
+          <div id="profileArea" class="empty">로그인이 필요합니다.</div>
+        </div>
+        <div class="account-section">
+          <h3>포인트</h3>
+          <div id="pointArea" class="empty">포인트 정보가 여기에 표시됩니다.</div>
+        </div>
+        <div class="account-section">
+          <h3>주문</h3>
+          <button type="button" id="ordersPageButton">주문 내역 보기</button>
+          <button type="button" class="ghost" id="refundsPageButton">환불 내역 보기</button>
+          <button type="button" class="ghost" id="loadAccountButton">내정보 새로고침</button>
+        </div>
+      </div>
+    </section>
+
+    <section class="section page" id="ordersPage" hidden>
+      <div class="compact-head">
+        <p class="eyebrow">Orders</p>
+        <h2>주문 내역</h2>
+      </div>
+      <div id="orderArea" class="empty">주문 내역이 여기에 표시됩니다.</div>
+    </section>
+
+    <section class="section page" id="orderDetailPage" hidden>
+      <div class="compact-head">
+        <p class="eyebrow">Order</p>
+        <h2>주문 상세</h2>
+      </div>
+      <div id="orderDetailArea" class="empty">주문 상세가 여기에 표시됩니다.</div>
+    </section>
+
+    <section class="section page" id="pointsPage" hidden>
+      <div class="compact-head">
+        <p class="eyebrow">Points</p>
+        <h2>포인트 내역</h2>
+      </div>
+      <div id="pointTransactionArea" class="empty">포인트 거래 내역이 여기에 표시됩니다.</div>
+    </section>
+
+    <section class="section page" id="refundsPage" hidden>
+      <div class="compact-head">
+        <p class="eyebrow">Refunds</p>
+        <h2>환불 내역</h2>
+      </div>
+      <div id="refundArea" class="empty">환불 내역이 여기에 표시됩니다.</div>
+    </section>
+
+    <section class="section page" id="refundDetailPage" hidden>
+      <div class="compact-head">
+        <p class="eyebrow">Refund</p>
+        <h2>환불 상세</h2>
+      </div>
+      <div id="refundDetailArea" class="empty">환불 상세가 여기에 표시됩니다.</div>
+    </section>
+
+    <section class="section page" id="cartPage" hidden>
+      <div class="compact-head">
+        <p class="eyebrow">Cart</p>
+        <h2>장바구니</h2>
+      </div>
+      <div id="cartStatus" class="status"></div>
+      <div class="cart-page-grid">
+        <div class="drawer-list" id="cartList"></div>
+        <div class="summary-box">
+          <div class="summary-line">
+            <span>합계</span>
+            <span id="cartTotal">0원</span>
+          </div>
+          <button type="button" id="createOrderButton">결제하기</button>
+          <button type="button" class="danger" id="clearCartButton">전체 비우기</button>
+          <div id="orderPreviewArea"></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section page" id="checkoutPage" hidden>
+      <div class="compact-head">
+        <p class="eyebrow">Checkout</p>
+        <h2>결제</h2>
+      </div>
+      <div id="paymentArea"></div>
+    </section>
+
+    <section class="section page" id="paymentCompletePage" hidden>
+      <div class="compact-head">
+        <p class="eyebrow">Payment</p>
+        <h2>결제 완료</h2>
+      </div>
+      <div id="paymentCompleteArea"></div>
+    </section>
+  </main>
+
+  <div class="modal-backdrop" id="cartChoiceModal" hidden>
+    <div class="modal">
+      <h3>장바구니에 담았습니다.</h3>
+      <p>장바구니로 이동하시겠습니까?</p>
+      <div class="modal-actions">
+        <button type="button" class="ghost" id="continueShoppingButton">계속 쇼핑하기</button>
+        <button type="button" id="goCartButton">장바구니 가기</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    function illustration(svg) {
+      return `data:image/svg+xml;charset=UTF-8,${encodeURIComponent(svg)}`;
+    }
+
+    const categoryImages = {
+      CLOTHING: illustration(`
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 360 260">
+          <rect width="360" height="260" fill="#f1eee7"/>
+          <path d="M178 62c0-18 22-18 22 0 0 12-12 15-20 24" fill="none" stroke="#12110f" stroke-width="7" stroke-linecap="round"/>
+          <path d="M104 106l76-28 76 28 42 48-34 32-25-27v61H121v-61l-25 27-34-32 42-48z" fill="#fffdf8" stroke="#12110f" stroke-width="7" stroke-linejoin="round"/>
+          <path d="M138 116h84M139 142h82" stroke="#8e7d62" stroke-width="6" stroke-linecap="round"/>
+        </svg>
+      `),
+      ELECTRONICS: illustration(`
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 360 260">
+          <rect width="360" height="260" fill="#eef1ed"/>
+          <rect x="76" y="58" width="168" height="112" rx="12" fill="#fffdf8" stroke="#12110f" stroke-width="7"/>
+          <path d="M48 198h224l-28-28H76l-28 28z" fill="#d8ded5" stroke="#12110f" stroke-width="7" stroke-linejoin="round"/>
+          <rect x="260" y="83" width="50" height="98" rx="12" fill="#fffdf8" stroke="#12110f" stroke-width="7"/>
+          <circle cx="285" cy="164" r="4" fill="#12110f"/>
+        </svg>
+      `),
+      BEAUTY: illustration(`
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 360 260">
+          <rect width="360" height="260" fill="#f3eeef"/>
+          <rect x="119" y="89" width="70" height="120" rx="18" fill="#fffdf8" stroke="#12110f" stroke-width="7"/>
+          <path d="M137 89V63h34v26" fill="#d8c3bc" stroke="#12110f" stroke-width="7" stroke-linejoin="round"/>
+          <rect x="204" y="116" width="58" height="92" rx="16" fill="#fffdf8" stroke="#12110f" stroke-width="7"/>
+          <path d="M219 116V93h29v23" fill="#c7b29e" stroke="#12110f" stroke-width="7" stroke-linejoin="round"/>
+          <path d="M137 142h34M217 156h31" stroke="#8e7d62" stroke-width="6" stroke-linecap="round"/>
+        </svg>
+      `),
+      FOOD: illustration(`
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 360 260">
+          <rect width="360" height="260" fill="#f0eee5"/>
+          <path d="M87 123h186l-18 83H105l-18-83z" fill="#fffdf8" stroke="#12110f" stroke-width="7" stroke-linejoin="round"/>
+          <path d="M127 123c10-38 96-38 106 0" fill="none" stroke="#12110f" stroke-width="7" stroke-linecap="round"/>
+          <circle cx="139" cy="94" r="24" fill="#d4c29b" stroke="#12110f" stroke-width="7"/>
+          <circle cx="198" cy="95" r="27" fill="#c9d1b6" stroke="#12110f" stroke-width="7"/>
+          <path d="M124 155h112" stroke="#8e7d62" stroke-width="6" stroke-linecap="round"/>
+        </svg>
+      `)
+    };
+
+    const categoryLabels = {
+      CLOTHING: "의류",
+      ELECTRONICS: "전자기기",
+      BEAUTY: "뷰티",
+      FOOD: "식품"
+    };
+
+    const statusLabels = {
+      ON_SALE: "판매중",
+      OUT_OF_STOCK: "품절",
+      DISCONTINUED: "단종"
+    };
+
+    const orderStatusLabels = {
+      PAYMENT_PENDING: "결제대기",
+      ORDER_COMPLETED: "결제완료",
+      ORDER_CANCELED: "환불완료"
+    };
+
+    const paymentStatusLabels = {
+      PENDING: "결제대기",
+      COMPLETED: "결제완료",
+      FAILED: "결제실패",
+      REFUND: "환불완료"
+    };
+
+    const pointTransactionLabels = {
+      USED: "사용",
+      EARNED: "적립",
+      USE_RESTORED: "사용복구",
+      EARN_REVOKED: "적립회수"
+    };
+
+    const refundStatusLabels = {
+      COMPLETED: "결제취소완료",
+      FAIL: "결제취소실패",
+      FAILED: "결제취소실패"
+    };
+
+    const state = {
+      category: "",
+      products: [],
+      productPage: 1,
+      productSize: 10,
+      productTotalPages: 1,
+      cart: null,
+      currentOrder: null,
+      profile: null
+    };
+
+    let portOneConfig = null;
+
+    const $ = (id) => document.getElementById(id);
+    const formatMoney = (value) => `${Number(value || 0).toLocaleString("ko-KR")}원`;
+    const tokenKey = "authToken";
+
+    function orderDetailStatusLabel(order) {
+      if (order?.status === "ORDER_CANCELED") {
+        return "환불완료";
+      }
+
+      return orderStatusLabels[order?.status] || order?.status || "-";
+    }
+
+    function paymentFlowStatusLabel(orderStatus, paymentStatus) {
+      if (paymentStatus === "REFUND") return "환불완료";
+      if (orderStatus === "ORDER_CANCELED" && paymentStatus === "REFUND") return "환불완료";
+      return orderStatusLabels[orderStatus] || paymentStatusLabels[paymentStatus] || orderStatus || paymentStatus || "-";
+    }
+
+    function uniquePointTransactions(transactions = []) {
+      const seen = new Set();
+
+      return transactions.filter((item) => {
+        const type = item.pointTransactionType || item.type || item.transactionType || "";
+        const key = `${item.paymentId || ""}-${type}-${item.amount || 0}`;
+        if (seen.has(key)) return false;
+        seen.add(key);
+        return true;
+      });
+    }
+
+    function token() {
+      return localStorage.getItem(tokenKey);
+    }
+
+    async function api(path, options = {}) {
+      const headers = {
+        "Content-Type": "application/json",
+        ...(options.headers || {})
+      };
+
+      if (token() && options.auth !== false) {
+        headers.Authorization = `Bearer ${token()}`;
+      }
+
+      const response = await fetch(path, { ...options, headers });
+      if (response.status === 204) return { status: "NO_CONTENT", data: null };
+
+      const text = await response.text();
+      let body = {};
+      try {
+        body = text ? JSON.parse(text) : {};
+      } catch {
+        body = { message: `HTTP ${response.status}` };
+      }
+
+      if (!response.ok) {
+        const error = new Error(body.message || body.data || body.code || body.status || `HTTP ${response.status}`);
+        error.httpStatus = response.status;
+        error.body = body;
+        throw error;
+      }
+
+      return body;
+    }
+
+    function showStatus(id, message, type = "") {
+      const target = $(id);
+      target.className = `status ${type}`;
+      target.textContent = friendlyMessage(message);
+    }
+
+    function friendlyMessage(message) {
+      const text = String(message || "");
+      if (!text) return "";
+
+      const errorMessages = {
+        INVALID_INPUT: "입력값을 다시 확인해 주세요.",
+        INTERNAL_ERROR: "서버에서 문제가 발생했습니다. 잠시 후 다시 시도해 주세요.",
+        MEMBER_NOT_FOUND: "회원 정보를 찾을 수 없습니다.",
+        DUPLICATE_EMAIL: "이미 있는 회원 정보입니다.",
+        INVALID_CREDENTIALS: "이메일 또는 비밀번호가 올바르지 않습니다.",
+        PRODUCT_NOT_FOUND: "상품 정보를 찾을 수 없습니다.",
+        INSUFFICIENT_STOCK: "재고 수량이 부족합니다.",
+        INVALID_PRICE: "가격 조건을 다시 확인해 주세요.",
+        INVALID_STOCK: "재고 정보가 올바르지 않습니다.",
+        PRODUCT_NOT_AVAILABLE: "현재 판매중인 상품이 아닙니다.",
+        LOCK_TIMEOUT: "요청이 많아 처리하지 못했습니다. 잠시 후 다시 시도해 주세요.",
+        CART_EMPTY: "장바구니가 비어 있습니다.",
+        CART_ITEM_NOT_FOUND: "장바구니 상품을 찾을 수 없습니다.",
+        INVALID_QUANTITY: "수량은 1개 이상 입력해 주세요.",
+        DUPLICATE_CART_ITEM: "이미 장바구니에 담긴 상품입니다.",
+        ORDER_NOT_FOUND: "주문 정보를 찾을 수 없습니다.",
+        INVALID_ORDER_STATUS: "현재 상태에서는 처리할 수 없는 주문입니다.",
+        PAYMENT_NOT_FOUND: "결제 정보를 찾을 수 없습니다.",
+        PAYMENT_AMOUNT_MISMATCH: "결제 금액이 일치하지 않습니다.",
+        INVALID_PAYMENT_STATUS: "현재 상태에서는 처리할 수 없는 결제입니다.",
+        INVALID_PAYMENT_AMOUNT: "결제 금액을 다시 확인해 주세요.",
+        PAYMENT_NOT_PAID: "결제가 완료된 건만 처리할 수 있습니다.",
+        ALREADY_PROCESSED_PAYMENT: "이미 처리된 결제입니다.",
+        INSUFFICIENT_POINT: "포인트 잔액이 부족합니다.",
+        INVALID_POINT_AMOUNT: "포인트 금액을 다시 확인해 주세요.",
+        INVALID_POINT_TRANSACTION_TYPE: "포인트 거래 유형이 올바르지 않습니다.",
+        REFUND_NOT_FOUND: "환불 정보를 찾을 수 없습니다.",
+        INVALID_WEBHOOK_SIGNATURE: "웹훅 서명이 올바르지 않습니다.",
+        WEBHOOK_EVENT_NOT_FOUND: "웹훅 이벤트를 찾을 수 없습니다.",
+        UNAUTHORIZED: "로그인 후 이용해 주세요.",
+        INVALID_TOKEN: "로그인이 만료되었습니다. 다시 로그인해 주세요.",
+        FORBIDDEN: "접근 권한이 없습니다.",
+        BAD_REQUEST: "요청값을 다시 확인해 주세요.",
+        UNAUTHORIZED_STATUS: "로그인 후 이용해 주세요.",
+        FORBIDDEN_STATUS: "접근 권한이 없습니다.",
+        NOT_FOUND: "요청한 정보를 찾을 수 없습니다.",
+        CONFLICT: "요청한 작업을 처리할 수 없습니다.",
+        INTERNAL_SERVER_ERROR: "서버에서 문제가 발생했습니다. 잠시 후 다시 시도해 주세요."
+      };
+
+      for (const [code, korean] of Object.entries(errorMessages)) {
+        if (text.includes(code)) return korean;
+      }
+
+      if (text.includes("400")) return errorMessages.BAD_REQUEST;
+      if (text.includes("401")) return errorMessages.UNAUTHORIZED;
+      if (text.includes("403")) return errorMessages.FORBIDDEN;
+      if (text.includes("404") || text.includes("찾을 수")) {
+        return "요청한 정보를 찾을 수 없습니다.";
+      }
+      if (text.includes("409")) return errorMessages.CONFLICT;
+      if (text.includes("500")) return errorMessages.INTERNAL_SERVER_ERROR;
+      if (text.includes("인증") || text.includes("권한")) {
+        return "로그인 후 이용해 주세요.";
+      }
+      if (text.includes("재고")) {
+        return "재고 수량을 확인해 주세요.";
+      }
+      return text;
+    }
+
+    function queryString(params) {
+      const search = new URLSearchParams();
+      Object.entries(params).forEach(([key, value]) => {
+        if (value === "" || value === null || value === undefined) return;
+        search.set(key, value);
+      });
+      const text = search.toString();
+      return text ? `?${text}` : "";
+    }
+
+    function updateAuthButton() {
+      const isLoggedIn = Boolean(token());
+      $("topAuthButton").textContent = isLoggedIn ? "로그아웃" : "로그인";
+      if ($("authBox")) {
+        $("authBox").hidden = isLoggedIn;
+      }
+    }
+
+    function setPage(page) {
+      const visible = {
+        home: ["categories", "shop"],
+        detail: ["productDetailPage"],
+        account: ["account"],
+        orders: ["ordersPage"],
+        orderDetail: ["orderDetailPage"],
+        points: ["pointsPage"],
+        refunds: ["refundsPage"],
+        refundDetail: ["refundDetailPage"],
+        cart: ["cartPage"],
+        checkout: ["checkoutPage"],
+        paymentComplete: ["paymentCompletePage"]
+      }[page] || ["categories", "shop"];
+
+      [
+        "categories",
+        "shop",
+        "productDetailPage",
+        "account",
+        "ordersPage",
+        "orderDetailPage",
+        "pointsPage",
+        "refundsPage",
+        "refundDetailPage",
+        "cartPage",
+        "checkoutPage",
+        "paymentCompletePage"
+      ].forEach((id) => {
+        $(id).hidden = !visible.includes(id);
+      });
+    }
+
+    function showHomePage() {
+      setPage("home");
+      history.pushState({}, "", "/");
+      document.querySelector("#categories").scrollIntoView({ behavior: "smooth" });
+    }
+
+    async function showAccountPage() {
+      setPage("account");
+      history.pushState({}, "", "#/account");
+      document.querySelector("#account").scrollIntoView({ behavior: "smooth" });
+      if (token()) await loadAccount();
+    }
+
+    async function showCartPage() {
+      setPage("cart");
+      history.pushState({}, "", "#/cart");
+      document.querySelector("#cartPage").scrollIntoView({ behavior: "smooth" });
+      clearCartMessages();
+      await loadCart();
+    }
+
+    async function showOrdersPage() {
+      setPage("orders");
+      history.pushState({}, "", "#/orders");
+      document.querySelector("#ordersPage").scrollIntoView({ behavior: "smooth" });
+      await loadOrders();
+    }
+
+    async function showOrderDetailPage(orderId) {
+      setPage("orderDetail");
+      history.pushState({}, "", `#/orders/${orderId}`);
+      document.querySelector("#orderDetailPage").scrollIntoView({ behavior: "smooth" });
+      await loadOrderDetail(orderId);
+    }
+
+    async function showPointsPage() {
+      setPage("points");
+      history.pushState({}, "", "#/points");
+      document.querySelector("#pointsPage").scrollIntoView({ behavior: "smooth" });
+      await loadPointTransactions();
+    }
+
+    async function showRefundsPage() {
+      setPage("refunds");
+      history.pushState({}, "", "#/refunds");
+      document.querySelector("#refundsPage").scrollIntoView({ behavior: "smooth" });
+      await loadRefunds();
+    }
+
+    async function showRefundDetailPage(refundId) {
+      setPage("refundDetail");
+      history.pushState({}, "", `#/refunds/${refundId}`);
+      document.querySelector("#refundDetailPage").scrollIntoView({ behavior: "smooth" });
+      await loadRefundDetail(refundId);
+    }
+
+    function showCheckoutPage() {
+      setPage("checkout");
+      history.pushState({}, "", "#/checkout");
+      document.querySelector("#checkoutPage").scrollIntoView({ behavior: "smooth" });
+    }
+
+    function showPaymentCompletePage() {
+      setPage("paymentComplete");
+      history.pushState({}, "", "#/payment-complete");
+      document.querySelector("#paymentCompletePage").scrollIntoView({ behavior: "smooth" });
+    }
+
+    function openCartChoiceModal() {
+      $("cartChoiceModal").hidden = false;
+    }
+
+    function closeCartChoiceModal() {
+      $("cartChoiceModal").hidden = true;
+    }
+
+    function clearCartMessages() {
+      $("cartStatus").textContent = "";
+      $("cartStatus").className = "status";
+      $("orderPreviewArea").innerHTML = "";
+    }
+
+    function loadScript(src) {
+      return new Promise((resolve, reject) => {
+        const script = document.createElement("script");
+        script.src = src;
+        script.onload = resolve;
+        script.onerror = reject;
+        document.head.appendChild(script);
+      });
+    }
+
+    async function ensurePortOneSdk() {
+      if (window.PortOne?.requestPayment) return true;
+
+      try {
+        await loadScript("https://cdn.portone.io/v2/browser-sdk.js");
+      } catch {
+        try {
+          window.PortOne = await import("https://cdn.portone.io/v2/browser-sdk.esm.js");
+        } catch {
+          return false;
+        }
+      }
+
+      return Boolean(window.PortOne?.requestPayment);
+    }
+
+    async function loadPortOneConfig() {
+      if (portOneConfig) return portOneConfig;
+
+      const result = await api("/api/config/portone", { auth: false });
+      portOneConfig = result.data;
+      return portOneConfig;
+    }
+
+    function renderCategories() {
+      const categories = Object.keys(categoryImages);
+      $("categoryStrip").innerHTML = categories.map((category) => `
+        <button class="category-tile" type="button" data-category="${category}">
+          <div class="category-image" style="background-image:url('${categoryImages[category]}')"></div>
+          <strong>${categoryLabels[category]}</strong>
+        </button>
+      `).join("");
+
+      $("categoryFilters").innerHTML = [
+        ["", "전체"],
+        ...categories.map((category) => [category, categoryLabels[category]])
+      ].map(([value, label]) => `
+        <button type="button" class="chip ${state.category === value ? "active" : ""}" data-category="${value}">
+          ${label}
+        </button>
+      `).join("");
+    }
+
+    async function loadProducts() {
+      $("productGrid").innerHTML = "";
+      $("productPagination").innerHTML = "";
+      $("productState").className = "loading";
+      $("productState").innerHTML = `<div class="spinner"></div>`;
+
+      try {
+        const path = "/api/products" + queryString({
+          category: state.category,
+          status: $("statusSelect").value,
+          sort: $("sortSelect").value,
+          page: state.productPage,
+          size: state.productSize
+        });
+        const result = await api(path, { auth: false });
+        state.products = result.data?.productList || [];
+        state.productPage = result.data?.page || result.data?.pageNumber || state.productPage;
+        state.productSize = result.data?.size || result.data?.pageSize || state.productSize;
+        state.productTotalPages = result.data?.totalPages || 1;
+        renderProducts();
+        renderProductPagination();
+      } catch (error) {
+        $("productState").className = "empty";
+        $("productState").textContent = friendlyMessage(error.message);
+      }
+    }
+
+    function renderProducts() {
+      if (!state.products.length) {
+        $("productState").className = "empty";
+        $("productState").textContent = "조회된 상품이 없습니다.";
+        return;
+      }
+
+      $("productState").className = "";
+      $("productState").innerHTML = "";
+      $("productGrid").innerHTML = state.products.map((product) => {
+        const image = categoryImages[product.category] || categoryImages.CLOTHING;
+        const disabled = product.status !== "ON_SALE" || product.stockQuantity <= 0;
+        const statusLabel = statusLabels[product.status] || product.status;
+        return `
+          <article class="product-card" data-product-card="${product.id}">
+            <div class="product-photo" style="background-image:url('${image}')">
+              <span class="badge">${categoryLabels[product.category] || product.category}</span>
+              <span class="status-badge">${statusLabel}</span>
+            </div>
+            <div class="product-info">
+              <div class="product-name">${product.name}</div>
+              <div class="product-meta">
+                <span>재고 ${product.stockQuantity}</span>
+                <span>${statusLabel}</span>
+              </div>
+              <div class="product-price">${formatMoney(product.price)}</div>
+              <div class="product-actions">
+                <input id="qty-${product.id}" type="number" min="1" value="1">
+                <button type="button" data-add-product="${product.id}" ${disabled ? "disabled" : ""}>
+                  담기
+                </button>
+              </div>
+            </div>
+          </article>
+        `;
+      }).join("");
+    }
+
+    function renderProductPagination() {
+      const totalPages = Math.max(1, Number(state.productTotalPages || 1));
+      const currentPage = Number(state.productPage || 1);
+
+      if (totalPages <= 1) {
+        $("productPagination").innerHTML = "";
+        return;
+      }
+
+      const pages = Array.from({ length: totalPages }, (_, index) => index + 1);
+      $("productPagination").innerHTML = pages.map((page) => `
+        <button type="button" class="${page === currentPage ? "active" : ""}" data-product-page="${page}">
+          ${page}
+        </button>
+      `).join("");
+    }
+
+    async function openProductDetail(productId) {
+      setPage("detail");
+      $("productDetailPageContent").innerHTML = `<div class="loading"><div class="spinner"></div></div>`;
+      document.querySelector("#productDetailPage").scrollIntoView({ behavior: "smooth" });
+
+      try {
+        const result = await api(`/api/products/${productId}`, { auth: false });
+        renderProductDetail(result.data);
+        history.pushState({ productId }, "", `#/products/${productId}`);
+      } catch (error) {
+        $("productDetailPageContent").innerHTML = `<div class="empty">${friendlyMessage(error.message)}</div>`;
+      }
+    }
+
+    function renderProductDetail(product) {
+      const image = categoryImages[product.category] || categoryImages.CLOTHING;
+      const statusLabel = statusLabels[product.status] || product.status;
+      const disabled = product.status !== "ON_SALE" || product.stockQuantity <= 0;
+
+      $("productDetailPageContent").innerHTML = `
+        <button type="button" class="ghost" id="backToProductsButton">상품 목록으로</button>
+        <div class="detail-page">
+          <div class="detail-figure" style="background-image:url('${image}')"></div>
+          <div class="detail-panel">
+            <h2>${product.name}</h2>
+            <div class="detail-meta">
+              <span>${categoryLabels[product.category] || product.category} · ${statusLabel}</span>
+              <span>${formatMoney(product.price)} · 재고 ${product.stockQuantity}</span>
+            </div>
+            <p class="detail-description">${product.description || "상품 설명이 없습니다."}</p>
+            <div class="product-actions">
+              <input id="detail-qty-${product.id}" type="number" min="1" value="1">
+              <button type="button" data-add-detail-product="${product.id}" ${disabled ? "disabled" : ""}>담기</button>
+            </div>
+          </div>
+        </div>
+      `;
+    }
+
+    function showCatalogPage() {
+      showHomePage();
+    }
+
+    async function addToCart(productId, quantityInputId = `qty-${productId}`) {
+      if (!token()) {
+        showStatus("cartStatus", "로그인이 필요합니다.", "error");
+        showAccountPage();
+        return;
+      }
+
+      const quantity = Number($(quantityInputId)?.value || 1);
+      try {
+        await api("/api/carts/items", {
+          method: "POST",
+          body: JSON.stringify({ productId, quantity })
+        });
+        await loadCart();
+        openCartChoiceModal();
+      } catch (error) {
+        closeCartChoiceModal();
+      }
+    }
+
+    async function loadCart() {
+      if (!token()) return;
+      try {
+        const result = await api("/api/carts");
+        state.cart = result.data;
+        renderCart();
+      } catch (error) {
+        state.cart = { cartItemList: [], totalAmount: 0 };
+        renderCart();
+      }
+    }
+
+    function renderCart() {
+      const cart = state.cart || { cartItemList: [], totalAmount: 0 };
+      const items = cart.cartItemList || [];
+      $("cartCount").textContent = items.length;
+      $("cartTotal").textContent = formatMoney(cart.totalAmount);
+
+      if (!items.length) {
+        $("cartList").innerHTML = `<div class="empty">장바구니가 비어 있습니다.</div>`;
+        return;
+      }
+
+      $("cartList").innerHTML = items.map((item) => `
+        <div class="cart-row">
+          <div class="row-main">
+            <span>${item.productName}</span>
+            <span>${formatMoney(item.totalPrice)}</span>
+          </div>
+          <div class="row-sub">${formatMoney(item.productPrice)} · ${item.quantity}개</div>
+          <div class="quantity-control">
+            <input id="cart-qty-${item.cartItemId}" type="number" min="1" value="${item.quantity}">
+            <button type="button" class="ghost" data-update-cart="${item.cartItemId}">변경</button>
+            <button type="button" class="danger" data-delete-cart="${item.cartItemId}">삭제</button>
+          </div>
+        </div>
+      `).join("");
+    }
+
+    async function previewOrder() {
+      try {
+        const result = await api("/api/orders/preview");
+        $("orderPreviewArea").innerHTML = `
+          <div class="status success">주문서 미리보기 완료 · ${formatMoney(result.data?.totalPrice)}</div>
+        `;
+      } catch (error) {
+        $("orderPreviewArea").innerHTML = `<div class="status error">${friendlyMessage(error.message)}</div>`;
+      }
+    }
+
+    async function createOrder() {
+      try {
+        const preview = await api("/api/orders/preview");
+        state.currentOrder = { preview: preview.data, totalPrice: preview.data?.totalPrice || 0, usedPointAmount: 0 };
+        renderPaymentScreen(state.currentOrder);
+        showCheckoutPage();
+      } catch (error) {
+        $("orderPreviewArea").innerHTML = `<div class="status error">${friendlyMessage(error.message)}</div>`;
+      }
+    }
+
+    async function submitOrder() {
+      try {
+        const usedPointAmount = Number($("checkoutUsedPointInput")?.value || 0);
+        const result = await api("/api/carts/orders", {
+          method: "POST",
+          body: JSON.stringify({
+            usedPointAmount
+          })
+        });
+        const preview = state.currentOrder?.preview;
+        state.currentOrder = {
+          ...result.data,
+          totalPrice: preview?.totalPrice || Number(result.data?.totalPrice || 0) + usedPointAmount,
+          pgPaymentAmount: result.data?.totalPrice,
+          usedPointAmount,
+          preview
+        };
+        renderPaymentScreen(state.currentOrder);
+        await Promise.allSettled([loadOrders(), loadAccount(), loadProducts()]);
+        await requestPortOnePayment(
+          state.currentOrder.orderId,
+          state.currentOrder.portonePaymentId,
+          state.currentOrder.pgPaymentAmount
+        );
+        await Promise.allSettled([loadOrders(), loadAccount(), loadProducts()]);
+      } catch (error) {
+        const usedPointAmount = Number($("checkoutUsedPointInput")?.value || 0);
+        const message = error.httpStatus === 400 && usedPointAmount > 0
+          ? "포인트가 부족합니다."
+          : friendlyMessage(error.message);
+        $("paymentStatus").className = "status error";
+        $("paymentStatus").textContent = message;
+      }
+    }
+
+    function renderPaymentScreen(order) {
+      const usedPointAmount = Number(order?.usedPointAmount || 0);
+      const pgAmount = order?.pgPaymentAmount ?? Math.max(0, Number(order?.totalPrice || 0) - usedPointAmount);
+      const preview = order?.preview || {};
+      const itemCount = preview.orderItems?.length || preview.previewOrderItemResponses?.length || preview.items?.length || 0;
+      const isOrderCreated = Boolean(order?.orderId);
+      $("paymentArea").innerHTML = `
+        <div class="checkout-layout">
+          <div class="checkout-box">
+            <strong>${order?.orderName || "주문 상품"}</strong>
+            <div class="mini-summary">
+              <div class="mini-item">
+                <span class="mini-icon">✓</span>
+                <strong>${itemCount || 0}개 상품</strong>
+                <span class="row-sub">주문 상품 확인</span>
+              </div>
+              <div class="mini-item">
+                <span class="mini-icon">₩</span>
+                <strong>${formatMoney(order?.totalPrice)}</strong>
+                <span class="row-sub">상품 금액</span>
+              </div>
+              <div class="mini-item">
+                <span class="mini-icon">P</span>
+                <strong>${formatMoney(usedPointAmount)}</strong>
+                <span class="row-sub">사용 포인트</span>
+              </div>
+            </div>
+            <div class="row-main"><span>상품 금액</span><span>${formatMoney(order?.totalPrice)}</span></div>
+            ${isOrderCreated
+              ? `<div class="row-main"><span>사용 포인트</span><span>${formatMoney(usedPointAmount)}</span></div>`
+              : `<label>사용 포인트 <input id="checkoutUsedPointInput" type="number" min="0" value="${usedPointAmount}" data-total-price="${order?.totalPrice || 0}"></label>`}
+            <div class="summary-line"><span>결제 금액</span><span id="checkoutPaymentAmount">${formatMoney(pgAmount)}</span></div>
+          </div>
+          <div class="checkout-box">
+            <strong>결제 수단</strong>
+            ${isOrderCreated
+              ? `<button type="button" data-portone-pay="${order?.orderId}" data-portone-payment-id="${order?.portonePaymentId || ""}" data-pg-amount="${pgAmount}">카드로 결제하기</button>`
+              : `<button type="button" id="submitOrderButton">카드로 결제하기</button>`}
+            <button type="button" class="ghost" id="backToCartFromCheckoutButton">장바구니로 돌아가기</button>
+          </div>
+          <div class="status" id="paymentStatus"></div>
+        </div>
+      `;
+    }
+
+    async function requestPortOnePayment(orderId, portonePaymentId, pgAmount) {
+      if (!state.currentOrder) return;
+
+      $("paymentStatus").className = "status";
+      $("paymentStatus").textContent = "결제창을 여는 중입니다.";
+
+      try {
+        if (Number(pgAmount) <= 0) {
+          await confirmPayment(orderId, portonePaymentId);
+          return;
+        }
+
+        const sdkReady = await ensurePortOneSdk();
+        if (!sdkReady) {
+          $("paymentStatus").className = "status error";
+          $("paymentStatus").textContent = "결제 모듈을 불러오지 못했습니다. 네트워크 상태를 확인해 주세요.";
+          return;
+        }
+
+        const config = await loadPortOneConfig();
+        const paymentResult = await window.PortOne.requestPayment({
+          storeId: config.storeId,
+          channelKey: config.channelKey,
+          paymentId: portonePaymentId,
+          orderName: state.currentOrder.orderName || "7ㅏ즈아샵 주문",
+          totalAmount: Number(pgAmount),
+          currency: "CURRENCY_KRW",
+          payMethod: "CARD",
+          customer: {
+            fullName: state.profile?.name || $("nameInput").value || "구매자",
+            phoneNumber: state.profile?.phoneNumber || $("phoneInput").value || "010-0000-0000",
+            email: state.profile?.email || $("emailInput").value
+          }
+        });
+
+        if (paymentResult?.code) {
+          $("paymentStatus").className = "status error";
+          $("paymentStatus").textContent = paymentResult.message || "결제가 취소되었거나 실패했습니다.";
+          return;
+        }
+
+        await confirmPayment(orderId, portonePaymentId);
+      } catch (error) {
+        $("paymentStatus").className = "status error";
+        $("paymentStatus").textContent = friendlyMessage(error.message || "결제창을 열지 못했습니다.");
+      }
+    }
+
+    async function confirmPayment(orderId, portonePaymentId) {
+      try {
+        const result = await api("/api/payments/confirm", {
+          method: "POST",
+          body: JSON.stringify({ orderId: Number(orderId), portonePaymentId })
+        });
+        renderPaymentComplete(result.data);
+        showPaymentCompletePage();
+        await Promise.allSettled([loadCart(), loadAccount(), loadProducts(), loadOrders()]);
+      } catch (error) {
+        $("paymentStatus").className = "status error";
+        $("paymentStatus").textContent = friendlyMessage(error.message);
+      }
+    }
+
+    async function payExistingOrder(orderId) {
+      try {
+        const result = await api(`/api/orders/${orderId}`);
+        const order = result.data;
+
+        if (!order.portonePaymentId) {
+          throw new Error("결제 정보를 찾을 수 없습니다.");
+        }
+
+        state.currentOrder = {
+          ...order,
+          pgPaymentAmount: order.paymentAmount,
+          preview: { items: order.orderItems || [] }
+        };
+
+        renderPaymentScreen(state.currentOrder);
+        showCheckoutPage();
+      } catch (error) {
+        const target = window.location.hash.startsWith("#/orders/") ? $("orderDetailArea") : $("orderArea");
+        target.className = "";
+        target.insertAdjacentHTML("afterbegin", `<div class="status error">${friendlyMessage(error.message)}</div>`);
+      }
+    }
+
+    function renderPaymentComplete(payment) {
+      $("paymentCompleteArea").innerHTML = `
+        <div class="checkout-layout">
+          <div class="checkout-box">
+            <strong>결제가 완료되었습니다.</strong>
+            <div class="mini-summary">
+              <div class="mini-item">
+                <span class="mini-icon">✓</span>
+                <strong>${orderStatusLabels[payment.orderStatus] || payment.orderStatus}</strong>
+                <span class="row-sub">주문 상태</span>
+              </div>
+              <div class="mini-item">
+                <span class="mini-icon">₩</span>
+                <strong>${formatMoney(payment.amount)}</strong>
+                <span class="row-sub">PG 결제 금액</span>
+              </div>
+              <div class="mini-item">
+                <span class="mini-icon">P</span>
+                <strong>${formatMoney(payment.usedPointAmount)}</strong>
+                <span class="row-sub">사용 포인트</span>
+              </div>
+            </div>
+            <div class="row-main"><span>결제 상태</span><span>${paymentStatusLabels[payment.paymentStatus] || payment.paymentStatus}</span></div>
+            <div class="actions-row">
+              <button type="button" id="paymentOrdersButton">주문 내역 보기</button>
+              <button type="button" class="ghost" id="paymentHomeButton">계속 쇼핑하기</button>
+            </div>
+          </div>
+        </div>
+      `;
+    }
+
+    async function requestRefund(paymentId) {
+      const reason = $("refundReasonInput")?.value?.trim();
+      if (!reason) {
+        showStatus("refundStatus", "취소 사유를 입력해 주세요.", "error");
+        return;
+      }
+
+      try {
+        const result = await api(`/api/payments/${paymentId}/refunds`, {
+          method: "POST",
+          body: JSON.stringify({ reason })
+        });
+        const refund = result.data;
+        $("refundStatus").className = "status success";
+        $("refundStatus").innerHTML = `
+          환불이 처리되었습니다. ${paymentFlowStatusLabel(refund.orderStatus, refund.paymentStatus)}
+          <div class="actions-row" style="margin-top:10px">
+            <button type="button" class="ghost" id="refundsAfterRequestButton">환불 내역 보기</button>
+          </div>
+        `;
+        await Promise.allSettled([loadCart(), loadAccount(), loadOrders(), loadProducts()]);
+      } catch (error) {
+        showStatus("refundStatus", friendlyMessage(error.message), "error");
+      }
+    }
+
+    async function signup() {
+      try {
+        await api("/api/auth/signup", {
+          method: "POST",
+          auth: false,
+          body: JSON.stringify({
+            email: $("emailInput").value,
+            password: $("passwordInput").value,
+            name: $("nameInput").value,
+            phoneNumber: $("phoneInput").value
+          })
+        });
+        showStatus("accountStatus", "회원가입이 완료되었습니다.", "success");
+      } catch (error) {
+        const message = error.httpStatus === 409 ? "이미 있는 회원 정보입니다." : friendlyMessage(error.message);
+        showStatus("accountStatus", message, "error");
+      }
+    }
+
+    async function login() {
+      try {
+        const result = await api("/api/auth/login", {
+          method: "POST",
+          auth: false,
+          body: JSON.stringify({
+            email: $("emailInput").value,
+            password: $("passwordInput").value
+          })
+        });
+        localStorage.setItem(tokenKey, result.data.token);
+        updateAuthButton();
+        showStatus("accountStatus", "로그인되었습니다.", "success");
+        await Promise.all([loadCart(), loadAccount()]);
+      } catch (error) {
+        showStatus("accountStatus", friendlyMessage(error.message), "error");
+      }
+    }
+
+    async function loadAccount() {
+      if (!token()) {
+        showStatus("accountStatus", "로그인이 필요합니다.", "error");
+        return;
+      }
+
+      try {
+        const [profile, membership, point, transactions] = await Promise.all([
+          api("/api/users/me"),
+          api("/api/users/me/memberships"),
+          api("/api/users/me/points"),
+          api("/api/users/me/points/transactions")
+        ]);
+
+        renderProfile(profile.data, membership.data);
+        renderPoint(point.data, transactions.data || []);
+      } catch (error) {
+        showStatus("accountStatus", friendlyMessage(error.message), "error");
+      }
+    }
+
+    async function loadOrders() {
+      if (!token()) {
+        $("orderArea").className = "empty";
+        $("orderArea").textContent = "로그인 후 주문 내역을 확인할 수 있습니다.";
+        return;
+      }
+
+      try {
+        const orders = await api("/api/orders");
+        renderOrders(orders.data || []);
+      } catch (error) {
+        $("orderArea").className = "empty";
+        $("orderArea").textContent = friendlyMessage(error.message);
+      }
+    }
+
+    async function loadOrderDetail(orderId) {
+      if (!token()) {
+        $("orderDetailArea").className = "empty";
+        $("orderDetailArea").textContent = "로그인 후 주문 상세를 확인할 수 있습니다.";
+        return;
+      }
+
+      $("orderDetailArea").className = "loading";
+      $("orderDetailArea").innerHTML = `<div class="spinner"></div>`;
+
+      try {
+        const result = await api(`/api/orders/${orderId}`);
+        renderOrderDetail(result.data);
+      } catch (error) {
+        $("orderDetailArea").className = "empty";
+        $("orderDetailArea").textContent = friendlyMessage(error.message);
+      }
+    }
+
+    async function loadPointTransactions() {
+      if (!token()) {
+        $("pointTransactionArea").className = "empty";
+        $("pointTransactionArea").textContent = "로그인 후 포인트 내역을 확인할 수 있습니다.";
+        return;
+      }
+
+      $("pointTransactionArea").className = "loading";
+      $("pointTransactionArea").innerHTML = `<div class="spinner"></div>`;
+
+      try {
+        const result = await api("/api/users/me/points/transactions");
+        renderPointTransactions(result.data || []);
+      } catch (error) {
+        $("pointTransactionArea").className = "empty";
+        $("pointTransactionArea").textContent = friendlyMessage(error.message);
+      }
+    }
+
+    async function loadRefunds() {
+      if (!token()) {
+        $("refundArea").className = "empty";
+        $("refundArea").textContent = "로그인 후 환불 내역을 확인할 수 있습니다.";
+        return;
+      }
+
+      $("refundArea").className = "loading";
+      $("refundArea").innerHTML = `<div class="spinner"></div>`;
+
+      try {
+        const result = await api("/api/refunds");
+        renderRefunds(result.data || []);
+      } catch (error) {
+        $("refundArea").className = "empty";
+        $("refundArea").textContent = friendlyMessage(error.message);
+      }
+    }
+
+    async function loadRefundDetail(refundId) {
+      if (!token()) {
+        $("refundDetailArea").className = "empty";
+        $("refundDetailArea").textContent = "로그인 후 환불 상세를 확인할 수 있습니다.";
+        return;
+      }
+
+      $("refundDetailArea").className = "loading";
+      $("refundDetailArea").innerHTML = `<div class="spinner"></div>`;
+
+      try {
+        const result = await api(`/api/refunds/${refundId}`);
+        renderRefundDetail(result.data);
+      } catch (error) {
+        $("refundDetailArea").className = "empty";
+        $("refundDetailArea").textContent = friendlyMessage(error.message);
+      }
+    }
+
+    function renderProfile(profile, membership) {
+      state.profile = profile;
+      $("profileArea").className = "";
+      $("profileArea").innerHTML = `
+        <div class="point-row">
+          <div class="row-main"><span>${profile.name}</span><span>${membership.membershipGrade || "-"}</span></div>
+          <div class="row-sub">${profile.email}</div>
+          <div class="row-sub">${profile.phoneNumber}</div>
+        </div>
+      `;
+    }
+
+    function renderPoint(point, transactions) {
+      const uniqueTransactions = uniquePointTransactions(transactions);
+      $("pointArea").className = "";
+      $("pointArea").innerHTML = `
+        <div class="point-row">
+          <div class="row-main"><span>잔액</span><span>${formatMoney(point.pointBalance || 0)}</span></div>
+        </div>
+        ${uniqueTransactions.slice(0, 5).map((item) => `
+          <div class="point-row">
+            <div class="row-main"><span>${pointTransactionLabels[item.pointTransactionType || item.type || item.transactionType] || item.pointTransactionType || item.type || item.transactionType}</span><span>${formatMoney(item.amount)}</span></div>
+            <div class="row-sub">${item.createdAt || ""}</div>
+          </div>
+        `).join("")}
+        <button type="button" class="ghost" id="pointTransactionsButton">포인트 내역 전체 보기</button>
+      `;
+    }
+
+    function renderPointTransactions(transactions) {
+      const uniqueTransactions = uniquePointTransactions(transactions);
+
+      if (!uniqueTransactions.length) {
+        $("pointTransactionArea").className = "empty";
+        $("pointTransactionArea").textContent = "포인트 거래 내역이 없습니다.";
+        return;
+      }
+
+      $("pointTransactionArea").className = "";
+      $("pointTransactionArea").innerHTML = uniqueTransactions.map((item) => `
+        <div class="point-row">
+          <div class="row-main">
+            <span>${pointTransactionLabels[item.pointTransactionType] || item.pointTransactionType}</span>
+            <span>${formatMoney(item.amount)}</span>
+          </div>
+          <div class="row-sub">결제 ${item.paymentId || "-"} · ${item.createdAt || ""}</div>
+        </div>
+      `).join("");
+    }
+
+    function renderRefunds(refunds) {
+      if (!refunds.length) {
+        $("refundArea").className = "empty";
+        $("refundArea").textContent = "환불 내역이 없습니다.";
+        return;
+      }
+
+      $("refundArea").className = "";
+      $("refundArea").innerHTML = refunds.map((refund) => `
+        <div class="order-row">
+          <div class="row-main">
+            <span>결제취소 내역</span>
+            <span>${refundStatusLabels[refund.refundedStatus] || refund.refundedStatus}</span>
+          </div>
+          <div class="row-sub">${refund.createdAt || ""}</div>
+          ${refund.refundId ? `<button type="button" class="ghost" data-refund-detail="${refund.refundId}">상세보기</button>` : ""}
+        </div>
+      `).join("");
+    }
+
+    function renderRefundDetail(refund) {
+      $("refundDetailArea").className = "";
+      $("refundDetailArea").innerHTML = `
+        <div class="checkout-layout">
+          <div class="checkout-box">
+            <strong>${refundStatusLabels[refund.refundedStatus] || refund.refundedStatus}</strong>
+            <div class="row-main"><span>PG 취소 금액</span><span>${formatMoney(refund.refundedPgAmount)}</span></div>
+            <div class="row-main"><span>포인트 복구 금액</span><span>${formatMoney(refund.refundedPointAmount)}</span></div>
+            <div class="row-sub">${refund.createdAt || ""}</div>
+          </div>
+          <div class="checkout-box">
+            <strong>취소 사유</strong>
+            <p class="detail-description">${refund.reason || "취소 사유가 없습니다."}</p>
+            <button type="button" class="ghost" id="backToRefundsButton">환불 내역으로</button>
+          </div>
+        </div>
+      `;
+    }
+
+    function renderOrders(orders) {
+      if (!orders.length) {
+        $("orderArea").className = "empty";
+        $("orderArea").textContent = "주문 내역이 없습니다.";
+        return;
+      }
+      $("orderArea").className = "";
+      $("orderArea").innerHTML = orders.slice(0, 5).map((order) => `
+        <div class="order-row">
+          <div class="row-main"><span>${order.orderName}</span><span>${formatMoney(order.totalPrice)}</span></div>
+          <div class="row-sub">${orderStatusLabels[order.status] || paymentStatusLabels[order.paymentStatus] || order.status}</div>
+          <div class="actions-row">
+            <button type="button" class="ghost" data-order-detail="${order.orderId}">상세보기</button>
+            ${order.status === "PAYMENT_PENDING" ? `<button type="button" data-pay-existing-order="${order.orderId}">결제하기</button>` : ""}
+            ${order.status === "PAYMENT_PENDING" ? `<button type="button" class="danger" data-cancel-order="${order.orderId}">주문 취소</button>` : ""}
+            ${order.status === "ORDER_COMPLETED" ? `<button type="button" class="danger" data-order-refund="${order.orderId}">환불하기</button>` : ""}
+          </div>
+        </div>
+      `).join("");
+    }
+
+    function renderOrderDetail(order) {
+      const items = order.orderItems || [];
+      $("orderDetailArea").className = "";
+      $("orderDetailArea").innerHTML = `
+        <div class="checkout-layout">
+          <div class="checkout-box">
+            <strong>${orderDetailStatusLabel(order)}</strong>
+            <div class="mini-summary">
+              <div class="mini-item">
+                <span class="mini-icon">₩</span>
+                <strong>${formatMoney(order.totalPrice)}</strong>
+                <span class="row-sub">주문 금액</span>
+              </div>
+              <div class="mini-item">
+                <span class="mini-icon">P</span>
+                <strong>${formatMoney(order.usedPointAmount)}</strong>
+                <span class="row-sub">사용 포인트</span>
+              </div>
+              <div class="mini-item">
+                <span class="mini-icon">C</span>
+                <strong>${formatMoney(order.paymentAmount)}</strong>
+                <span class="row-sub">카드 결제 금액</span>
+              </div>
+            </div>
+            <div class="row-main">
+              <span>포인트 처리</span>
+              <span>${pointTransactionLabels[order.pointTransactionType] || order.pointTransactionType || "-"}</span>
+            </div>
+            <div class="row-sub">${order.createdAt || ""}</div>
+            <div class="actions-row">
+              <button type="button" class="ghost" id="backToOrdersButton">주문 내역으로</button>
+              ${order.status === "PAYMENT_PENDING" && order.portonePaymentId ? `<button type="button" data-pay-existing-order="${order.orderId}">결제하기</button>` : ""}
+              ${order.status === "PAYMENT_PENDING" ? `<button type="button" class="danger" data-cancel-order="${order.orderId}">주문 취소</button>` : ""}
+              ${order.status === "ORDER_COMPLETED" && order.paymentId ? `<button type="button" class="danger" id="showRefundFormButton">환불하기</button>` : ""}
+            </div>
+            ${order.status === "ORDER_COMPLETED" && order.paymentId ? `
+              <div class="payment-panel" id="orderRefundForm" hidden>
+                <strong>환불 요청</strong>
+                <label>환불 사유 <input id="refundReasonInput" maxlength="255" placeholder="예: 단순 변심"></label>
+                <button type="button" class="danger" data-refund-payment="${order.paymentId}">환불 요청하기</button>
+                <div class="status" id="refundStatus"></div>
+              </div>
+            ` : ""}
+          </div>
+          <div class="checkout-box">
+            <strong>주문 상품</strong>
+            <div class="item-list">
+              ${items.map((item) => `
+                <div class="item-line">
+                  <span>${item.productName}</span>
+                  <span>${formatMoney(item.orderPrice)} · ${item.quantity}개</span>
+                </div>
+              `).join("") || `<div class="empty">주문 상품이 없습니다.</div>`}
+            </div>
+          </div>
+        </div>
+      `;
+    }
+
+    document.addEventListener("click", async (event) => {
+      const categoryButton = event.target.closest("[data-category]");
+      if (categoryButton) {
+        setPage("home");
+        state.category = categoryButton.dataset.category;
+        state.productPage = 1;
+        renderCategories();
+        await loadProducts();
+        document.querySelector("#shop").scrollIntoView({ behavior: "smooth" });
+        return;
+      }
+
+      const addButton = event.target.closest("[data-add-product]");
+      if (addButton) {
+        await addToCart(Number(addButton.dataset.addProduct));
+        return;
+      }
+
+      const productPageButton = event.target.closest("[data-product-page]");
+      if (productPageButton) {
+        state.productPage = Number(productPageButton.dataset.productPage);
+        await loadProducts();
+        document.querySelector("#shop").scrollIntoView({ behavior: "smooth" });
+        return;
+      }
+
+      const productCard = event.target.closest("[data-product-card]");
+      if (productCard && !event.target.closest("button, input")) {
+        await openProductDetail(Number(productCard.dataset.productCard));
+        return;
+      }
+
+      const detailAddButton = event.target.closest("[data-add-detail-product]");
+      if (detailAddButton) {
+        const productId = Number(detailAddButton.dataset.addDetailProduct);
+        await addToCart(productId, `detail-qty-${productId}`);
+        return;
+      }
+
+      if (event.target.closest("#backToProductsButton")) {
+        showCatalogPage();
+        return;
+      }
+
+      const portOneButton = event.target.closest("[data-portone-pay]");
+      if (portOneButton) {
+        await requestPortOnePayment(
+          portOneButton.dataset.portonePay,
+          portOneButton.dataset.portonePaymentId,
+          portOneButton.dataset.pgAmount
+        );
+        return;
+      }
+
+      const payExistingOrderButton = event.target.closest("[data-pay-existing-order]");
+      if (payExistingOrderButton) {
+        await payExistingOrder(Number(payExistingOrderButton.dataset.payExistingOrder));
+        return;
+      }
+
+      if (event.target.closest("#backToCartFromCheckoutButton")) {
+        await showCartPage();
+        return;
+      }
+
+      if (event.target.closest("#submitOrderButton")) {
+        await submitOrder();
+        return;
+      }
+
+      const updateButton = event.target.closest("[data-update-cart]");
+      if (updateButton) {
+        try {
+          const cartItemId = updateButton.dataset.updateCart;
+          const quantity = Number($(`cart-qty-${cartItemId}`).value);
+          await api(`/api/carts/items/${cartItemId}`, {
+            method: "PUT",
+            body: JSON.stringify({ quantity })
+          });
+          await loadCart();
+        } catch (error) {
+          showStatus("cartStatus", friendlyMessage(error.message), "error");
+        }
+        return;
+      }
+
+      const deleteButton = event.target.closest("[data-delete-cart]");
+      if (deleteButton) {
+        try {
+          await api(`/api/carts/items/${deleteButton.dataset.deleteCart}`, { method: "DELETE" });
+          await loadCart();
+        } catch (error) {
+          showStatus("cartStatus", friendlyMessage(error.message), "error");
+        }
+        return;
+      }
+
+      const cancelButton = event.target.closest("[data-cancel-order]");
+      if (cancelButton) {
+        try {
+          await api(`/api/orders/${cancelButton.dataset.cancelOrder}/cancel`, { method: "POST" });
+          if (window.location.hash.startsWith("#/orders/")) {
+            await showOrdersPage();
+          } else {
+            await loadOrders();
+          }
+          await loadProducts();
+        } catch (error) {
+          const targetId = window.location.hash.startsWith("#/orders/") ? "orderDetailArea" : "orderArea";
+          $(targetId).className = "";
+          $(targetId).insertAdjacentHTML("afterbegin", `<div class="status error">${friendlyMessage(error.message)}</div>`);
+        }
+        return;
+      }
+
+      const orderDetailButton = event.target.closest("[data-order-detail]");
+      if (orderDetailButton) {
+        await showOrderDetailPage(Number(orderDetailButton.dataset.orderDetail));
+        return;
+      }
+
+      const orderRefundButton = event.target.closest("[data-order-refund]");
+      if (orderRefundButton) {
+        await showOrderDetailPage(Number(orderRefundButton.dataset.orderRefund));
+        setTimeout(() => {
+          const form = $("orderRefundForm");
+          if (form) form.hidden = false;
+        }, 0);
+        return;
+      }
+
+      const refundButton = event.target.closest("[data-refund-payment]");
+      if (refundButton) {
+        await requestRefund(refundButton.dataset.refundPayment);
+        return;
+      }
+
+      if (event.target.closest("#showRefundFormButton")) {
+        const form = $("orderRefundForm");
+        if (form) form.hidden = false;
+        return;
+      }
+
+      if (event.target.closest("#paymentOrdersButton")) {
+        await showOrdersPage();
+        return;
+      }
+
+      if (event.target.closest("#paymentHomeButton")) {
+        showHomePage();
+        return;
+      }
+
+      if (event.target.closest("#pointTransactionsButton")) {
+        await showPointsPage();
+        return;
+      }
+
+      if (event.target.closest("#refundsAfterRequestButton")) {
+        await showRefundsPage();
+        return;
+      }
+
+      if (event.target.closest("#refundsPageButton")) {
+        await showRefundsPage();
+        return;
+      }
+
+      const refundDetailButton = event.target.closest("[data-refund-detail]");
+      if (refundDetailButton) {
+        await showRefundDetailPage(Number(refundDetailButton.dataset.refundDetail));
+        return;
+      }
+
+      if (event.target.closest("#backToRefundsButton")) {
+        await showRefundsPage();
+        return;
+      }
+
+      if (event.target.closest("#backToOrdersButton")) {
+        await showOrdersPage();
+        return;
+      }
+    });
+
+    document.addEventListener("input", (event) => {
+      if (event.target.id !== "checkoutUsedPointInput") return;
+
+      const totalPrice = Number(event.target.dataset.totalPrice || 0);
+      const usedPointAmount = Number(event.target.value || 0);
+      $("checkoutPaymentAmount").textContent = formatMoney(Math.max(0, totalPrice - usedPointAmount));
+    });
+
+    $("homeButton").addEventListener("click", showHomePage);
+    $("accountButton").addEventListener("click", showAccountPage);
+    $("cartButton").addEventListener("click", showCartPage);
+    $("topAuthButton").addEventListener("click", async () => {
+      if (token()) {
+        logout();
+        return;
+      }
+      await showAccountPage();
+    });
+    $("refreshProductsButton").addEventListener("click", loadProducts);
+    $("sortSelect").addEventListener("change", () => {
+      state.productPage = 1;
+      loadProducts();
+    });
+    $("statusSelect").addEventListener("change", () => {
+      state.productPage = 1;
+      loadProducts();
+    });
+    $("signupButton").addEventListener("click", signup);
+    $("loginButton").addEventListener("click", login);
+    $("ordersPageButton").addEventListener("click", showOrdersPage);
+    $("continueShoppingButton").addEventListener("click", closeCartChoiceModal);
+    $("goCartButton").addEventListener("click", async () => {
+      closeCartChoiceModal();
+      await showCartPage();
+    });
+    function logout() {
+      localStorage.removeItem(tokenKey);
+      $("profileArea").className = "empty";
+      $("profileArea").textContent = "로그인이 필요합니다.";
+      $("pointArea").className = "empty";
+      $("pointArea").textContent = "포인트 정보가 여기에 표시됩니다.";
+      $("orderArea").className = "empty";
+      $("orderArea").textContent = "주문 내역이 여기에 표시됩니다.";
+      state.cart = null;
+      renderCart();
+      updateAuthButton();
+      showStatus("accountStatus", "로그아웃되었습니다.", "success");
+      showHomePage();
+    }
+
+    async function initializeRoute() {
+      const hash = window.location.hash;
+      if (hash === "#/orders") {
+        await showOrdersPage();
+        return;
+      }
+      const orderMatch = hash.match(/^#\/orders\/(\d+)$/);
+      if (orderMatch) {
+        await showOrderDetailPage(Number(orderMatch[1]));
+        return;
+      }
+      if (hash === "#/points") {
+        await showPointsPage();
+        return;
+      }
+      if (hash === "#/refunds") {
+        await showRefundsPage();
+        return;
+      }
+      const refundMatch = hash.match(/^#\/refunds\/(\d+)$/);
+      if (refundMatch) {
+        await showRefundDetailPage(Number(refundMatch[1]));
+        return;
+      }
+      if (hash === "#/cart") {
+        await showCartPage();
+        return;
+      }
+      if (hash === "#/account") {
+        await showAccountPage();
+        return;
+      }
+      if (hash === "#/checkout") {
+        showCheckoutPage();
+        return;
+      }
+      if (hash === "#/payment-complete") {
+        showPaymentCompletePage();
+        return;
+      }
+      const productMatch = hash.match(/^#\/products\/(\d+)$/);
+      if (productMatch) {
+        await openProductDetail(Number(productMatch[1]));
+        return;
+      }
+      setPage("home");
+    }
+
+    $("loadAccountButton").addEventListener("click", loadAccount);
+    $("createOrderButton").addEventListener("click", createOrder);
+    $("clearCartButton").addEventListener("click", async () => {
+      try {
+        await api("/api/carts/items", { method: "DELETE" });
+        await loadCart();
+      } catch (error) {
+        showStatus("cartStatus", friendlyMessage(error.message), "error");
+      }
+    });
+
+    renderCategories();
+    updateAuthButton();
+    loadProducts();
+    window.addEventListener("hashchange", initializeRoute);
+    setTimeout(initializeRoute, 0);
+    if (token()) {
+      loadCart().catch(() => {});
+      loadAccount().catch(() => {});
+    }
+  </script>
+</body>
+</html>
