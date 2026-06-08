@@ -1,6 +1,7 @@
 package com.example.commercepaymentapplication.domain.order.dto;
 
 import com.example.commercepaymentapplication.domain.order.entity.Order;
+import com.example.commercepaymentapplication.domain.payment.entity.Payment;
 import com.example.commercepaymentapplication.domain.point.entity.PointTransactionType;
 
 import java.time.LocalDateTime;
@@ -8,6 +9,7 @@ import java.util.List;
 
 public record GetOrderResponse(
         Long orderId,
+        String portonePaymentId,
         int usedPointAmount,
         int expectedEarnPointAmount,
         int paymentAmount,
@@ -17,7 +19,7 @@ public record GetOrderResponse(
         LocalDateTime createdAt,
         List<OrderItemResponse> orderItems
 ) {
-    public static GetOrderResponse from(Order order) {
+    public static GetOrderResponse from(Order order, Payment payment) {
         List<OrderItemResponse> orderItems = order.getOrderItems().stream()
                 .map(OrderItemResponse::from)
                 .toList();
@@ -32,6 +34,7 @@ public record GetOrderResponse(
 
         return new GetOrderResponse(
                 order.getId(),
+                payment.getPortonePaymentId(),
                 order.getUsedPointAmount(),
                 expectedEarnPointAmount,
                 pgPaymentPrice,

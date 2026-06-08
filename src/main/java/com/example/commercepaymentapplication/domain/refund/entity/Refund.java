@@ -31,6 +31,9 @@ public class Refund extends BaseTimeEntity {
     @JoinColumn(name = "payment_id", nullable = false, unique = true)
     private Payment payment;
 
+    @Column(nullable = false)
+    private String orderName;
+
     @Column(nullable = false, length = 255)
     private String reason;
 
@@ -44,9 +47,10 @@ public class Refund extends BaseTimeEntity {
     @Column(nullable = false)
     private RefundStatus status = RefundStatus.COMPLETED;
 
-    public Refund(User user, Payment payment, String reason) {
+    public Refund(User user, Payment payment, String orderName, String reason) {
         this.user = user;
         this.payment = payment;
+        this.orderName = orderName;
         this.reason = reason;
         this.refundedPointAmount = payment.getUsedPointAmount();
         this.refundedPgAmount = payment.getPgPaymentAmount();
