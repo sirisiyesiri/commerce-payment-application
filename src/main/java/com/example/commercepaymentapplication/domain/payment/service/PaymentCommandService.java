@@ -1,6 +1,8 @@
 package com.example.commercepaymentapplication.domain.payment.service;
 
+import com.example.commercepaymentapplication.domain.cart.service.CartService;
 import com.example.commercepaymentapplication.domain.order.entity.Order;
+import com.example.commercepaymentapplication.domain.order.entity.OrderItem;
 import com.example.commercepaymentapplication.domain.order.service.OrderService;
 import com.example.commercepaymentapplication.domain.payment.dto.CancelPaymentResponse;
 import com.example.commercepaymentapplication.domain.payment.dto.ConfirmPaymentResponse;
@@ -11,6 +13,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+
 @Service
 @RequiredArgsConstructor
 public class PaymentCommandService {
@@ -19,6 +23,7 @@ public class PaymentCommandService {
     private final OrderService orderService;
     private final PointService pointService;
     private final RefundService refundService;
+    private final CartService cartService;
 
     // 결제 실패
     @Transactional
@@ -32,30 +37,27 @@ public class PaymentCommandService {
         orderService.restoreStock(order);
     }
 
+    // POINT_ONLY 결제 시 PG사 거치지 않고 서버 내에서 결제 확정
     @Transactional
-    // POINT_ONLY 결제 시 PG사 거치지 않고 서버 내에서의 결제 확정
     public ConfirmPaymentResponse pointOnlyPayment(Long userId, Payment payment) {
+        Order order = payment.getOrder();
+
         pointService.usePoint(userId, payment, payment.getUsedPointAmount());
 
-        // ONLY_POINT 결제 시 적립 포인트 0
+        // POINT_ONLY 결제 시 적립 포인트 0
         payment.markAsPaid(0);
-        payment.getOrder().markAsCompleted();
+        order.markAsCompleted();
 
-        return new ConfirmPaymentResponse(
-                payment.getId(),
-                payment.getOrder().getId(),
-                payment.getPgPaymentAmount(),
-                payment.getUsedPointAmount(),
-                payment.getOrder().getStatus().name(),
-                payment.getStatus().name()
-        );
+        clearOrderedCartItems(order);
+
+        return toConfirmPaymentResponse(payment);
     }
 
     // PG사를 거친 결제 확정
     @Transactional
     public ConfirmPaymentResponse approvePaymentAndOrder(Long orderId) {
         Payment payment = paymentService.findByOrderIdWithOrder(orderId);
-        Order order= payment.getOrder();
+        Order order = payment.getOrder();
 
         pointService.usePoint(order.getUser().getId(), payment, payment.getUsedPointAmount());
 
@@ -70,14 +72,9 @@ public class PaymentCommandService {
         payment.markAsPaid(earnPoint);
         order.markAsCompleted();
 
-        return new ConfirmPaymentResponse(
-                payment.getId(),
-                payment.getOrder().getId(),
-                payment.getPgPaymentAmount(),
-                payment.getUsedPointAmount(),
-                payment.getOrder().getStatus().name(),
-                payment.getStatus().name()
-        );
+        clearOrderedCartItems(order);
+
+        return toConfirmPaymentResponse(payment);
     }
 
     // 환불
@@ -116,5 +113,25 @@ public class PaymentCommandService {
     @Transactional
     public void cancelPaymentFail(Long paymentId) {
         refundService.failedRefund(paymentId);
+    }
+
+    // 결제에 사용된 장바구니 상품을 삭제한다.
+    private void clearOrderedCartItems(Order order) {
+        List<Long> cartItemIds = order.getOrderItems().stream()
+                .map(OrderItem::getCartItemId)
+                .toList();
+
+        cartService.clearCartItems(cartItemIds, order.getUser().getId());
+    }
+
+    private ConfirmPaymentResponse toConfirmPaymentResponse(Payment payment) {
+        return new ConfirmPaymentResponse(
+                payment.getId(),
+                payment.getOrder().getId(),
+                payment.getPgPaymentAmount(),
+                payment.getUsedPointAmount(),
+                payment.getOrder().getStatus().name(),
+                payment.getStatus().name()
+        );
     }
 }

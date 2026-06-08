@@ -42,4 +42,10 @@ public class PaymentService {
         return paymentRepository.findByIdWithOrder(paymentId)
                 .orElseThrow(() -> new BusinessException(ErrorCode.PAYMENT_NOT_FOUND));
     }
+
+    // PortOne 결제 ID 기준으로 결제와 주문 관련 정보 조회
+    public Payment findByPortonePaymentIdWithOrder(String portonePaymentId) {
+        return paymentRepository.findByPortonePaymentIdWithOrder(portonePaymentId)
+                .orElseThrow(() -> new BusinessException(ErrorCode.PAYMENT_NOT_FOUND));
+    }
 }
