@@ -25,6 +25,7 @@ public class PaymentController {
             @AuthenticationPrincipal Long userId,
             @Valid @RequestBody ConfirmPaymentRequest request) {
         ConfirmPaymentResponse response = paymentFacade.confirmPayment(userId, request);
+
         return ResponseEntity.status(HttpStatus.CREATED).body(ApiResponse.created(response));
     }
 
@@ -35,6 +36,7 @@ public class PaymentController {
             @Valid @RequestBody CancelPaymentRequest request
             ) {
         CancelPaymentResponse response = paymentFacade.cancelPayment(userId, paymentId, request);
+
         return ResponseEntity.status(HttpStatus.CREATED).body(ApiResponse.created(response));
     }
 }
