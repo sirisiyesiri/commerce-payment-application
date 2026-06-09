@@ -1,5 +1,6 @@
 package com.example.commercepaymentapplication.domain.cart.entity;
 
+import com.example.commercepaymentapplication.domain.cart.dto.AddCartRequest;
 import com.example.commercepaymentapplication.domain.product.entity.Product;
 import com.example.commercepaymentapplication.domain.user.entity.User;
 import com.example.commercepaymentapplication.global.entity.BaseTimeEntity;
@@ -56,6 +57,14 @@ public class CartItem extends BaseTimeEntity {
         this.user = user;
         this.product = product;
         this.quantity = quantity;
+    }
+
+    public static CartItem from(User user, Product product, AddCartRequest request) {
+        return new CartItem(
+                user,
+                product,
+                request.quantity()
+        );
     }
 
     public Long getUserId() {

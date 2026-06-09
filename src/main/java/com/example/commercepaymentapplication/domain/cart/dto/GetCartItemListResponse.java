@@ -6,4 +6,14 @@ import java.util.List;
 public record GetCartItemListResponse(
         List<CartItemDto> cartItemList,
         Long totalAmount
-) {}
+) {
+    public static GetCartItemListResponse of(
+            List<CartItemDto> cartItemList,
+            Long totalAmount
+    ) {
+        return new GetCartItemListResponse(
+                cartItemList,
+                totalAmount
+        );
+    }
+}
