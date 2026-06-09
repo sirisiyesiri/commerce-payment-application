@@ -20,7 +20,7 @@ public record GetOrderResponse(
         LocalDateTime createdAt,
         List<OrderItemResponse> orderItems
 ) {
-    public static GetOrderResponse from(Order order, Payment payment) {
+    public static GetOrderResponse of(Order order, Payment payment) {
         List<OrderItemResponse> orderItems = order.getOrderItems().stream()
                 .map(OrderItemResponse::from)
                 .toList();

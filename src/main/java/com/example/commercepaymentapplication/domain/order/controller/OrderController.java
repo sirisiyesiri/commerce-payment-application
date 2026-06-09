@@ -28,7 +28,8 @@ public class OrderController {
             ) {
         PreviewOrderResponse response = orderFacade.previewOrder(userId, cartItemIds);
 
-        return ResponseEntity.status(HttpStatus.OK).body(ApiResponse.ok(response));
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(ApiResponse.ok(response));
     }
 
     @GetMapping
@@ -37,7 +38,8 @@ public class OrderController {
     ) {
         List<GetOrderListResponse> response = orderFacade.getOrders(userId);
 
-        return ResponseEntity.status(HttpStatus.OK).body(ApiResponse.ok(response));
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(ApiResponse.ok(response));
     }
 
     @GetMapping("/{orderId}")
@@ -47,7 +49,8 @@ public class OrderController {
     ) {
         GetOrderResponse response = orderFacade.getOrder(userId, orderId);
 
-        return ResponseEntity.status(HttpStatus.OK).body(ApiResponse.ok(response));
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(ApiResponse.ok(response));
     }
 
     @PostMapping("/{orderId}/cancel")
@@ -57,7 +60,8 @@ public class OrderController {
     ) {
         CancelOrderResponse response = orderFacade.cancelOrder(userId, orderId);
 
-        return ResponseEntity.status(HttpStatus.OK).body(ApiResponse.ok(response));
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(ApiResponse.ok(response));
     }
 
 }

@@ -1835,8 +1835,8 @@
         const preview = state.currentOrder?.preview;
         state.currentOrder = {
           ...result.data,
-          totalPrice: preview?.totalPrice || Number(result.data?.totalPrice || 0) + usedPointAmount,
-          pgPaymentAmount: result.data?.totalPrice,
+          totalPrice: preview?.totalPrice || Number(result.data?.paymentPrice || 0) + usedPointAmount,
+          pgPaymentAmount: result.data?.paymentPrice,
           usedPointAmount,
           preview
         };
