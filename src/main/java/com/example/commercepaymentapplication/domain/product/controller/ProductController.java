@@ -2,6 +2,7 @@ package com.example.commercepaymentapplication.domain.product.controller;
 
 import com.example.commercepaymentapplication.domain.product.dto.GetOneProductResponse;
 import com.example.commercepaymentapplication.domain.product.dto.GetProductListResponse;
+import com.example.commercepaymentapplication.domain.product.dto.ProductSearchCondition;
 import com.example.commercepaymentapplication.domain.product.entity.ProductCategory;
 import com.example.commercepaymentapplication.domain.product.entity.ProductStatus;
 import com.example.commercepaymentapplication.domain.product.service.ProductService;
@@ -27,21 +28,31 @@ public class ProductController {
             @RequestParam(required = false) ProductStatus status,
             @RequestParam(defaultValue = "latest") String sort,
             @RequestParam(defaultValue = "1") int page,
-            @RequestParam(defaultValue = "20") int size) {
-        return ResponseEntity.status(HttpStatus.OK)
-                .body(ApiResponse.ok(
-                        productService.findAll(category, minPrice, maxPrice, status, sort, page, size)
-                )
+            @RequestParam(defaultValue = "20") int size
+    ) {
+        ProductSearchCondition condition = new ProductSearchCondition(
+                category,
+                minPrice,
+                maxPrice,
+                status,
+                sort,
+                page,
+                size
         );
+
+        GetProductListResponse response = productService.findAll(condition);
+
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(ApiResponse.ok(response));
     }
 
     @GetMapping("/{productId}")
     public ResponseEntity<ApiResponse<GetOneProductResponse>> findOne(
             @PathVariable Long productId) {
+
+        GetOneProductResponse response = productService.findOne(productId);
+
         return ResponseEntity.status(HttpStatus.OK)
-                .body(ApiResponse.ok(
-                        productService.findOne(productId)
-                )
-        );
+                .body(ApiResponse.ok(response));
     }
 }

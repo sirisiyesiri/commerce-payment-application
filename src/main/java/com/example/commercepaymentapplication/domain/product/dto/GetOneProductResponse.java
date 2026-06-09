@@ -1,6 +1,7 @@
 package com.example.commercepaymentapplication.domain.product.dto;
 
 
+import com.example.commercepaymentapplication.domain.product.entity.Product;
 import com.example.commercepaymentapplication.domain.product.entity.ProductCategory;
 import com.example.commercepaymentapplication.domain.product.entity.ProductStatus;
 
@@ -17,4 +18,18 @@ public record GetOneProductResponse(
     String description,
     LocalDateTime createdAt,
     LocalDateTime modifiedAt
-){ }
+){
+    public static GetOneProductResponse from(Product product) {
+        return new GetOneProductResponse(
+                product.getId(),
+                product.getName(),
+                product.getPrice(),
+                product.getStockQuantity(),
+                product.getCategory(),
+                product.getStatus(),
+                product.getDescription(),
+                product.getCreatedAt(),
+                product.getModifiedAt()
+        );
+    }
+}

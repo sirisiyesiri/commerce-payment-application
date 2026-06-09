@@ -39,10 +39,10 @@ public class Product extends BaseTimeEntity {
 
     public Product(String name, Integer price, Integer stockQuantity, ProductStatus status, ProductCategory category, String description) {
         if (price < 0) {
-            throw new IllegalArgumentException("가격은 0 이상이어야 합니다");
+            throw new BusinessException(ErrorCode.INVALID_PRICE);
         }
         if (stockQuantity < 0) {
-            throw new IllegalArgumentException("재고는 0 이상이어야 합니다");
+            throw new BusinessException(ErrorCode.INVALID_QUANTITY);
         }
         this.name = name;
         this.price = price;
@@ -54,21 +54,21 @@ public class Product extends BaseTimeEntity {
 
     // 재고 차감 메서드
     public void deductStock(int orderStockQuantity) {
-        validate(stockQuantity, orderStockQuantity);
+        validatePurchasable();
+        validateStock(orderStockQuantity);
 
         stockQuantity -= orderStockQuantity;
 
-        changeProductStatus(stockQuantity);
+        changeProductStatus();
     }
 
     // 재고 복구 메서드
     public void restoreStock(int quantity) {
-        if(quantity <= 0) {
-            throw new BusinessException(ErrorCode.INVALID_QUANTITY);
-        }
+        validateQuantity(quantity);
+
         this.stockQuantity += quantity;
 
-        changeProductStatus(stockQuantity);
+        changeProductStatus();
     }
 
     public void validatePurchasable() {
@@ -78,21 +78,28 @@ public class Product extends BaseTimeEntity {
     }
 
     public void validateStock(int quantity) {
-        validate(this.stockQuantity, quantity);
+        validateQuantity(quantity);
+        validateStockQuantity(quantity);
     }
 
-    private void validate(int stockQuantity, int orderStockQuantity) {
-        if (orderStockQuantity <= 0) {
+    private void validateQuantity(int quantity) {
+        if (quantity <= 0) {
             throw new BusinessException(ErrorCode.INVALID_QUANTITY);
         }
+    }
 
-        if (orderStockQuantity > stockQuantity) {
+    private void validateStockQuantity(int quantity) {
+        if (quantity > this.stockQuantity) {
             throw new BusinessException(ErrorCode.INSUFFICIENT_STOCK);
         }
     }
 
-    private void changeProductStatus(int stockQuantity) {
-        if (stockQuantity == 0) {
+    private void changeProductStatus() {
+        if (this.status == ProductStatus.DISCONTINUED) {
+            return;
+        }
+
+        if (this.stockQuantity == 0) {
             this.status = ProductStatus.OUT_OF_STOCK;
         } else {
             this.status = ProductStatus.ON_SALE;
