@@ -1,4 +1,4 @@
-package com.example.commercepaymentapplication.infra.portone.webhook.entity;
+package com.example.commercepaymentapplication.domain.portone.webhook.entity;
 
 import com.example.commercepaymentapplication.global.entity.BaseTimeEntity;
 import jakarta.persistence.*;

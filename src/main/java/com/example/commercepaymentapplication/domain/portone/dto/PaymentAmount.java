@@ -1,4 +1,4 @@
-package com.example.commercepaymentapplication.infra.portone.dto;
+package com.example.commercepaymentapplication.domain.portone.dto;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 

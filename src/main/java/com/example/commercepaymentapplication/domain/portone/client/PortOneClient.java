@@ -1,10 +1,10 @@
-package com.example.commercepaymentapplication.infra.portone.client;
+package com.example.commercepaymentapplication.domain.portone.client;
 
 import com.example.commercepaymentapplication.domain.payment.port.PaymentGateway;
 import com.example.commercepaymentapplication.domain.payment.port.PaymentGatewayResponse;
-import com.example.commercepaymentapplication.infra.portone.config.PortOneProperties;
-import com.example.commercepaymentapplication.infra.portone.dto.PortOneCancelRequest;
-import com.example.commercepaymentapplication.infra.portone.dto.PortOnePaymentResponse;
+import com.example.commercepaymentapplication.global.config.PortOneProperties;
+import com.example.commercepaymentapplication.domain.portone.dto.PortOneCancelRequest;
+import com.example.commercepaymentapplication.domain.portone.dto.PortOnePaymentResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;

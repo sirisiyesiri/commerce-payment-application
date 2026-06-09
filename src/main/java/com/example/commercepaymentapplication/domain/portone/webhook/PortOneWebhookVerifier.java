@@ -1,6 +1,6 @@
-package com.example.commercepaymentapplication.infra.portone.webhook;
+package com.example.commercepaymentapplication.domain.portone.webhook;
 
-import com.example.commercepaymentapplication.infra.portone.config.PortOneProperties;
+import com.example.commercepaymentapplication.global.config.PortOneProperties;
 import io.portone.sdk.server.errors.WebhookVerificationException;
 import io.portone.sdk.server.webhook.Webhook;
 import io.portone.sdk.server.webhook.WebhookVerifier;

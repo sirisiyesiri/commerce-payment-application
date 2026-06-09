@@ -1,8 +1,8 @@
-package com.example.commercepaymentapplication.infra.portone.controller;
+package com.example.commercepaymentapplication.domain.portone.controller;
 
 import com.example.commercepaymentapplication.global.response.ApiResponse;
-import com.example.commercepaymentapplication.infra.portone.config.PortOneProperties;
-import com.example.commercepaymentapplication.infra.portone.dto.PortOneConfigResponse;
+import com.example.commercepaymentapplication.global.config.PortOneProperties;
+import com.example.commercepaymentapplication.domain.portone.dto.PortOneConfigResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
