@@ -41,14 +41,6 @@ public class PaymentFacade {
             throw new BusinessException(ErrorCode.ORDER_NOT_FOUND);
         }
 
-        // 클라이언트가 보낸 portonePaymentId와 서버에 저장된 portonePaymentId가 일치하는지 검증한다.
-        String portonePaymentId = payment.getPortonePaymentId();
-        if (!portonePaymentId.equals(request.portonePaymentId())) {
-            log.warn("결제 승인 거부 - portonePaymentId 불일치 : DB={}, 요청={}",
-                    portonePaymentId, request.portonePaymentId());
-            throw new BusinessException(ErrorCode.PAYMENT_NOT_FOUND);
-        }
-
         // 이미 결제 완료된 요청은 중복 확정 요청으로 보고 멱등하게 성공 응답을 반환한다.
         if (payment.getStatus() == PaymentStatus.COMPLETED) {
             return toConfirmPaymentResponse(payment);
@@ -61,7 +53,15 @@ public class PaymentFacade {
 
         // 포인트 전액 결제는 PG 호출 없이 서버 내부에서 바로 결제 완료 처리한다.
         if (payment.getType() == PaymentType.POINT_ONLY) {
-            return paymentCommandService.pointOnlyPayment(order.getUser().getId(), payment);
+            return paymentCommandService.pointOnlyPayment(order.getId());
+        }
+
+        // 클라이언트가 보낸 portonePaymentId와 서버에 저장된 portonePaymentId가 일치하는지 검증한다.
+        String portonePaymentId = payment.getPortonePaymentId();
+        if (!portonePaymentId.equals(request.portonePaymentId())) {
+            log.warn("결제 승인 거부 - portonePaymentId 불일치 : DB={}, 요청={}",
+                    portonePaymentId, request.portonePaymentId());
+            throw new BusinessException(ErrorCode.PAYMENT_NOT_FOUND);
         }
 
         // PortOne API로 실제 결제 정보를 조회한다. 클라이언트가 보낸 결제 결과는 그대로 신뢰하지 않는다.
@@ -120,15 +120,17 @@ public class PaymentFacade {
                 request.reason()
         );
 
-        // DB 반영 이후 PortOne PG 취소 API를 호출한다.
-        try {
-            paymentGateway.cancelPayment(response.portonePaymentId(), request.reason());
-        } catch (Exception e) {
-            log.error("PG 결제 취소 실패 : DB는 이미 환불 처리됨, 수동 처리 필요 : portonePaymentId={}",
-                    response.portonePaymentId(), e);
+        // PG 결제 금액이 있는 경우에만 DB 반영 이후 PortOne PG 취소 API를 호출한다.
+        if (payment.getPgPaymentAmount() > 0) {
+            try {
+                paymentGateway.cancelPayment(response.portonePaymentId(), request.reason());
+            } catch (Exception e) {
+                log.error("PG 결제 취소 실패 : DB는 이미 환불 처리됨, 수동 처리 필요 : portonePaymentId={}",
+                        response.portonePaymentId(), e);
 
-            // PG 취소 실패 시 환불 이력을 실패 상태로 표시한다.
-            paymentCommandService.cancelPaymentFail(payment.getId());
+                // PG 취소 실패 시 환불 이력을 실패 상태로 표시한다.
+                paymentCommandService.cancelPaymentFail(payment.getId());
+            }
         }
 
         return response;

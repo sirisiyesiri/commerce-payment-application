@@ -41,10 +41,11 @@ public class PaymentCommandService {
 
     // POINT_ONLY 결제 시 PG사 거치지 않고 서버 내에서 결제 확정
     @Transactional
-    public ConfirmPaymentResponse pointOnlyPayment(Long userId, Payment payment) {
+    public ConfirmPaymentResponse pointOnlyPayment(Long orderId) {
+        Payment payment = paymentService.findByOrderIdWithOrder(orderId);
         Order order = payment.getOrder();
 
-        pointService.usePoint(userId, payment, payment.getUsedPointAmount());
+        pointService.usePoint(order.getUser().getId(), payment, payment.getUsedPointAmount());
 
         // POINT_ONLY 결제 시 적립 포인트 0
         payment.markAsPaid(0);
