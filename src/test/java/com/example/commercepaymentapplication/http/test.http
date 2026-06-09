@@ -1,0 +1,29 @@
+### 회원가입
+POST http://localhost:8080/api/auth/signup
+Content-Type: application/json
+
+{
+  "email": "test1@example.com",
+  "password": "sparta1234",
+  "name": "최준영",
+  "phoneNumber": "010-1234-5678"
+}
+
+### 로그인
+POST http://localhost:8080/api/auth/login
+Content-Type: application/json
+
+{
+  "email": "test1@example.com",
+  "password": "sparta1234"
+}
+
+> {% client.global.set("authToken", response.body.data.token); %}
+
+### 내 정보 조회
+GET http://localhost:8080/api/users/me
+Authorization: Bearer {{authToken}}
+
+### 내 멤버십 정보 조회
+GET http://localhost:8080/api/users/me/memberships
+Authorization: Bearer {{authToken}}

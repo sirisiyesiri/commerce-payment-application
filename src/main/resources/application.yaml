@@ -3,6 +3,18 @@ spring:
     name: commerce-payment-application
   profiles:
     active: local
+
+  # 타임아웃 시간 설정 : 3초
+  datasource:
+    hikari:
+      connection-init-sql: SET SESSION innodb_lock_wait_timeout = 3
+
+  jpa:
+    defer-datasource-initialization: true
+  sql:
+    init:
+      mode: always
+
   # aws region 설정
   cloud:
     aws:
@@ -15,8 +27,6 @@ management:
       exposure:
         include: health, info
 
-server:
-  port: 8080
 
 # 로깅 레벨 설정
 logging:

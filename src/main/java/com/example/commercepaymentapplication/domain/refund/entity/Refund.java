@@ -1,0 +1,67 @@
+package com.example.commercepaymentapplication.domain.refund.entity;
+
+import com.example.commercepaymentapplication.domain.payment.entity.Payment;
+import com.example.commercepaymentapplication.domain.user.entity.User;
+import com.example.commercepaymentapplication.global.entity.BaseTimeEntity;
+import jakarta.persistence.*;
+import lombok.AccessLevel;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+
+import java.util.UUID;
+
+@Entity
+@Table(name = "refunds")
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@Getter
+public class Refund extends BaseTimeEntity {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id", nullable = false)
+    private User user;
+
+    @Column(name = "refund_request_id", nullable = false, unique = true, length = 50)
+    private String refundRequestId;
+
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "payment_id", nullable = false, unique = true)
+    private Payment payment;
+
+    @Column(nullable = false)
+    private String orderName;
+
+    @Column(nullable = false, length = 255)
+    private String reason;
+
+    @Column(name = "refunded_point_amount", nullable = false, columnDefinition = "INT UNSIGNED DEFAULT 0")
+    private int refundedPointAmount = 0;
+
+    @Column(name = "refunded_pg_amount", nullable = false, columnDefinition = "INT UNSIGNED DEFAULT 0")
+    private int refundedPgAmount = 0;
+
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private RefundStatus status = RefundStatus.COMPLETED;
+
+    public Refund(User user, Payment payment, String orderName, String reason) {
+        this.user = user;
+        this.payment = payment;
+        this.orderName = orderName;
+        this.reason = reason;
+        this.refundedPointAmount = payment.getUsedPointAmount();
+        this.refundedPgAmount = payment.getPgPaymentAmount();
+        this.refundRequestId = generateRefundRequestId();
+    }
+
+    private String generateRefundRequestId() {
+        return "refund_" + UUID.randomUUID();
+    }
+
+    public void changeRefundStatusToFail() {
+        this.status = RefundStatus.FAIL;
+    }
+}

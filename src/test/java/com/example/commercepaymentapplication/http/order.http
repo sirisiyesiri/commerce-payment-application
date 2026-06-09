@@ -1,0 +1,288 @@
+### 회원가입
+# 기대: 201 Created 또는 200 OK
+POST http://localhost:8080/api/auth/signup
+Content-Type: application/json
+
+{
+  "email": "test1@example.com",
+  "password": "sparta1234",
+  "name": "김르탄",
+  "phoneNumber": "010-1234-5678"
+}
+
+
+### 로그인
+# 기대: 200 OK
+# 설명: 로그인 성공 후 authToken 전역 변수 저장
+POST http://localhost:8080/api/auth/login
+Content-Type: application/json
+
+{
+  "email": "test1@example.com",
+  "password": "sparta1234"
+}
+
+> {% client.global.set("authToken", response.body.data.token); %}
+
+### 주문서 미리보기 - 인증 없이 요청
+# 기대: 401 Unauthorized
+GET http://localhost:8080/api/orders/preview
+
+
+### 주문서 미리보기 - 빈 장바구니
+# 기대: 400 Bad Request
+GET http://localhost:8080/api/orders/preview
+Authorization: Bearer {{authToken}}
+
+
+### 장바구니 상품 담기 - 주문서 미리보기 테스트 상품 1
+# 기대: 201 Created
+# data.sql 기준 productId 1
+POST http://localhost:8080/api/carts/items
+Content-Type: application/json
+Authorization: Bearer {{authToken}}
+
+{
+  "productId": 1,
+  "quantity": 2
+}
+
+> {% client.global.set("cartItemId1", response.body.data.cartItemId); %}
+
+
+### 장바구니 상품 담기 - 주문서 미리보기 테스트 상품 2
+# 기대: 201 Created
+# data.sql 기준 productId 2
+POST http://localhost:8080/api/carts/items
+Content-Type: application/json
+Authorization: Bearer {{authToken}}
+
+{
+  "productId": 2,
+  "quantity": 1
+}
+
+> {% client.global.set("cartItemId2", response.body.data.cartItemId); %}
+
+
+### 주문서 미리보기 - 전체 장바구니
+# 기대: 200 OK
+# cartItemIds 생략 시 현재 회원의 전체 장바구니 기준으로 주문서 미리보기
+GET http://localhost:8080/api/orders/preview
+Authorization: Bearer {{authToken}}
+
+
+### 주문서 미리보기 - 선택한 장바구니 상품 1개
+# 기대: 200 OK
+# 장바구니에 담긴 아이템들 중 상품 1개만 선택한 주문서 미리보기
+GET http://localhost:8080/api/orders/preview?cartItemIds={{cartItemId1}}
+Authorization: Bearer {{authToken}}
+
+
+### 주문서 미리보기 - 선택한 장바구니 상품 여러 개
+# 기대: 200 OK
+# 장바구니에 담긴 아이템들 중 여러개의 상품들을 선택한 주문서 미리보기
+GET http://localhost:8080/api/orders/preview?cartItemIds={{cartItemId1}}&cartItemIds={{cartItemId2}}
+Authorization: Bearer {{authToken}}
+
+
+### 주문서 미리보기 - 존재하지 않는 장바구니 상품 ID
+# 기대: 404 Not Found
+GET http://localhost:8080/api/orders/preview?cartItemIds=999999
+Authorization: Bearer {{authToken}}
+
+
+### 주문서 미리보기 - 존재하는 ID와 존재하지 않는 ID를 함께 요청
+# 기대: 404 Not Found
+GET http://localhost:8080/api/orders/preview?cartItemIds={{cartItemId1}}&cartItemIds=999999
+Authorization: Bearer {{authToken}}
+
+
+### 주문서 미리보기 - 잘못된 cartItemIds 타입
+# 기대: 400 Bad Request
+# cartItemIds는 Long 타입이어야 함
+GET http://localhost:8080/api/orders/preview?cartItemIds=abc
+Authorization: Bearer {{authToken}}
+
+### 장바구니 상품 주문 생성 - 선택한 장바구니 상품 1개
+# 기대: 201 Created
+# 설명: cartItemIds에 담긴 장바구니 상품 1개만 주문 생성
+POST http://localhost:8080/api/carts/orders
+Content-Type: application/json
+Authorization: Bearer {{authToken}}
+
+{
+  "cartItemIds": [{{cartItemId1}}],
+  "usedPointAmount": 0
+}
+
+> {% client.global.set("orderId", response.body.data.orderId); %}
+
+
+### 주문 상세 조회
+# 기대: 200 OK
+# 설명: 위에서 생성한 주문 단건 조회
+GET http://localhost:8080/api/orders/{{orderId}}
+Authorization: Bearer {{authToken}}
+
+
+### 주문 목록 조회
+# 기대: 200 OK
+# 설명: 현재 회원의 전체 주문 목록 조회
+GET http://localhost:8080/api/orders
+Authorization: Bearer {{authToken}}
+
+
+### 장바구니 상품 주문 생성 - 전체 장바구니
+# 기대: 201 Created
+# 설명: cartItemIds 생략 시 현재 회원의 전체 장바구니 기준으로 주문 생성
+POST http://localhost:8080/api/carts/orders
+Content-Type: application/json
+Authorization: Bearer {{authToken}}
+
+{
+  "usedPointAmount": 0
+}
+
+
+### 장바구니 상품 주문 생성 - 선택한 장바구니 상품 여러 개
+# 기대: 201 Created
+# 설명: cartItemIds에 담긴 여러 장바구니 상품으로 주문 생성
+POST http://localhost:8080/api/carts/orders
+Content-Type: application/json
+Authorization: Bearer {{authToken}}
+
+{
+  "cartItemIds": [{{cartItemId1}}, {{cartItemId2}}],
+  "usedPointAmount": 0
+}
+
+
+### 장바구니 상품 주문 생성 - 존재하지 않는 장바구니 상품 ID
+# 기대: 404 Not Found
+# 예외 코드: CART_ITEM_NOT_FOUND
+POST http://localhost:8080/api/carts/orders
+Content-Type: application/json
+Authorization: Bearer {{authToken}}
+
+{
+  "cartItemIds": [999999],
+  "usedPointAmount": 0
+}
+
+
+### 장바구니 상품 주문 생성 - 존재하는 ID와 존재하지 않는 ID를 함께 요청
+# 기대: 404 Not Found
+# 예외 코드: CART_ITEM_NOT_FOUND
+POST http://localhost:8080/api/carts/orders
+Content-Type: application/json
+Authorization: Bearer {{authToken}}
+
+{
+  "cartItemIds": [{{cartItemId1}}, 999999],
+  "usedPointAmount": 0
+}
+
+
+### 장바구니 상품 주문 생성 - 사용 포인트 음수
+# 기대: 400 Bad Request
+# 예외 코드: INVALID_INPUT
+POST http://localhost:8080/api/carts/orders
+Content-Type: application/json
+Authorization: Bearer {{authToken}}
+
+{
+  "cartItemIds": [{{cartItemId1}}],
+  "usedPointAmount": -1
+}
+
+
+### 장바구니 상품 주문 생성 - 포인트 잔액 부족
+# 기대: 400 Bad Request
+# 예외 코드: INSUFFICIENT_POINT
+POST http://localhost:8080/api/carts/orders
+Content-Type: application/json
+Authorization: Bearer {{authToken}}
+
+{
+  "cartItemIds": [{{cartItemId1}}],
+  "usedPointAmount": 999999
+}
+
+
+### 장바구니 상품 주문 생성 - 인증 없이 요청
+# 기대: 401 Unauthorized
+POST http://localhost:8080/api/carts/orders
+Content-Type: application/json
+
+{
+  "usedPointAmount": 0
+}
+
+
+### 주문 목록 조회 - 인증 없이 요청
+# 기대: 401 Unauthorized
+GET http://localhost:8080/api/orders
+
+
+### 주문 상세 조회 - 존재하지 않는 주문 ID
+# 기대: 404 Not Found
+# 예외 코드: ORDER_NOT_FOUND
+GET http://localhost:8080/api/orders/999999
+Authorization: Bearer {{authToken}}
+
+
+### 주문 상세 조회 - 잘못된 주문 ID 타입
+# 기대: 400 Bad Request
+# orderId는 Long 타입이어야 함
+GET http://localhost:8080/api/orders/abc
+Authorization: Bearer {{authToken}}
+
+### 주문 취소 - 성공
+# 기대: 200 OK
+# 설명: 결제대기 상태 주문을 취소
+POST http://localhost:8080/api/orders/{{orderId}}/cancel
+Content-Type: application/json
+Authorization: Bearer {{authToken}}
+
+
+### 주문 상세 조회 - 주문 취소 후 상태 확인
+# 기대: 200 OK
+# 확인: status = ORDER_CANCELED
+GET http://localhost:8080/api/orders/{{orderId}}
+Authorization: Bearer {{authToken}}
+
+
+### 주문 취소 - 이미 취소된 주문 재취소
+# 기대: 400 Bad Request
+# 예외 코드: INVALID_ORDER_STATUS
+POST http://localhost:8080/api/orders/{{orderId}}/cancel
+Content-Type: application/json
+Authorization: Bearer {{authToken}}
+
+
+### 주문 취소 - 존재하지 않는 주문 ID
+# 기대: 404 Not Found
+# 예외 코드: ORDER_NOT_FOUND
+POST http://localhost:8080/api/orders/999999/cancel
+Content-Type: application/json
+Authorization: Bearer {{authToken}}
+
+
+### 주문 취소 - 잘못된 주문 ID 타입
+# 기대: 400 Bad Request
+# 예외 코드: INVALID_INPUT
+POST http://localhost:8080/api/orders/abc/cancel
+Content-Type: application/json
+Authorization: Bearer {{authToken}}
+
+
+### 주문 취소 - 인증 없이 요청
+# 기대: 401 Unauthorized
+POST http://localhost:8080/api/orders/{{orderId}}/cancel
+Content-Type: application/json
+
+### authToken 삭제
+GET http://localhost:8080/api/products
+
+> {% client.global.clear("authToken"); %}
