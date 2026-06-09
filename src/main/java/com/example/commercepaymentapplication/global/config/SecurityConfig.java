@@ -18,6 +18,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 public class SecurityConfig {
 
     private final JwtAuthFilter jwtAuthFilter;
+    private final String SET_CONTENT_TYPE = "application/json;charset=UTF-8";
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
@@ -30,12 +31,12 @@ public class SecurityConfig {
                 .exceptionHandling(exception -> exception
                         .authenticationEntryPoint((request, response, authException) -> {
                             response.setStatus(ErrorCode.UNAUTHORIZED.getStatus().value());
-                            response.setContentType("application/json;charset=UTF-8");
+                            response.setContentType(SET_CONTENT_TYPE);
                             response.getWriter().write("{\"message\":\"인증이 필요합니다.\"}");
                         })
                         .accessDeniedHandler((request, response, accessDeniedException) -> {
                             response.setStatus(ErrorCode.FORBIDDEN.getStatus().value());
-                            response.setContentType("application/json;charset=UTF-8");
+                            response.setContentType(SET_CONTENT_TYPE);
                             response.getWriter().write("{\"message\":\"권한이 없습니다.\"}");
                         })
                 )
