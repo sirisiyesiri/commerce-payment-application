@@ -78,7 +78,7 @@ public class PointTransaction extends BaseTimeEntity {
 		}
 	}
 
-	// 유효하지 않은 포인트 거래 금액이면 예외를 던진다.
+	// 거래 내역은 실제 포인트 변동이 있을 때만 기록하므로 0 이하 금액은 허용하지 않는다.
 	private static void validateAmount(Integer amount) {
 		if (amount == null || amount <= 0) {
 			throw new BusinessException(ErrorCode.INVALID_POINT_AMOUNT);
