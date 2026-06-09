@@ -9,7 +9,7 @@ public record LoginResponse(
         String token
 ) {
 
-    public static LoginResponse of(User user, String token) {
+    public static LoginResponse from(User user, String token) {
         return new LoginResponse(
                 user.getId(),
                 user.getEmail(),

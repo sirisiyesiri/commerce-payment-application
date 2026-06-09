@@ -14,6 +14,7 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 @RequiredArgsConstructor
 public class AuthService {
+
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
     private final JwtProvider jwtProvider;
@@ -24,14 +25,12 @@ public class AuthService {
             throw new BusinessException(ErrorCode.DUPLICATE_EMAIL);
         }
 
-        User user = new User(
-                request.email(),
-                passwordEncoder.encode(request.password()),
-                request.name(),
-                request.phoneNumber()
-        );
+        String encodedPassWord = passwordEncoder.encode(request.password());
+
+        User user = User.from(request, encodedPassWord);
 
         userRepository.save(user);
+
         return SignupResponse.from(user);
     }
 
@@ -45,6 +44,7 @@ public class AuthService {
         }
 
         String token = jwtProvider.generateToken(user.getId(), user.getEmail());
-        return LoginResponse.of(user, token);
+
+        return LoginResponse.from(user, token);
     }
 }
