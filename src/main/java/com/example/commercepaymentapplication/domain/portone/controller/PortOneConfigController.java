@@ -17,9 +17,12 @@ public class PortOneConfigController {
 
     @GetMapping("/api/config/portone")
     public ResponseEntity<ApiResponse<PortOneConfigResponse>> getConfig() {
-        return ResponseEntity.status(HttpStatus.OK).body(ApiResponse.ok(new PortOneConfigResponse(
+        PortOneConfigResponse response = PortOneConfigResponse.of(
                 portOneProperties.getStoreId(),
                 portOneProperties.getChannelKey()
-        )));
+        );
+
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(ApiResponse.ok(response));
     }
 }
