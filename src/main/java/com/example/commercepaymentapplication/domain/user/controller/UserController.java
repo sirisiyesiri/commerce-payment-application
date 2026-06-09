@@ -20,14 +20,22 @@ public class UserController {
     private final UserService userService;
 
     @GetMapping
-    public ResponseEntity<ApiResponse<GetUserResponse>> getMyInfo(@AuthenticationPrincipal Long userId) {
+    public ResponseEntity<ApiResponse<GetUserResponse>> getMyInfo(
+            @AuthenticationPrincipal Long userId
+    ) {
         GetUserResponse response = userService.getMyInfo(userId);
-        return ResponseEntity.status(HttpStatus.OK).body(ApiResponse.ok(response));
+
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(ApiResponse.ok(response));
     }
 
     @GetMapping("/memberships")
-    public ResponseEntity<ApiResponse<GetMembershipResponse>> getMyMembership(@AuthenticationPrincipal Long userId) {
+    public ResponseEntity<ApiResponse<GetMembershipResponse>> getMyMembership(
+            @AuthenticationPrincipal Long userId
+    ) {
         GetMembershipResponse response = userService.getMyMembership(userId);
-        return ResponseEntity.status(HttpStatus.OK).body(ApiResponse.ok(response));
+
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(ApiResponse.ok(response));
     }
 }

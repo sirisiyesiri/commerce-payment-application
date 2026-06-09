@@ -1,5 +1,6 @@
 package com.example.commercepaymentapplication.domain.user.entity;
 
+import com.example.commercepaymentapplication.domain.auth.dto.SignupRequest;
 import com.example.commercepaymentapplication.domain.cart.entity.CartItem;
 import com.example.commercepaymentapplication.global.entity.BaseTimeEntity;
 import com.example.commercepaymentapplication.global.error.BusinessException;
@@ -57,6 +58,15 @@ public class User extends BaseTimeEntity {
         this.pointBalance = 0;
         this.membershipGrade = MembershipGrade.NORMAL;
         this.totalPaidAmount = 0;
+    }
+
+    public static User from(SignupRequest request, String encodedPassWord) {
+        return new User(
+                request.email(),
+                encodedPassWord,
+                request.name(),
+                request.phoneNumber()
+        );
     }
 
     // 결제 완료 금액을 누적하고 멤버십 등급을 재계산한다.
