@@ -41,6 +41,9 @@ public class SecurityConfig {
                 )
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/", "/index.html", "/favicon.ico").permitAll()
+                        .requestMatchers("/auth/login", "/auth/signup", "/users/me",
+                                "/users/me/points/transactions", "/carts", "/orders/**",
+                                "/payments/confirm", "/refunds/**", "/products/**").permitAll()
                         .requestMatchers("/actuator/**").permitAll()
                         .requestMatchers("/api/auth/**").permitAll()
                         .requestMatchers("/api/config/portone").permitAll()
