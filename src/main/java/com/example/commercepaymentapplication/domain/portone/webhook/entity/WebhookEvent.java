@@ -45,12 +45,21 @@ public class WebhookEvent extends BaseTimeEntity {
 	@Column(name = "failure_reason", length = 500)
 	private String failureReason;
 
-	public WebhookEvent(String webhookId, String eventType, String portonePaymentId, String payload) {
+	private WebhookEvent(String webhookId, String eventType, String portonePaymentId, String payload) {
 		this.webhookId = webhookId;
 		this.eventType = eventType;
 		this.portonePaymentId = portonePaymentId;
 		this.status = WebhookStatus.RECEIVED;
 		this.payload = payload;
+	}
+
+	public static WebhookEvent of(String webhookId, String eventType, String portonePaymentId, String payload) {
+		return new WebhookEvent(
+				webhookId,
+				eventType,
+				portonePaymentId,
+				payload
+		);
 	}
 
 	public void markAsProcessed() {

@@ -30,7 +30,7 @@ public class WebhookEventService {
 
 		return Optional.of(
 				webhookEventRepository.save(
-						new WebhookEvent(webhookId, eventType, portonePaymentId, payload)
+						WebhookEvent.of(webhookId, eventType, portonePaymentId, payload)
 				)
 		);
 	}

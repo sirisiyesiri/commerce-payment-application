@@ -11,6 +11,9 @@ public record PortOneConfigResponse(
 ) {
     // PortOne 공개 설정 값으로 응답 DTO를 생성한다.
     public static PortOneConfigResponse of(String storeId, String channelKey) {
-        return new PortOneConfigResponse(storeId, channelKey);
+        return new PortOneConfigResponse(
+                storeId,
+                channelKey
+        );
     }
 }

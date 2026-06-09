@@ -6,7 +6,10 @@ public record PortOneCancelRequest(
 ) {
     // PortOne 결제 취소 요청 정보를 생성한다.
     public static PortOneCancelRequest of(String reason, String storeId) {
-        return new PortOneCancelRequest(reason, storeId);
+        return new PortOneCancelRequest(
+                reason,
+                storeId
+        );
     }
 }
 
