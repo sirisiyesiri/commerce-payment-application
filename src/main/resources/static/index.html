@@ -822,225 +822,225 @@
 </head>
 
 <body>
-  <header class="topbar">
-    <button type="button" class="brand ghost" id="homeButton">7ㅏ즈아샵</button>
-    <nav class="nav">
-      <button type="button" data-category="">ALL</button>
-      <button type="button" data-category="CLOTHING">CLOTHING</button>
-      <button type="button" data-category="ELECTRONICS">ELECTRONICS</button>
-      <button type="button" data-category="BEAUTY">BEAUTY</button>
-      <button type="button" data-category="FOOD">FOOD</button>
-    </nav>
-    <div class="top-actions">
-      <button type="button" class="ghost" id="topAuthButton">로그인</button>
-      <button type="button" class="ghost" id="topSignupButton">회원가입</button>
-      <button type="button" class="ghost" id="accountButton">내정보</button>
-      <button type="button" id="cartButton">장바구니 <span class="cart-count" id="cartCount">0</span></button>
+<header class="topbar">
+  <button type="button" class="brand ghost" id="homeButton">7ㅏ즈아샵</button>
+  <nav class="nav">
+    <button type="button" data-category="">ALL</button>
+    <button type="button" data-category="CLOTHING">CLOTHING</button>
+    <button type="button" data-category="ELECTRONICS">ELECTRONICS</button>
+    <button type="button" data-category="BEAUTY">BEAUTY</button>
+    <button type="button" data-category="FOOD">FOOD</button>
+  </nav>
+  <div class="top-actions">
+    <button type="button" class="ghost" id="topAuthButton">로그인</button>
+    <button type="button" class="ghost" id="topSignupButton">회원가입</button>
+    <button type="button" class="ghost" id="accountButton">내정보</button>
+    <button type="button" id="cartButton">장바구니 <span class="cart-count" id="cartCount">0</span></button>
+  </div>
+</header>
+
+<main>
+  <section class="section" id="categories">
+    <div class="section-head">
+      <div>
+        <p class="eyebrow">Categories</p>
+        <h2>카테고리별로 빠르게 보기</h2>
+      </div>
     </div>
-  </header>
+    <div class="category-strip" id="categoryStrip"></div>
+  </section>
 
-  <main>
-    <section class="section" id="categories">
-      <div class="section-head">
-        <div>
-          <p class="eyebrow">Categories</p>
-          <h2>카테고리별로 빠르게 보기</h2>
+  <section class="section" id="shop">
+    <div class="section-head">
+      <div>
+        <p class="eyebrow">Shop</p>
+        <h2>상품</h2>
+      </div>
+      <div class="filters" id="categoryFilters"></div>
+    </div>
+
+    <div class="toolbar">
+      <div class="filters">
+        <select id="sortSelect">
+          <option value="latest">최신순</option>
+          <option value="priceAsc">가격 낮은 순</option>
+          <option value="priceDesc">가격 높은 순</option>
+        </select>
+        <select id="statusSelect">
+          <option value="">전체 상태</option>
+          <option value="ON_SALE">판매중</option>
+          <option value="OUT_OF_STOCK">품절</option>
+          <option value="DISCONTINUED">단종</option>
+        </select>
+      </div>
+      <button type="button" class="ghost" id="refreshProductsButton">새로고침</button>
+    </div>
+
+    <div id="productState" class="loading">
+      <div class="spinner"></div>
+    </div>
+    <div class="product-grid" id="productGrid"></div>
+    <div class="pagination" id="productPagination"></div>
+  </section>
+
+  <section class="section" id="productDetailPage" hidden>
+    <div id="productDetailPageContent"></div>
+  </section>
+
+  <section class="section page" id="loginPage" hidden>
+    <div class="compact-head">
+      <p class="eyebrow">Login</p>
+      <h2>로그인</h2>
+    </div>
+
+    <div class="auth-box">
+      <div class="login-panel">
+        <label>이메일 <input id="emailInput" autocomplete="email"><span class="field-error" id="loginEmailError"></span></label>
+        <label>비밀번호 <input id="passwordInput" type="password" autocomplete="current-password"><span class="field-error" id="loginPasswordError"></span></label>
+        <button type="button" id="loginButton" class="auth-submit">로그인</button>
+      </div>
+      <div class="status" id="loginStatus"></div>
+    </div>
+  </section>
+
+  <section class="section page" id="signupPage" hidden>
+    <div class="compact-head">
+      <p class="eyebrow">Signup</p>
+      <h2>회원가입</h2>
+    </div>
+
+    <div class="auth-box">
+      <div class="login-panel">
+        <label>이메일 <input id="signupEmailInput" autocomplete="email"><span class="field-error" id="signupEmailError"></span></label>
+        <label>비밀번호 <input id="signupPasswordInput" type="password" autocomplete="new-password"><span class="field-error" id="signupPasswordError"></span></label>
+        <label>이름 <input id="nameInput" autocomplete="name"><span class="field-error" id="signupNameError"></span></label>
+        <label>전화번호 <input id="phoneInput" autocomplete="tel"><span class="field-error" id="signupPhoneError"></span></label>
+        <button type="button" id="signupButton" class="auth-submit">회원가입</button>
+      </div>
+      <div class="status" id="signupStatus"></div>
+    </div>
+  </section>
+
+  <section class="section page" id="account" hidden>
+    <div class="compact-head">
+      <p class="eyebrow">Account</p>
+      <h2>내정보</h2>
+    </div>
+    <div class="status" id="accountStatus"></div>
+
+    <div class="account" id="accountSummary" hidden>
+      <div class="account-section">
+        <h3>프로필</h3>
+        <div id="profileArea" class="empty">로그인이 필요합니다.</div>
+      </div>
+      <div class="account-section">
+        <h3>포인트</h3>
+        <div id="pointArea" class="empty">포인트 정보가 여기에 표시됩니다.</div>
+      </div>
+      <div class="account-section">
+        <h3>주문</h3>
+        <button type="button" id="ordersPageButton">주문 내역 보기</button>
+        <button type="button" class="ghost" id="refundsPageButton">환불 내역 보기</button>
+        <button type="button" class="ghost" id="loadAccountButton">내정보 새로고침</button>
+      </div>
+    </div>
+  </section>
+
+  <section class="section page" id="ordersPage" hidden>
+    <div class="compact-head">
+      <p class="eyebrow">Orders</p>
+      <h2>주문 내역</h2>
+    </div>
+    <div id="orderArea" class="empty">주문 내역이 여기에 표시됩니다.</div>
+  </section>
+
+  <section class="section page" id="orderDetailPage" hidden>
+    <div class="compact-head">
+      <p class="eyebrow">Order</p>
+      <h2>주문 상세</h2>
+    </div>
+    <div id="orderDetailArea" class="empty">주문 상세가 여기에 표시됩니다.</div>
+  </section>
+
+  <section class="section page" id="pointsPage" hidden>
+    <div class="compact-head">
+      <p class="eyebrow">Points</p>
+      <h2>포인트 내역</h2>
+    </div>
+    <div id="pointTransactionArea" class="empty">포인트 거래 내역이 여기에 표시됩니다.</div>
+  </section>
+
+  <section class="section page" id="refundsPage" hidden>
+    <div class="compact-head">
+      <p class="eyebrow">Refunds</p>
+      <h2>환불 내역</h2>
+    </div>
+    <div id="refundArea" class="empty">환불 내역이 여기에 표시됩니다.</div>
+  </section>
+
+  <section class="section page" id="refundDetailPage" hidden>
+    <div class="compact-head">
+      <p class="eyebrow">Refund</p>
+      <h2>환불 상세</h2>
+    </div>
+    <div id="refundDetailArea" class="empty">환불 상세가 여기에 표시됩니다.</div>
+  </section>
+
+  <section class="section page" id="cartPage" hidden>
+    <div class="compact-head">
+      <p class="eyebrow">Cart</p>
+      <h2>장바구니</h2>
+    </div>
+    <div id="cartStatus" class="status"></div>
+    <div class="cart-page-grid">
+      <div class="drawer-list" id="cartList"></div>
+      <div class="summary-box">
+        <div class="summary-line">
+          <span>합계</span>
+          <span id="cartTotal">0원</span>
         </div>
+        <button type="button" id="createOrderButton">결제하기</button>
+        <button type="button" class="danger" id="clearCartButton">전체 비우기</button>
+        <div id="orderPreviewArea"></div>
       </div>
-      <div class="category-strip" id="categoryStrip"></div>
-    </section>
+    </div>
+  </section>
 
-    <section class="section" id="shop">
-      <div class="section-head">
-        <div>
-          <p class="eyebrow">Shop</p>
-          <h2>상품</h2>
-        </div>
-        <div class="filters" id="categoryFilters"></div>
-      </div>
+  <section class="section page" id="checkoutPage" hidden>
+    <div class="compact-head">
+      <p class="eyebrow">Checkout</p>
+      <h2>결제</h2>
+    </div>
+    <div id="paymentArea"></div>
+  </section>
 
-      <div class="toolbar">
-        <div class="filters">
-          <select id="sortSelect">
-            <option value="latest">최신순</option>
-            <option value="priceAsc">가격 낮은 순</option>
-            <option value="priceDesc">가격 높은 순</option>
-          </select>
-          <select id="statusSelect">
-            <option value="">전체 상태</option>
-            <option value="ON_SALE">판매중</option>
-            <option value="OUT_OF_STOCK">품절</option>
-            <option value="DISCONTINUED">단종</option>
-          </select>
-        </div>
-        <button type="button" class="ghost" id="refreshProductsButton">새로고침</button>
-      </div>
+  <section class="section page" id="paymentCompletePage" hidden>
+    <div class="compact-head">
+      <p class="eyebrow">Payment</p>
+      <h2>결제 완료</h2>
+    </div>
+    <div id="paymentCompleteArea"></div>
+  </section>
+</main>
 
-      <div id="productState" class="loading">
-        <div class="spinner"></div>
-      </div>
-      <div class="product-grid" id="productGrid"></div>
-      <div class="pagination" id="productPagination"></div>
-    </section>
-
-    <section class="section" id="productDetailPage" hidden>
-      <div id="productDetailPageContent"></div>
-    </section>
-
-    <section class="section page" id="loginPage" hidden>
-      <div class="compact-head">
-        <p class="eyebrow">Login</p>
-        <h2>로그인</h2>
-      </div>
-
-      <div class="auth-box">
-        <div class="login-panel">
-          <label>이메일 <input id="emailInput" autocomplete="email"><span class="field-error" id="loginEmailError"></span></label>
-          <label>비밀번호 <input id="passwordInput" type="password" autocomplete="current-password"><span class="field-error" id="loginPasswordError"></span></label>
-          <button type="button" id="loginButton" class="auth-submit">로그인</button>
-        </div>
-        <div class="status" id="loginStatus"></div>
-      </div>
-    </section>
-
-    <section class="section page" id="signupPage" hidden>
-      <div class="compact-head">
-        <p class="eyebrow">Signup</p>
-        <h2>회원가입</h2>
-      </div>
-
-      <div class="auth-box">
-        <div class="login-panel">
-          <label>이메일 <input id="signupEmailInput" autocomplete="email"><span class="field-error" id="signupEmailError"></span></label>
-          <label>비밀번호 <input id="signupPasswordInput" type="password" autocomplete="new-password"><span class="field-error" id="signupPasswordError"></span></label>
-          <label>이름 <input id="nameInput" autocomplete="name"><span class="field-error" id="signupNameError"></span></label>
-          <label>전화번호 <input id="phoneInput" autocomplete="tel"><span class="field-error" id="signupPhoneError"></span></label>
-          <button type="button" id="signupButton" class="auth-submit">회원가입</button>
-        </div>
-        <div class="status" id="signupStatus"></div>
-      </div>
-    </section>
-
-    <section class="section page" id="account" hidden>
-      <div class="compact-head">
-        <p class="eyebrow">Account</p>
-        <h2>내정보</h2>
-      </div>
-      <div class="status" id="accountStatus"></div>
-
-      <div class="account" id="accountSummary" hidden>
-        <div class="account-section">
-          <h3>프로필</h3>
-          <div id="profileArea" class="empty">로그인이 필요합니다.</div>
-        </div>
-        <div class="account-section">
-          <h3>포인트</h3>
-          <div id="pointArea" class="empty">포인트 정보가 여기에 표시됩니다.</div>
-        </div>
-        <div class="account-section">
-          <h3>주문</h3>
-          <button type="button" id="ordersPageButton">주문 내역 보기</button>
-          <button type="button" class="ghost" id="refundsPageButton">환불 내역 보기</button>
-          <button type="button" class="ghost" id="loadAccountButton">내정보 새로고침</button>
-        </div>
-      </div>
-    </section>
-
-    <section class="section page" id="ordersPage" hidden>
-      <div class="compact-head">
-        <p class="eyebrow">Orders</p>
-        <h2>주문 내역</h2>
-      </div>
-      <div id="orderArea" class="empty">주문 내역이 여기에 표시됩니다.</div>
-    </section>
-
-    <section class="section page" id="orderDetailPage" hidden>
-      <div class="compact-head">
-        <p class="eyebrow">Order</p>
-        <h2>주문 상세</h2>
-      </div>
-      <div id="orderDetailArea" class="empty">주문 상세가 여기에 표시됩니다.</div>
-    </section>
-
-    <section class="section page" id="pointsPage" hidden>
-      <div class="compact-head">
-        <p class="eyebrow">Points</p>
-        <h2>포인트 내역</h2>
-      </div>
-      <div id="pointTransactionArea" class="empty">포인트 거래 내역이 여기에 표시됩니다.</div>
-    </section>
-
-    <section class="section page" id="refundsPage" hidden>
-      <div class="compact-head">
-        <p class="eyebrow">Refunds</p>
-        <h2>환불 내역</h2>
-      </div>
-      <div id="refundArea" class="empty">환불 내역이 여기에 표시됩니다.</div>
-    </section>
-
-    <section class="section page" id="refundDetailPage" hidden>
-      <div class="compact-head">
-        <p class="eyebrow">Refund</p>
-        <h2>환불 상세</h2>
-      </div>
-      <div id="refundDetailArea" class="empty">환불 상세가 여기에 표시됩니다.</div>
-    </section>
-
-    <section class="section page" id="cartPage" hidden>
-      <div class="compact-head">
-        <p class="eyebrow">Cart</p>
-        <h2>장바구니</h2>
-      </div>
-      <div id="cartStatus" class="status"></div>
-      <div class="cart-page-grid">
-        <div class="drawer-list" id="cartList"></div>
-        <div class="summary-box">
-          <div class="summary-line">
-            <span>합계</span>
-            <span id="cartTotal">0원</span>
-          </div>
-          <button type="button" id="createOrderButton">결제하기</button>
-          <button type="button" class="danger" id="clearCartButton">전체 비우기</button>
-          <div id="orderPreviewArea"></div>
-        </div>
-      </div>
-    </section>
-
-    <section class="section page" id="checkoutPage" hidden>
-      <div class="compact-head">
-        <p class="eyebrow">Checkout</p>
-        <h2>결제</h2>
-      </div>
-      <div id="paymentArea"></div>
-    </section>
-
-    <section class="section page" id="paymentCompletePage" hidden>
-      <div class="compact-head">
-        <p class="eyebrow">Payment</p>
-        <h2>결제 완료</h2>
-      </div>
-      <div id="paymentCompleteArea"></div>
-    </section>
-  </main>
-
-  <div class="modal-backdrop" id="cartChoiceModal" hidden>
-    <div class="modal">
-      <h3>장바구니에 담았습니다.</h3>
-      <p>장바구니로 이동하시겠습니까?</p>
-      <div class="modal-actions">
-        <button type="button" class="ghost" id="continueShoppingButton">계속 쇼핑하기</button>
-        <button type="button" id="goCartButton">장바구니 가기</button>
-      </div>
+<div class="modal-backdrop" id="cartChoiceModal" hidden>
+  <div class="modal">
+    <h3>장바구니에 담았습니다.</h3>
+    <p>장바구니로 이동하시겠습니까?</p>
+    <div class="modal-actions">
+      <button type="button" class="ghost" id="continueShoppingButton">계속 쇼핑하기</button>
+      <button type="button" id="goCartButton">장바구니 가기</button>
     </div>
   </div>
+</div>
 
-  <script>
-    function illustration(svg) {
-      return `data:image/svg+xml;charset=UTF-8,${encodeURIComponent(svg)}`;
-    }
+<script>
+  function illustration(svg) {
+    return `data:image/svg+xml;charset=UTF-8,${encodeURIComponent(svg)}`;
+  }
 
-    const categoryImages = {
-      CLOTHING: illustration(`
+  const categoryImages = {
+    CLOTHING: illustration(`
         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 360 260">
           <rect width="360" height="260" fill="#f1eee7"/>
           <path d="M178 62c0-18 22-18 22 0 0 12-12 15-20 24" fill="none" stroke="#12110f" stroke-width="7" stroke-linecap="round"/>
@@ -1048,7 +1048,7 @@
           <path d="M138 116h84M139 142h82" stroke="#8e7d62" stroke-width="6" stroke-linecap="round"/>
         </svg>
       `),
-      ELECTRONICS: illustration(`
+    ELECTRONICS: illustration(`
         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 360 260">
           <rect width="360" height="260" fill="#eef1ed"/>
           <rect x="76" y="58" width="168" height="112" rx="12" fill="#fffdf8" stroke="#12110f" stroke-width="7"/>
@@ -1057,7 +1057,7 @@
           <circle cx="285" cy="164" r="4" fill="#12110f"/>
         </svg>
       `),
-      BEAUTY: illustration(`
+    BEAUTY: illustration(`
         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 360 260">
           <rect width="360" height="260" fill="#f3eeef"/>
           <rect x="119" y="89" width="70" height="120" rx="18" fill="#fffdf8" stroke="#12110f" stroke-width="7"/>
@@ -1067,7 +1067,7 @@
           <path d="M137 142h34M217 156h31" stroke="#8e7d62" stroke-width="6" stroke-linecap="round"/>
         </svg>
       `),
-      FOOD: illustration(`
+    FOOD: illustration(`
         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 360 260">
           <rect width="360" height="260" fill="#f0eee5"/>
           <path d="M87 123h186l-18 83H105l-18-83z" fill="#fffdf8" stroke="#12110f" stroke-width="7" stroke-linejoin="round"/>
@@ -1077,554 +1077,554 @@
           <path d="M124 155h112" stroke="#8e7d62" stroke-width="6" stroke-linecap="round"/>
         </svg>
       `)
-    };
+  };
 
-    const categoryLabels = {
-      CLOTHING: "의류",
-      ELECTRONICS: "전자기기",
-      BEAUTY: "뷰티",
-      FOOD: "식품"
-    };
+  const categoryLabels = {
+    CLOTHING: "의류",
+    ELECTRONICS: "전자기기",
+    BEAUTY: "뷰티",
+    FOOD: "식품"
+  };
 
-    const statusLabels = {
-      ON_SALE: "판매중",
-      OUT_OF_STOCK: "품절",
-      DISCONTINUED: "단종"
-    };
+  const statusLabels = {
+    ON_SALE: "판매중",
+    OUT_OF_STOCK: "품절",
+    DISCONTINUED: "단종"
+  };
 
-    const orderStatusLabels = {
-      PAYMENT_PENDING: "결제대기",
-      ORDER_COMPLETED: "결제완료",
-      ORDER_CANCELED: "주문취소"
-    };
+  const orderStatusLabels = {
+    PAYMENT_PENDING: "결제대기",
+    ORDER_COMPLETED: "결제완료",
+    ORDER_CANCELED: "주문취소"
+  };
 
-    const paymentStatusLabels = {
-      PENDING: "결제대기",
-      COMPLETED: "결제완료",
-      FAILED: "결제실패",
-      REFUND: "환불완료"
-    };
+  const paymentStatusLabels = {
+    PENDING: "결제대기",
+    COMPLETED: "결제완료",
+    FAILED: "결제실패",
+    REFUND: "환불완료"
+  };
 
-    const pointTransactionLabels = {
-      USED: "사용",
-      EARNED: "적립",
-      USE_RESTORED: "사용복구",
-      EARN_REVOKED: "적립회수"
-    };
+  const pointTransactionLabels = {
+    USED: "사용",
+    EARNED: "적립",
+    USE_RESTORED: "사용복구",
+    EARN_REVOKED: "적립회수"
+  };
 
-    const refundStatusLabels = {
-      COMPLETED: "결제취소완료",
-      FAIL: "결제취소실패",
-      FAILED: "결제취소실패"
-    };
+  const refundStatusLabels = {
+    COMPLETED: "결제취소완료",
+    FAIL: "결제취소실패",
+    FAILED: "결제취소실패"
+  };
 
-    const state = {
-      category: "",
-      products: [],
-      productPage: 1,
-      productSize: 10,
-      productTotalPages: 1,
-      cart: null,
-      currentOrder: null,
-      profile: null,
-      point: null
-    };
+  const state = {
+    category: "",
+    products: [],
+    productPage: 1,
+    productSize: 10,
+    productTotalPages: 1,
+    cart: null,
+    currentOrder: null,
+    profile: null,
+    point: null
+  };
 
-    let portOneConfig = null;
-    let isRouting = false;
+  let portOneConfig = null;
+  let isRouting = false;
 
-    const $ = (id) => document.getElementById(id);
-    const formatMoney = (value) => `${Number(value || 0).toLocaleString("ko-KR")}원`;
-    const tokenKey = "authToken";
+  const $ = (id) => document.getElementById(id);
+  const formatMoney = (value) => `${Number(value || 0).toLocaleString("ko-KR")}원`;
+  const tokenKey = "authToken";
 
-    function orderDetailStatusLabel(order) {
-      if (order?.status === "ORDER_CANCELED") {
-        return "주문취소";
-      }
-
-      return orderStatusLabels[order?.status] || order?.status || "-";
+  function orderDetailStatusLabel(order) {
+    if (order?.status === "ORDER_CANCELED") {
+      return "주문취소";
     }
 
-    function paymentFlowStatusLabel(orderStatus, paymentStatus) {
-      if (paymentStatus === "REFUND") return "환불완료";
-      if (orderStatus === "ORDER_CANCELED" && paymentStatus === "REFUND") return "환불완료";
-      if (orderStatus === "ORDER_CANCELED") return "주문취소";
-      return orderStatusLabels[orderStatus] || paymentStatusLabels[paymentStatus] || orderStatus || paymentStatus || "-";
+    return orderStatusLabels[order?.status] || order?.status || "-";
+  }
+
+  function paymentFlowStatusLabel(orderStatus, paymentStatus) {
+    if (paymentStatus === "REFUND") return "환불완료";
+    if (orderStatus === "ORDER_CANCELED" && paymentStatus === "REFUND") return "환불완료";
+    if (orderStatus === "ORDER_CANCELED") return "주문취소";
+    return orderStatusLabels[orderStatus] || paymentStatusLabels[paymentStatus] || orderStatus || paymentStatus || "-";
+  }
+
+  function uniquePointTransactions(transactions = []) {
+    const seen = new Set();
+
+    return transactions.filter((item) => {
+      const type = item.pointTransactionType || item.type || item.transactionType || "";
+      const key = `${item.paymentId || ""}-${type}-${item.amount || 0}`;
+      if (seen.has(key)) return false;
+      seen.add(key);
+      return true;
+    });
+  }
+
+  function token() {
+    return localStorage.getItem(tokenKey);
+  }
+
+  async function api(path, options = {}) {
+    const headers = {
+      "Content-Type": "application/json",
+      ...(options.headers || {})
+    };
+
+    if (token() && options.auth !== false) {
+      headers.Authorization = `Bearer ${token()}`;
     }
 
-    function uniquePointTransactions(transactions = []) {
-      const seen = new Set();
+    const response = await fetch(path, { ...options, headers });
+    if (response.status === 204) return { status: "NO_CONTENT", data: null };
 
-      return transactions.filter((item) => {
-        const type = item.pointTransactionType || item.type || item.transactionType || "";
-        const key = `${item.paymentId || ""}-${type}-${item.amount || 0}`;
-        if (seen.has(key)) return false;
-        seen.add(key);
-        return true;
-      });
+    const text = await response.text();
+    let body = {};
+    try {
+      body = text ? JSON.parse(text) : {};
+    } catch {
+      body = { message: `HTTP ${response.status}` };
     }
 
-    function token() {
-      return localStorage.getItem(tokenKey);
+    if (!response.ok) {
+      const error = new Error(body.message || body.data || body.code || body.status || `HTTP ${response.status}`);
+      error.httpStatus = response.status;
+      error.body = body;
+      throw error;
     }
 
-    async function api(path, options = {}) {
-      const headers = {
-        "Content-Type": "application/json",
-        ...(options.headers || {})
-      };
+    return body;
+  }
 
-      if (token() && options.auth !== false) {
-        headers.Authorization = `Bearer ${token()}`;
-      }
+  function showStatus(id, message, type = "") {
+    const target = $(id);
+    target.className = `status ${type}`;
+    target.textContent = friendlyMessage(message);
+  }
 
-      const response = await fetch(path, { ...options, headers });
-      if (response.status === 204) return { status: "NO_CONTENT", data: null };
-
-      const text = await response.text();
-      let body = {};
-      try {
-        body = text ? JSON.parse(text) : {};
-      } catch {
-        body = { message: `HTTP ${response.status}` };
-      }
-
-      if (!response.ok) {
-        const error = new Error(body.message || body.data || body.code || body.status || `HTTP ${response.status}`);
-        error.httpStatus = response.status;
-        error.body = body;
-        throw error;
-      }
-
-      return body;
-    }
-
-    function showStatus(id, message, type = "") {
+  function clearFieldErrors(ids) {
+    ids.forEach((id) => {
       const target = $(id);
-      target.className = `status ${type}`;
-      target.textContent = friendlyMessage(message);
-    }
+      if (target) target.textContent = "";
+    });
+  }
 
-    function clearFieldErrors(ids) {
-      ids.forEach((id) => {
-        const target = $(id);
-        if (target) target.textContent = "";
-      });
-    }
+  function showFieldError(id, message) {
+    const target = $(id);
+    if (target) target.textContent = friendlyMessage(message);
+  }
 
-    function showFieldError(id, message) {
+  function clearAuthMessages() {
+    clearFieldErrors([
+      "loginEmailError",
+      "loginPasswordError",
+      "signupEmailError",
+      "signupPasswordError",
+      "signupNameError",
+      "signupPhoneError"
+    ]);
+    ["loginStatus", "signupStatus"].forEach((id) => {
       const target = $(id);
-      if (target) target.textContent = friendlyMessage(message);
-    }
-
-    function clearAuthMessages() {
-      clearFieldErrors([
-        "loginEmailError",
-        "loginPasswordError",
-        "signupEmailError",
-        "signupPasswordError",
-        "signupNameError",
-        "signupPhoneError"
-      ]);
-      ["loginStatus", "signupStatus"].forEach((id) => {
-        const target = $(id);
-        if (target) {
-          target.className = "status";
-          target.textContent = "";
-        }
-      });
-    }
-
-    function parseFieldMessages(message) {
-      return String(message || "")
-        .split(",")
-        .map((item) => item.trim())
-        .reduce((acc, item) => {
-          const match = item.match(/^([a-zA-Z]+):\s*(.+)$/);
-          if (match) acc[match[1]] = match[2];
-          return acc;
-        }, {});
-    }
-
-    function normalizePhoneNumber(value) {
-      return String(value || "").replace(/\D/g, "");
-    }
-
-    function isValidPhoneNumber(value) {
-      return /^01[016789]\d{7,8}$/.test(normalizePhoneNumber(value));
-    }
-
-    function isValidEmail(value) {
-      return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(String(value || "").trim());
-    }
-
-    function formatPhoneNumber(value) {
-      const digits = normalizePhoneNumber(value);
-      if (digits.length === 10) {
-        return digits.replace(/(\d{3})(\d{3})(\d{4})/, "$1-$2-$3");
+      if (target) {
+        target.className = "status";
+        target.textContent = "";
       }
-      if (digits.length === 11) {
-        return digits.replace(/(\d{3})(\d{4})(\d{4})/, "$1-$2-$3");
-      }
-      return value;
+    });
+  }
+
+  function parseFieldMessages(message) {
+    return String(message || "")
+            .split(",")
+            .map((item) => item.trim())
+            .reduce((acc, item) => {
+              const match = item.match(/^([a-zA-Z]+):\s*(.+)$/);
+              if (match) acc[match[1]] = match[2];
+              return acc;
+            }, {});
+  }
+
+  function normalizePhoneNumber(value) {
+    return String(value || "").replace(/\D/g, "");
+  }
+
+  function isValidPhoneNumber(value) {
+    return /^01[016789]\d{7,8}$/.test(normalizePhoneNumber(value));
+  }
+
+  function isValidEmail(value) {
+    return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(String(value || "").trim());
+  }
+
+  function formatPhoneNumber(value) {
+    const digits = normalizePhoneNumber(value);
+    if (digits.length === 10) {
+      return digits.replace(/(\d{3})(\d{3})(\d{4})/, "$1-$2-$3");
+    }
+    if (digits.length === 11) {
+      return digits.replace(/(\d{3})(\d{4})(\d{4})/, "$1-$2-$3");
+    }
+    return value;
+  }
+
+  function formatValidationMessage(message) {
+    return String(message || "")
+            .split(",")
+            .map((item) => item.trim().replace(/^[a-zA-Z]+:\s*/, ""))
+            .filter(Boolean)
+            .join(" ");
+  }
+
+  function friendlyMessage(message) {
+    const text = String(message || "");
+    if (!text) return "";
+
+    const errorMessages = {
+      INVALID_INPUT: "입력값을 다시 확인해 주세요.",
+      INTERNAL_ERROR: "서버에서 문제가 발생했습니다. 잠시 후 다시 시도해 주세요.",
+      MEMBER_NOT_FOUND: "회원 정보를 찾을 수 없습니다.",
+      DUPLICATE_EMAIL: "이미 있는 회원 정보입니다.",
+      INVALID_CREDENTIALS: "이메일 또는 비밀번호가 올바르지 않습니다.",
+      PRODUCT_NOT_FOUND: "상품 정보를 찾을 수 없습니다.",
+      INSUFFICIENT_STOCK: "재고 수량이 부족합니다.",
+      INVALID_PRICE: "가격 조건을 다시 확인해 주세요.",
+      INVALID_STOCK: "재고 정보가 올바르지 않습니다.",
+      PRODUCT_NOT_AVAILABLE: "현재 판매중인 상품이 아닙니다.",
+      LOCK_TIMEOUT: "요청이 많아 처리하지 못했습니다. 잠시 후 다시 시도해 주세요.",
+      CART_EMPTY: "장바구니가 비어 있습니다.",
+      CART_ITEM_NOT_FOUND: "장바구니 상품을 찾을 수 없습니다.",
+      INVALID_QUANTITY: "수량은 1개 이상 입력해 주세요.",
+      DUPLICATE_CART_ITEM: "이미 장바구니에 담긴 상품입니다.",
+      ORDER_NOT_FOUND: "주문 정보를 찾을 수 없습니다.",
+      INVALID_ORDER_STATUS: "현재 상태에서는 처리할 수 없는 주문입니다.",
+      PAYMENT_NOT_FOUND: "결제 정보를 찾을 수 없습니다.",
+      PAYMENT_AMOUNT_MISMATCH: "결제 금액이 일치하지 않습니다.",
+      INVALID_PAYMENT_STATUS: "현재 상태에서는 처리할 수 없는 결제입니다.",
+      INVALID_PAYMENT_AMOUNT: "결제 금액을 다시 확인해 주세요.",
+      PAYMENT_NOT_PAID: "결제가 완료된 건만 처리할 수 있습니다.",
+      ALREADY_PROCESSED_PAYMENT: "이미 처리된 결제입니다.",
+      INSUFFICIENT_POINT: "포인트 잔액이 부족합니다.",
+      INVALID_POINT_AMOUNT: "포인트 금액을 다시 확인해 주세요.",
+      INVALID_POINT_TRANSACTION_TYPE: "포인트 거래 유형이 올바르지 않습니다.",
+      REFUND_NOT_FOUND: "환불 정보를 찾을 수 없습니다.",
+      INVALID_WEBHOOK_SIGNATURE: "웹훅 서명이 올바르지 않습니다.",
+      WEBHOOK_EVENT_NOT_FOUND: "웹훅 이벤트를 찾을 수 없습니다.",
+      UNAUTHORIZED: "로그인 후 이용해 주세요.",
+      INVALID_TOKEN: "로그인이 만료되었습니다. 다시 로그인해 주세요.",
+      FORBIDDEN: "접근 권한이 없습니다.",
+      BAD_REQUEST: "요청값을 다시 확인해 주세요.",
+      UNAUTHORIZED_STATUS: "로그인 후 이용해 주세요.",
+      FORBIDDEN_STATUS: "접근 권한이 없습니다.",
+      NOT_FOUND: "요청한 정보를 찾을 수 없습니다.",
+      CONFLICT: "요청한 작업을 처리할 수 없습니다.",
+      INTERNAL_SERVER_ERROR: "서버에서 문제가 발생했습니다. 잠시 후 다시 시도해 주세요."
+    };
+
+    for (const [code, korean] of Object.entries(errorMessages)) {
+      if (text.includes(code)) return korean;
     }
 
-    function formatValidationMessage(message) {
-      return String(message || "")
-        .split(",")
-        .map((item) => item.trim().replace(/^[a-zA-Z]+:\s*/, ""))
-        .filter(Boolean)
-        .join(" ");
+    if (text.includes("400")) return errorMessages.BAD_REQUEST;
+    if (text.includes("401")) return errorMessages.UNAUTHORIZED;
+    if (text.includes("403")) return errorMessages.FORBIDDEN;
+    if (text.includes("404") || text.includes("찾을 수")) {
+      return "요청한 정보를 찾을 수 없습니다.";
     }
-
-    function friendlyMessage(message) {
-      const text = String(message || "");
-      if (!text) return "";
-
-      const errorMessages = {
-        INVALID_INPUT: "입력값을 다시 확인해 주세요.",
-        INTERNAL_ERROR: "서버에서 문제가 발생했습니다. 잠시 후 다시 시도해 주세요.",
-        MEMBER_NOT_FOUND: "회원 정보를 찾을 수 없습니다.",
-        DUPLICATE_EMAIL: "이미 있는 회원 정보입니다.",
-        INVALID_CREDENTIALS: "이메일 또는 비밀번호가 올바르지 않습니다.",
-        PRODUCT_NOT_FOUND: "상품 정보를 찾을 수 없습니다.",
-        INSUFFICIENT_STOCK: "재고 수량이 부족합니다.",
-        INVALID_PRICE: "가격 조건을 다시 확인해 주세요.",
-        INVALID_STOCK: "재고 정보가 올바르지 않습니다.",
-        PRODUCT_NOT_AVAILABLE: "현재 판매중인 상품이 아닙니다.",
-        LOCK_TIMEOUT: "요청이 많아 처리하지 못했습니다. 잠시 후 다시 시도해 주세요.",
-        CART_EMPTY: "장바구니가 비어 있습니다.",
-        CART_ITEM_NOT_FOUND: "장바구니 상품을 찾을 수 없습니다.",
-        INVALID_QUANTITY: "수량은 1개 이상 입력해 주세요.",
-        DUPLICATE_CART_ITEM: "이미 장바구니에 담긴 상품입니다.",
-        ORDER_NOT_FOUND: "주문 정보를 찾을 수 없습니다.",
-        INVALID_ORDER_STATUS: "현재 상태에서는 처리할 수 없는 주문입니다.",
-        PAYMENT_NOT_FOUND: "결제 정보를 찾을 수 없습니다.",
-        PAYMENT_AMOUNT_MISMATCH: "결제 금액이 일치하지 않습니다.",
-        INVALID_PAYMENT_STATUS: "현재 상태에서는 처리할 수 없는 결제입니다.",
-        INVALID_PAYMENT_AMOUNT: "결제 금액을 다시 확인해 주세요.",
-        PAYMENT_NOT_PAID: "결제가 완료된 건만 처리할 수 있습니다.",
-        ALREADY_PROCESSED_PAYMENT: "이미 처리된 결제입니다.",
-        INSUFFICIENT_POINT: "포인트 잔액이 부족합니다.",
-        INVALID_POINT_AMOUNT: "포인트 금액을 다시 확인해 주세요.",
-        INVALID_POINT_TRANSACTION_TYPE: "포인트 거래 유형이 올바르지 않습니다.",
-        REFUND_NOT_FOUND: "환불 정보를 찾을 수 없습니다.",
-        INVALID_WEBHOOK_SIGNATURE: "웹훅 서명이 올바르지 않습니다.",
-        WEBHOOK_EVENT_NOT_FOUND: "웹훅 이벤트를 찾을 수 없습니다.",
-        UNAUTHORIZED: "로그인 후 이용해 주세요.",
-        INVALID_TOKEN: "로그인이 만료되었습니다. 다시 로그인해 주세요.",
-        FORBIDDEN: "접근 권한이 없습니다.",
-        BAD_REQUEST: "요청값을 다시 확인해 주세요.",
-        UNAUTHORIZED_STATUS: "로그인 후 이용해 주세요.",
-        FORBIDDEN_STATUS: "접근 권한이 없습니다.",
-        NOT_FOUND: "요청한 정보를 찾을 수 없습니다.",
-        CONFLICT: "요청한 작업을 처리할 수 없습니다.",
-        INTERNAL_SERVER_ERROR: "서버에서 문제가 발생했습니다. 잠시 후 다시 시도해 주세요."
-      };
-
-      for (const [code, korean] of Object.entries(errorMessages)) {
-        if (text.includes(code)) return korean;
-      }
-
-      if (text.includes("400")) return errorMessages.BAD_REQUEST;
-      if (text.includes("401")) return errorMessages.UNAUTHORIZED;
-      if (text.includes("403")) return errorMessages.FORBIDDEN;
-      if (text.includes("404") || text.includes("찾을 수")) {
-        return "요청한 정보를 찾을 수 없습니다.";
-      }
-      if (text.includes("409")) return errorMessages.CONFLICT;
-      if (text.includes("500")) return errorMessages.INTERNAL_SERVER_ERROR;
-      if (text.includes("인증") || text.includes("권한")) {
-        return "로그인 후 이용해 주세요.";
-      }
-      if (text.includes("재고")) {
-        return "재고 수량을 확인해 주세요.";
-      }
-      if (text.includes("phoneNumber")) {
-        return "회원 전화번호를 확인해 주세요.";
-      }
-      return formatValidationMessage(text);
+    if (text.includes("409")) return errorMessages.CONFLICT;
+    if (text.includes("500")) return errorMessages.INTERNAL_SERVER_ERROR;
+    if (text.includes("인증") || text.includes("권한")) {
+      return "로그인 후 이용해 주세요.";
     }
-
-    function queryString(params) {
-      const search = new URLSearchParams();
-      Object.entries(params).forEach(([key, value]) => {
-        if (value === "" || value === null || value === undefined) return;
-        search.set(key, value);
-      });
-      const text = search.toString();
-      return text ? `?${text}` : "";
+    if (text.includes("재고")) {
+      return "재고 수량을 확인해 주세요.";
     }
-
-    function updateAuthButton() {
-      const isLoggedIn = Boolean(token());
-      $("topAuthButton").textContent = isLoggedIn ? "로그아웃" : "로그인";
-      if ($("topSignupButton")) {
-        $("topSignupButton").hidden = isLoggedIn;
-      }
-      if ($("accountSummary")) {
-        $("accountSummary").hidden = !isLoggedIn;
-      }
+    if (text.includes("phoneNumber")) {
+      return "회원 전화번호를 확인해 주세요.";
     }
+    return formatValidationMessage(text);
+  }
 
-    function pushRoute(url) {
-      if (!isRouting && window.location.hash !== url && window.location.pathname + window.location.hash !== url) {
-        history.pushState({}, "", url);
-      }
+  function queryString(params) {
+    const search = new URLSearchParams();
+    Object.entries(params).forEach(([key, value]) => {
+      if (value === "" || value === null || value === undefined) return;
+      search.set(key, value);
+    });
+    const text = search.toString();
+    return text ? `?${text}` : "";
+  }
+
+  function updateAuthButton() {
+    const isLoggedIn = Boolean(token());
+    $("topAuthButton").textContent = isLoggedIn ? "로그아웃" : "로그인";
+    if ($("topSignupButton")) {
+      $("topSignupButton").hidden = isLoggedIn;
     }
-
-    function setPage(page) {
-      const visible = {
-        home: ["categories", "shop"],
-        detail: ["productDetailPage"],
-        login: ["loginPage"],
-        signup: ["signupPage"],
-        account: ["account"],
-        orders: ["ordersPage"],
-        orderDetail: ["orderDetailPage"],
-        points: ["pointsPage"],
-        refunds: ["refundsPage"],
-        refundDetail: ["refundDetailPage"],
-        cart: ["cartPage"],
-        checkout: ["checkoutPage"],
-        paymentComplete: ["paymentCompletePage"]
-      }[page] || ["categories", "shop"];
-
-      [
-        "categories",
-        "shop",
-        "productDetailPage",
-        "loginPage",
-        "signupPage",
-        "account",
-        "ordersPage",
-        "orderDetailPage",
-        "pointsPage",
-        "refundsPage",
-        "refundDetailPage",
-        "cartPage",
-        "checkoutPage",
-        "paymentCompletePage"
-      ].forEach((id) => {
-        $(id).hidden = !visible.includes(id);
-      });
+    if ($("accountSummary")) {
+      $("accountSummary").hidden = !isLoggedIn;
     }
+  }
 
-    function showHomePage() {
-      setPage("home");
-      pushRoute("/products");
-      document.querySelector("#categories").scrollIntoView({ behavior: "smooth" });
+  function pushRoute(url) {
+    if (!isRouting && window.location.hash !== url && window.location.pathname + window.location.hash !== url) {
+      history.pushState({}, "", url);
     }
+  }
 
-    function showLoginPage() {
-      setPage("login");
-      pushRoute("/auth/login");
-      document.querySelector("#loginPage").scrollIntoView({ behavior: "smooth" });
+  function setPage(page) {
+    const visible = {
+      home: ["categories", "shop"],
+      detail: ["productDetailPage"],
+      login: ["loginPage"],
+      signup: ["signupPage"],
+      account: ["account"],
+      orders: ["ordersPage"],
+      orderDetail: ["orderDetailPage"],
+      points: ["pointsPage"],
+      refunds: ["refundsPage"],
+      refundDetail: ["refundDetailPage"],
+      cart: ["cartPage"],
+      checkout: ["checkoutPage"],
+      paymentComplete: ["paymentCompletePage"]
+    }[page] || ["categories", "shop"];
+
+    [
+      "categories",
+      "shop",
+      "productDetailPage",
+      "loginPage",
+      "signupPage",
+      "account",
+      "ordersPage",
+      "orderDetailPage",
+      "pointsPage",
+      "refundsPage",
+      "refundDetailPage",
+      "cartPage",
+      "checkoutPage",
+      "paymentCompletePage"
+    ].forEach((id) => {
+      $(id).hidden = !visible.includes(id);
+    });
+  }
+
+  function showHomePage() {
+    setPage("home");
+    pushRoute("/products");
+    document.querySelector("#categories").scrollIntoView({ behavior: "smooth" });
+  }
+
+  function showLoginPage() {
+    setPage("login");
+    pushRoute("/auth/login");
+    document.querySelector("#loginPage").scrollIntoView({ behavior: "smooth" });
+  }
+
+  function showSignupPage() {
+    setPage("signup");
+    pushRoute("/auth/signup");
+    document.querySelector("#signupPage").scrollIntoView({ behavior: "smooth" });
+  }
+
+  async function showAccountPage() {
+    if (!token()) {
+      showLoginPage();
+      return;
     }
+    setPage("account");
+    pushRoute("/users/me");
+    document.querySelector("#account").scrollIntoView({ behavior: "smooth" });
+    await loadAccount();
+  }
 
-    function showSignupPage() {
-      setPage("signup");
-      pushRoute("/auth/signup");
-      document.querySelector("#signupPage").scrollIntoView({ behavior: "smooth" });
+  async function showCartPage() {
+    if (!token()) {
+      showLoginPage();
+      return;
     }
+    setPage("cart");
+    pushRoute("/carts");
+    document.querySelector("#cartPage").scrollIntoView({ behavior: "smooth" });
+    clearCartMessages();
+    await loadCart();
+  }
 
-    async function showAccountPage() {
-      if (!token()) {
-        showLoginPage();
-        return;
-      }
-      setPage("account");
-      pushRoute("/users/me");
-      document.querySelector("#account").scrollIntoView({ behavior: "smooth" });
-      await loadAccount();
-    }
+  async function showOrdersPage() {
+    setPage("orders");
+    pushRoute("/orders");
+    document.querySelector("#ordersPage").scrollIntoView({ behavior: "smooth" });
+    await loadOrders();
+  }
 
-    async function showCartPage() {
-      if (!token()) {
-        showLoginPage();
-        return;
-      }
-      setPage("cart");
-      pushRoute("/carts");
-      document.querySelector("#cartPage").scrollIntoView({ behavior: "smooth" });
-      clearCartMessages();
-      await loadCart();
-    }
+  async function showOrderDetailPage(orderId) {
+    setPage("orderDetail");
+    pushRoute(`/orders/${orderId}`);
+    document.querySelector("#orderDetailPage").scrollIntoView({ behavior: "smooth" });
+    await loadOrderDetail(orderId);
+  }
 
-    async function showOrdersPage() {
-      setPage("orders");
-      pushRoute("/orders");
-      document.querySelector("#ordersPage").scrollIntoView({ behavior: "smooth" });
-      await loadOrders();
-    }
+  async function showPointsPage() {
+    setPage("points");
+    pushRoute("/users/me/points/transactions");
+    document.querySelector("#pointsPage").scrollIntoView({ behavior: "smooth" });
+    await loadPointTransactions();
+  }
 
-    async function showOrderDetailPage(orderId) {
-      setPage("orderDetail");
-      pushRoute(`/orders/${orderId}`);
-      document.querySelector("#orderDetailPage").scrollIntoView({ behavior: "smooth" });
-      await loadOrderDetail(orderId);
-    }
+  async function showRefundsPage() {
+    setPage("refunds");
+    pushRoute("/refunds");
+    document.querySelector("#refundsPage").scrollIntoView({ behavior: "smooth" });
+    await loadRefunds();
+  }
 
-    async function showPointsPage() {
-      setPage("points");
-      pushRoute("/users/me/points/transactions");
-      document.querySelector("#pointsPage").scrollIntoView({ behavior: "smooth" });
-      await loadPointTransactions();
-    }
+  async function showRefundDetailPage(refundId) {
+    setPage("refundDetail");
+    pushRoute(`/refunds/${refundId}`);
+    document.querySelector("#refundDetailPage").scrollIntoView({ behavior: "smooth" });
+    await loadRefundDetail(refundId);
+  }
 
-    async function showRefundsPage() {
-      setPage("refunds");
-      pushRoute("/refunds");
-      document.querySelector("#refundsPage").scrollIntoView({ behavior: "smooth" });
-      await loadRefunds();
-    }
+  function showCheckoutPage() {
+    setPage("checkout");
+    pushRoute("/orders/preview");
+    document.querySelector("#checkoutPage").scrollIntoView({ behavior: "smooth" });
+  }
 
-    async function showRefundDetailPage(refundId) {
-      setPage("refundDetail");
-      pushRoute(`/refunds/${refundId}`);
-      document.querySelector("#refundDetailPage").scrollIntoView({ behavior: "smooth" });
-      await loadRefundDetail(refundId);
-    }
+  function showPaymentCompletePage() {
+    setPage("paymentComplete");
+    pushRoute("/payments/confirm");
+    document.querySelector("#paymentCompletePage").scrollIntoView({ behavior: "smooth" });
+  }
 
-    function showCheckoutPage() {
-      setPage("checkout");
-      pushRoute("/orders/preview");
-      document.querySelector("#checkoutPage").scrollIntoView({ behavior: "smooth" });
-    }
+  function openCartChoiceModal() {
+    $("cartChoiceModal").hidden = false;
+  }
 
-    function showPaymentCompletePage() {
-      setPage("paymentComplete");
-      pushRoute("/payments/confirm");
-      document.querySelector("#paymentCompletePage").scrollIntoView({ behavior: "smooth" });
-    }
+  function closeCartChoiceModal() {
+    $("cartChoiceModal").hidden = true;
+  }
 
-    function openCartChoiceModal() {
-      $("cartChoiceModal").hidden = false;
-    }
+  function clearCartMessages() {
+    $("cartStatus").textContent = "";
+    $("cartStatus").className = "status";
+    $("orderPreviewArea").innerHTML = "";
+  }
 
-    function closeCartChoiceModal() {
-      $("cartChoiceModal").hidden = true;
-    }
+  function normalizePointAmount(value) {
+    const onlyDigits = String(value ?? "").replace(/\D/g, "");
+    return Number(onlyDigits || 0);
+  }
 
-    function clearCartMessages() {
-      $("cartStatus").textContent = "";
-      $("cartStatus").className = "status";
-      $("orderPreviewArea").innerHTML = "";
-    }
+  function readCheckoutPointAmount() {
+    const input = $("checkoutUsedPointInput");
+    if (!input) return 0;
 
-    function normalizePointAmount(value) {
-      const onlyDigits = String(value ?? "").replace(/\D/g, "");
-      return Number(onlyDigits || 0);
-    }
+    const amount = normalizePointAmount(input.value);
+    input.value = String(amount);
+    return amount;
+  }
 
-    function readCheckoutPointAmount() {
-      const input = $("checkoutUsedPointInput");
-      if (!input) return 0;
+  function showCheckoutPointError(message) {
+    const target = $("checkoutPointError");
+    if (target) target.textContent = message;
+  }
 
-      const amount = normalizePointAmount(input.value);
-      input.value = String(amount);
-      return amount;
-    }
+  function loadScript(src) {
+    return new Promise((resolve, reject) => {
+      const script = document.createElement("script");
+      script.src = src;
+      script.onload = resolve;
+      script.onerror = reject;
+      document.head.appendChild(script);
+    });
+  }
 
-    function showCheckoutPointError(message) {
-      const target = $("checkoutPointError");
-      if (target) target.textContent = message;
-    }
+  async function ensurePortOneSdk() {
+    if (window.PortOne?.requestPayment) return true;
 
-    function loadScript(src) {
-      return new Promise((resolve, reject) => {
-        const script = document.createElement("script");
-        script.src = src;
-        script.onload = resolve;
-        script.onerror = reject;
-        document.head.appendChild(script);
-      });
-    }
-
-    async function ensurePortOneSdk() {
-      if (window.PortOne?.requestPayment) return true;
-
+    try {
+      await loadScript("https://cdn.portone.io/v2/browser-sdk.js");
+    } catch {
       try {
-        await loadScript("https://cdn.portone.io/v2/browser-sdk.js");
+        window.PortOne = await import("https://cdn.portone.io/v2/browser-sdk.esm.js");
       } catch {
-        try {
-          window.PortOne = await import("https://cdn.portone.io/v2/browser-sdk.esm.js");
-        } catch {
-          return false;
-        }
+        return false;
       }
-
-      return Boolean(window.PortOne?.requestPayment);
     }
 
-    async function loadPortOneConfig() {
-      if (portOneConfig) return portOneConfig;
+    return Boolean(window.PortOne?.requestPayment);
+  }
 
-      const result = await api("/api/config/portone", { auth: false });
-      portOneConfig = result.data;
-      return portOneConfig;
-    }
+  async function loadPortOneConfig() {
+    if (portOneConfig) return portOneConfig;
 
-    function renderCategories() {
-      const categories = Object.keys(categoryImages);
-      $("categoryStrip").innerHTML = categories.map((category) => `
+    const result = await api("/api/config/portone", { auth: false });
+    portOneConfig = result.data;
+    return portOneConfig;
+  }
+
+  function renderCategories() {
+    const categories = Object.keys(categoryImages);
+    $("categoryStrip").innerHTML = categories.map((category) => `
         <button class="category-tile" type="button" data-category="${category}">
           <div class="category-image" style="background-image:url('${categoryImages[category]}')"></div>
           <strong>${categoryLabels[category]}</strong>
         </button>
       `).join("");
 
-      $("categoryFilters").innerHTML = [
-        ["", "전체"],
-        ...categories.map((category) => [category, categoryLabels[category]])
-      ].map(([value, label]) => `
+    $("categoryFilters").innerHTML = [
+      ["", "전체"],
+      ...categories.map((category) => [category, categoryLabels[category]])
+    ].map(([value, label]) => `
         <button type="button" class="chip ${state.category === value ? "active" : ""}" data-category="${value}">
           ${label}
         </button>
       `).join("");
+  }
+
+  async function loadProducts() {
+    $("productGrid").innerHTML = "";
+    $("productPagination").innerHTML = "";
+    $("productState").className = "loading";
+    $("productState").innerHTML = `<div class="spinner"></div>`;
+
+    try {
+      const path = "/api/products" + queryString({
+        category: state.category,
+        status: $("statusSelect").value,
+        sort: $("sortSelect").value,
+        page: state.productPage,
+        size: state.productSize
+      });
+      const result = await api(path, { auth: false });
+      state.products = result.data?.productList || [];
+      state.productPage = result.data?.page || result.data?.pageNumber || state.productPage;
+      state.productSize = result.data?.size || result.data?.pageSize || state.productSize;
+      state.productTotalPages = result.data?.totalPages || 1;
+      renderProducts();
+      renderProductPagination();
+    } catch (error) {
+      $("productState").className = "empty";
+      $("productState").textContent = friendlyMessage(error.message);
+    }
+  }
+
+  function renderProducts() {
+    if (!state.products.length) {
+      $("productState").className = "empty";
+      $("productState").textContent = "조회된 상품이 없습니다.";
+      return;
     }
 
-    async function loadProducts() {
-      $("productGrid").innerHTML = "";
-      $("productPagination").innerHTML = "";
-      $("productState").className = "loading";
-      $("productState").innerHTML = `<div class="spinner"></div>`;
-
-      try {
-        const path = "/api/products" + queryString({
-          category: state.category,
-          status: $("statusSelect").value,
-          sort: $("sortSelect").value,
-          page: state.productPage,
-          size: state.productSize
-        });
-        const result = await api(path, { auth: false });
-        state.products = result.data?.productList || [];
-        state.productPage = result.data?.page || result.data?.pageNumber || state.productPage;
-        state.productSize = result.data?.size || result.data?.pageSize || state.productSize;
-        state.productTotalPages = result.data?.totalPages || 1;
-        renderProducts();
-        renderProductPagination();
-      } catch (error) {
-        $("productState").className = "empty";
-        $("productState").textContent = friendlyMessage(error.message);
-      }
-    }
-
-    function renderProducts() {
-      if (!state.products.length) {
-        $("productState").className = "empty";
-        $("productState").textContent = "조회된 상품이 없습니다.";
-        return;
-      }
-
-      $("productState").className = "";
-      $("productState").innerHTML = "";
-      $("productGrid").innerHTML = state.products.map((product) => {
-        const image = categoryImages[product.category] || categoryImages.CLOTHING;
-        const disabled = product.status !== "ON_SALE" || product.stockQuantity <= 0;
-        const statusLabel = statusLabels[product.status] || product.status;
-        return `
+    $("productState").className = "";
+    $("productState").innerHTML = "";
+    $("productGrid").innerHTML = state.products.map((product) => {
+      const image = categoryImages[product.category] || categoryImages.CLOTHING;
+      const disabled = product.status !== "ON_SALE" || product.stockQuantity <= 0;
+      const statusLabel = statusLabels[product.status] || product.status;
+      return `
           <article class="product-card" data-product-card="${product.id}">
             <div class="product-photo" style="background-image:url('${image}')">
               <span class="badge">${categoryLabels[product.category] || product.category}</span>
@@ -1646,46 +1646,46 @@
             </div>
           </article>
         `;
-      }).join("");
+    }).join("");
+  }
+
+  function renderProductPagination() {
+    const totalPages = Math.max(1, Number(state.productTotalPages || 1));
+    const currentPage = Number(state.productPage || 1);
+
+    if (totalPages <= 1) {
+      $("productPagination").innerHTML = "";
+      return;
     }
 
-    function renderProductPagination() {
-      const totalPages = Math.max(1, Number(state.productTotalPages || 1));
-      const currentPage = Number(state.productPage || 1);
-
-      if (totalPages <= 1) {
-        $("productPagination").innerHTML = "";
-        return;
-      }
-
-      const pages = Array.from({ length: totalPages }, (_, index) => index + 1);
-      $("productPagination").innerHTML = pages.map((page) => `
+    const pages = Array.from({ length: totalPages }, (_, index) => index + 1);
+    $("productPagination").innerHTML = pages.map((page) => `
         <button type="button" class="${page === currentPage ? "active" : ""}" data-product-page="${page}">
           ${page}
         </button>
       `).join("");
+  }
+
+  async function openProductDetail(productId) {
+    setPage("detail");
+    $("productDetailPageContent").innerHTML = `<div class="loading"><div class="spinner"></div></div>`;
+    document.querySelector("#productDetailPage").scrollIntoView({ behavior: "smooth" });
+
+    try {
+      const result = await api(`/api/products/${productId}`, { auth: false });
+      renderProductDetail(result.data);
+      pushRoute(`/products/${productId}`);
+    } catch (error) {
+      $("productDetailPageContent").innerHTML = `<div class="empty">${friendlyMessage(error.message)}</div>`;
     }
+  }
 
-    async function openProductDetail(productId) {
-      setPage("detail");
-      $("productDetailPageContent").innerHTML = `<div class="loading"><div class="spinner"></div></div>`;
-      document.querySelector("#productDetailPage").scrollIntoView({ behavior: "smooth" });
+  function renderProductDetail(product) {
+    const image = categoryImages[product.category] || categoryImages.CLOTHING;
+    const statusLabel = statusLabels[product.status] || product.status;
+    const disabled = product.status !== "ON_SALE" || product.stockQuantity <= 0;
 
-      try {
-        const result = await api(`/api/products/${productId}`, { auth: false });
-        renderProductDetail(result.data);
-        pushRoute(`/products/${productId}`);
-      } catch (error) {
-        $("productDetailPageContent").innerHTML = `<div class="empty">${friendlyMessage(error.message)}</div>`;
-      }
-    }
-
-    function renderProductDetail(product) {
-      const image = categoryImages[product.category] || categoryImages.CLOTHING;
-      const statusLabel = statusLabels[product.status] || product.status;
-      const disabled = product.status !== "ON_SALE" || product.stockQuantity <= 0;
-
-      $("productDetailPageContent").innerHTML = `
+    $("productDetailPageContent").innerHTML = `
         <button type="button" class="ghost" id="backToProductsButton">상품 목록으로</button>
         <div class="detail-page">
           <div class="detail-figure" style="background-image:url('${image}')"></div>
@@ -1703,56 +1703,56 @@
           </div>
         </div>
       `;
+  }
+
+  function showCatalogPage() {
+    showHomePage();
+  }
+
+  async function addToCart(productId, quantityInputId = `qty-${productId}`) {
+    if (!token()) {
+      showStatus("cartStatus", "로그인이 필요합니다.", "error");
+      showAccountPage();
+      return;
     }
 
-    function showCatalogPage() {
-      showHomePage();
+    const quantity = Number($(quantityInputId)?.value || 1);
+    try {
+      await api("/api/carts/items", {
+        method: "POST",
+        body: JSON.stringify({ productId, quantity })
+      });
+      await loadCart();
+      openCartChoiceModal();
+    } catch (error) {
+      closeCartChoiceModal();
+    }
+  }
+
+  async function loadCart() {
+    if (!token()) return;
+    try {
+      const result = await api("/api/carts");
+      state.cart = result.data;
+      renderCart();
+    } catch (error) {
+      state.cart = { cartItemList: [], totalAmount: 0 };
+      renderCart();
+    }
+  }
+
+  function renderCart() {
+    const cart = state.cart || { cartItemList: [], totalAmount: 0 };
+    const items = cart.cartItemList || [];
+    $("cartCount").textContent = items.length;
+    $("cartTotal").textContent = formatMoney(cart.totalAmount);
+
+    if (!items.length) {
+      $("cartList").innerHTML = `<div class="empty">장바구니가 비어 있습니다.</div>`;
+      return;
     }
 
-    async function addToCart(productId, quantityInputId = `qty-${productId}`) {
-      if (!token()) {
-        showStatus("cartStatus", "로그인이 필요합니다.", "error");
-        showAccountPage();
-        return;
-      }
-
-      const quantity = Number($(quantityInputId)?.value || 1);
-      try {
-        await api("/api/carts/items", {
-          method: "POST",
-          body: JSON.stringify({ productId, quantity })
-        });
-        await loadCart();
-        openCartChoiceModal();
-      } catch (error) {
-        closeCartChoiceModal();
-      }
-    }
-
-    async function loadCart() {
-      if (!token()) return;
-      try {
-        const result = await api("/api/carts");
-        state.cart = result.data;
-        renderCart();
-      } catch (error) {
-        state.cart = { cartItemList: [], totalAmount: 0 };
-        renderCart();
-      }
-    }
-
-    function renderCart() {
-      const cart = state.cart || { cartItemList: [], totalAmount: 0 };
-      const items = cart.cartItemList || [];
-      $("cartCount").textContent = items.length;
-      $("cartTotal").textContent = formatMoney(cart.totalAmount);
-
-      if (!items.length) {
-        $("cartList").innerHTML = `<div class="empty">장바구니가 비어 있습니다.</div>`;
-        return;
-      }
-
-      $("cartList").innerHTML = items.map((item) => `
+    $("cartList").innerHTML = items.map((item) => `
         <div class="cart-row">
           <div class="row-main">
             <span>${item.productName}</span>
@@ -1766,110 +1766,113 @@
           </div>
         </div>
       `).join("");
-    }
+  }
 
-    function isCartEmpty() {
-      const items = state.cart?.cartItemList || [];
-      return items.length === 0;
-    }
+  function isCartEmpty() {
+    const items = state.cart?.cartItemList || [];
+    return items.length === 0;
+  }
 
-    async function previewOrder() {
-      try {
-        const result = await api("/api/orders/preview");
-        $("orderPreviewArea").innerHTML = `
+  async function previewOrder() {
+    try {
+      const result = await api("/api/orders/preview");
+      $("orderPreviewArea").innerHTML = `
           <div class="status success">주문서 미리보기 완료 · ${formatMoney(result.data?.totalPrice)}</div>
         `;
-      } catch (error) {
-        $("orderPreviewArea").innerHTML = `<div class="status error">${friendlyMessage(error.message)}</div>`;
-      }
+    } catch (error) {
+      $("orderPreviewArea").innerHTML = `<div class="status error">${friendlyMessage(error.message)}</div>`;
     }
+  }
 
-    async function createOrder() {
-      try {
-        if (!state.cart) {
-          await loadCart();
-        }
-
-        if (isCartEmpty()) {
-          $("orderPreviewArea").innerHTML = `<div class="status error">장바구니가 비어 있습니다.</div>`;
-          return;
-        }
-
-        if (!state.point) {
-          const point = await api("/api/users/me/points");
-          state.point = point.data;
-        }
-
-        const preview = await api("/api/orders/preview");
-        state.currentOrder = { preview: preview.data, totalPrice: preview.data?.totalPrice || 0, usedPointAmount: 0 };
-        renderPaymentScreen(state.currentOrder);
-        showCheckoutPage();
-      } catch (error) {
-        $("orderPreviewArea").innerHTML = `<div class="status error">${friendlyMessage(error.message)}</div>`;
+  async function createOrder() {
+    try {
+      if (!state.cart) {
+        await loadCart();
       }
-    }
 
-    async function submitOrder() {
-      try {
-        showCheckoutPointError("");
-        const usedPointAmount = readCheckoutPointAmount();
-        const pointBalance = Number(state.point?.pointBalance || 0);
-        const totalPrice = Number(state.currentOrder?.totalPrice || 0);
-
-        if (usedPointAmount > pointBalance) {
-          showCheckoutPointError("보유 포인트보다 많이 사용할 수 없습니다.");
-          return;
-        }
-
-        if (usedPointAmount > totalPrice) {
-          showCheckoutPointError("상품 금액보다 많이 사용할 수 없습니다.");
-          return;
-        }
-
-        const result = await api("/api/carts/orders", {
-          method: "POST",
-          body: JSON.stringify({
-            usedPointAmount
-          })
-        });
-        const preview = state.currentOrder?.preview;
-        state.currentOrder = {
-          ...result.data,
-          totalPrice: preview?.totalPrice || Number(result.data?.paymentPrice || 0) + usedPointAmount,
-          pgPaymentAmount: result.data?.paymentPrice,
-          usedPointAmount,
-          preview
-        };
-        renderPaymentScreen(state.currentOrder);
-        await Promise.allSettled([loadOrders(), loadAccount(), loadProducts()]);
-        await requestPortOnePayment(
-          state.currentOrder.orderId,
-          state.currentOrder.portonePaymentId,
-          state.currentOrder.pgPaymentAmount
-        );
-        await Promise.allSettled([loadOrders(), loadAccount(), loadProducts()]);
-      } catch (error) {
-        const usedPointAmount = readCheckoutPointAmount();
-        const message = error.httpStatus === 400 && usedPointAmount > 0
-          ? "포인트가 부족합니다."
-          : friendlyMessage(error.message);
-        if (usedPointAmount > 0) {
-          showCheckoutPointError(message);
-        } else {
-          $("paymentStatus").className = "status error";
-          $("paymentStatus").textContent = message;
-        }
+      if (isCartEmpty()) {
+        $("orderPreviewArea").innerHTML = `<div class="status error">장바구니가 비어 있습니다.</div>`;
+        return;
       }
-    }
 
-    function renderPaymentScreen(order) {
-      const usedPointAmount = Number(order?.usedPointAmount || 0);
+      if (!state.point) {
+        const point = await api("/api/users/me/points");
+        state.point = point.data;
+      }
+
+      const preview = await api("/api/orders/preview");
+      state.currentOrder = { preview: preview.data, totalPrice: preview.data?.totalPrice || 0, usedPointAmount: 0 };
+      renderPaymentScreen(state.currentOrder);
+      showCheckoutPage();
+    } catch (error) {
+      $("orderPreviewArea").innerHTML = `<div class="status error">${friendlyMessage(error.message)}</div>`;
+    }
+  }
+
+  async function submitOrder() {
+    try {
+      showCheckoutPointError("");
+      const usedPointAmount = readCheckoutPointAmount();
       const pointBalance = Number(state.point?.pointBalance || 0);
-      const pgAmount = order?.pgPaymentAmount ?? Math.max(0, Number(order?.totalPrice || 0) - usedPointAmount);
-      const preview = order?.preview || {};
-      const itemCount = preview.orderItems?.length || preview.previewOrderItemResponses?.length || preview.items?.length || 0;
-      const isOrderCreated = Boolean(order?.orderId);
-      $("paymentArea").innerHTML = `
+      const totalPrice = Number(state.currentOrder?.totalPrice || 0);
+
+      if (usedPointAmount > pointBalance) {
+        showCheckoutPointError("보유 포인트보다 많이 사용할 수 없습니다.");
+        return;
+      }
+
+      if (usedPointAmount > totalPrice) {
+        showCheckoutPointError("상품 금액보다 많이 사용할 수 없습니다.");
+        return;
+      }
+
+      const result = await api("/api/carts/orders", {
+        method: "POST",
+        body: JSON.stringify({
+          usedPointAmount
+        })
+      });
+      const preview = state.currentOrder?.preview;
+      const pgPaymentAmount = Number(result.data?.paymentPrice ?? 0);
+      const orderTotalPrice = Number(preview?.totalPrice || 0) || pgPaymentAmount + usedPointAmount;
+      state.currentOrder = {
+        ...result.data,
+        totalPrice: orderTotalPrice,
+        pgPaymentAmount,
+        usedPointAmount,
+        preview
+      };
+      renderPaymentScreen(state.currentOrder);
+      await Promise.allSettled([loadOrders(), loadAccount(), loadProducts()]);
+      await requestPortOnePayment(
+              state.currentOrder.orderId,
+              state.currentOrder.portonePaymentId,
+              state.currentOrder.pgPaymentAmount
+      );
+      await Promise.allSettled([loadOrders(), loadAccount(), loadProducts()]);
+    } catch (error) {
+      const usedPointAmount = readCheckoutPointAmount();
+      const message = error.httpStatus === 400 && usedPointAmount > 0
+              ? "포인트가 부족합니다."
+              : friendlyMessage(error.message);
+      if (usedPointAmount > 0) {
+        showCheckoutPointError(message);
+      } else {
+        $("paymentStatus").className = "status error";
+        $("paymentStatus").textContent = message;
+      }
+    }
+  }
+
+  function renderPaymentScreen(order) {
+    const usedPointAmount = Number(order?.usedPointAmount || 0);
+    const pointBalance = Number(state.point?.pointBalance || 0);
+    const pgAmount = Number(order?.pgPaymentAmount ?? Math.max(0, Number(order?.totalPrice || 0) - usedPointAmount));
+    const totalPrice = Math.max(Number(order?.totalPrice || 0), usedPointAmount + pgAmount);
+    const preview = order?.preview || {};
+    const itemCount = preview.orderItems?.length || preview.previewOrderItemResponses?.length || preview.items?.length || 0;
+    const isOrderCreated = Boolean(order?.orderId);
+    $("paymentArea").innerHTML = `
         <div class="checkout-layout">
           <div class="checkout-box">
             <strong>${order?.orderName || "주문 상품"}</strong>
@@ -1881,7 +1884,7 @@
               </div>
               <div class="mini-item">
                 <span class="mini-icon">₩</span>
-                <strong>${formatMoney(order?.totalPrice)}</strong>
+                <strong>${formatMoney(totalPrice)}</strong>
                 <span class="row-sub">상품 금액</span>
               </div>
               <div class="mini-item">
@@ -1890,124 +1893,124 @@
                 <span class="row-sub">사용 포인트</span>
               </div>
             </div>
-            <div class="row-main"><span>상품 금액</span><span>${formatMoney(order?.totalPrice)}</span></div>
+            <div class="row-main"><span>상품 금액</span><span>${formatMoney(totalPrice)}</span></div>
             <div class="row-main"><span>보유 포인트</span><span>${formatMoney(pointBalance)}</span></div>
             ${isOrderCreated
-              ? `<div class="row-main"><span>사용 포인트</span><span>${formatMoney(usedPointAmount)}</span></div>`
-              : `<label>사용 포인트 <input id="checkoutUsedPointInput" type="text" inputmode="numeric" pattern="[0-9]*" value="${usedPointAmount}" data-total-price="${order?.totalPrice || 0}" data-point-balance="${pointBalance}"><span class="field-error" id="checkoutPointError"></span></label>`}
+            ? `<div class="row-main"><span>사용 포인트</span><span>${formatMoney(usedPointAmount)}</span></div>`
+            : `<label>사용 포인트 <input id="checkoutUsedPointInput" type="text" inputmode="numeric" pattern="[0-9]*" value="${usedPointAmount}" data-total-price="${totalPrice}" data-point-balance="${pointBalance}"><span class="field-error" id="checkoutPointError"></span></label>`}
             <div class="summary-line"><span>결제 금액</span><span id="checkoutPaymentAmount">${formatMoney(pgAmount)}</span></div>
           </div>
           <div class="checkout-box">
             <strong>결제 수단</strong>
             ${isOrderCreated
-              ? `<button type="button" data-portone-pay="${order?.orderId}" data-portone-payment-id="${order?.portonePaymentId || ""}" data-pg-amount="${pgAmount}">카드로 결제하기</button>`
-              : `<button type="button" id="submitOrderButton">카드로 결제하기</button>`}
+            ? `<button type="button" data-portone-pay="${order?.orderId}" data-portone-payment-id="${order?.portonePaymentId || ""}" data-pg-amount="${pgAmount}">${pgAmount <= 0 ? "포인트로 결제하기" : "카드로 결제하기"}</button>`
+            : `<button type="button" id="submitOrderButton">${pgAmount <= 0 ? "포인트로 결제하기" : "카드로 결제하기"}</button>`}
             <button type="button" class="ghost" id="backToCartFromCheckoutButton">장바구니로 돌아가기</button>
           </div>
           <div class="status" id="paymentStatus"></div>
         </div>
       `;
-    }
+  }
 
-    async function requestPortOnePayment(orderId, portonePaymentId, pgAmount) {
-      if (!state.currentOrder) return;
+  async function requestPortOnePayment(orderId, portonePaymentId, pgAmount) {
+    if (!state.currentOrder) return;
 
-      $("paymentStatus").className = "status";
-      $("paymentStatus").textContent = "결제창을 여는 중입니다.";
+    $("paymentStatus").className = "status";
+    $("paymentStatus").textContent = "결제창을 여는 중입니다.";
 
-      try {
-        if (Number(pgAmount) <= 0) {
-          await confirmPayment(orderId, portonePaymentId);
-          return;
-        }
-
-        const sdkReady = await ensurePortOneSdk();
-        if (!sdkReady) {
-          $("paymentStatus").className = "status error";
-          $("paymentStatus").textContent = "결제 모듈을 불러오지 못했습니다. 네트워크 상태를 확인해 주세요.";
-          return;
-        }
-
-        const config = await loadPortOneConfig();
-        const customerName = (state.profile?.name || $("nameInput").value || "구매자").trim();
-        const rawCustomerPhoneNumber = (state.profile?.phoneNumber || $("phoneInput").value || "").trim();
-        if (!isValidPhoneNumber(rawCustomerPhoneNumber)) {
-          $("paymentStatus").className = "status error";
-          $("paymentStatus").textContent = "회원 전화번호를 확인해 주세요.";
-          return;
-        }
-
-        const customerPhoneNumber = formatPhoneNumber(rawCustomerPhoneNumber);
-        const customerEmail = (state.profile?.email || $("emailInput").value || "").trim();
-        const paymentResult = await window.PortOne.requestPayment({
-          storeId: config.storeId,
-          channelKey: config.channelKey,
-          paymentId: portonePaymentId,
-          orderName: state.currentOrder.orderName || "7ㅏ즈아샵 주문",
-          totalAmount: Number(pgAmount),
-          currency: "CURRENCY_KRW",
-          payMethod: "CARD",
-          customer: {
-            fullName: customerName,
-            phoneNumber: customerPhoneNumber,
-            email: customerEmail
-          }
-        });
-
-        if (paymentResult?.code) {
-          $("paymentStatus").className = "status error";
-          $("paymentStatus").textContent = paymentResult.message || "결제가 취소되었거나 실패했습니다.";
-          return;
-        }
-
+    try {
+      if (Number(pgAmount) <= 0) {
         await confirmPayment(orderId, portonePaymentId);
-      } catch (error) {
-        $("paymentStatus").className = "status error";
-        $("paymentStatus").textContent = friendlyMessage(error.message || "결제창을 열지 못했습니다.");
+        return;
       }
-    }
 
-    async function confirmPayment(orderId, portonePaymentId) {
-      try {
-        const result = await api("/api/payments/confirm", {
-          method: "POST",
-          body: JSON.stringify({ orderId: Number(orderId), portonePaymentId })
-        });
-        renderPaymentComplete(result.data);
-        showPaymentCompletePage();
-        await Promise.allSettled([loadCart(), loadAccount(), loadProducts(), loadOrders()]);
-      } catch (error) {
+      const sdkReady = await ensurePortOneSdk();
+      if (!sdkReady) {
         $("paymentStatus").className = "status error";
-        $("paymentStatus").textContent = friendlyMessage(error.message);
+        $("paymentStatus").textContent = "결제 모듈을 불러오지 못했습니다. 네트워크 상태를 확인해 주세요.";
+        return;
       }
-    }
 
-    async function payExistingOrder(orderId) {
-      try {
-        const result = await api(`/api/orders/${orderId}`);
-        const order = result.data;
+      const config = await loadPortOneConfig();
+      const customerName = (state.profile?.name || $("nameInput").value || "구매자").trim();
+      const rawCustomerPhoneNumber = (state.profile?.phoneNumber || $("phoneInput").value || "").trim();
+      if (!isValidPhoneNumber(rawCustomerPhoneNumber)) {
+        $("paymentStatus").className = "status error";
+        $("paymentStatus").textContent = "회원 전화번호를 확인해 주세요.";
+        return;
+      }
 
-        if (!order.portonePaymentId) {
-          throw new Error("결제 정보를 찾을 수 없습니다.");
+      const customerPhoneNumber = formatPhoneNumber(rawCustomerPhoneNumber);
+      const customerEmail = (state.profile?.email || $("emailInput").value || "").trim();
+      const paymentResult = await window.PortOne.requestPayment({
+        storeId: config.storeId,
+        channelKey: config.channelKey,
+        paymentId: portonePaymentId,
+        orderName: state.currentOrder.orderName || "7ㅏ즈아샵 주문",
+        totalAmount: Number(pgAmount),
+        currency: "CURRENCY_KRW",
+        payMethod: "CARD",
+        customer: {
+          fullName: customerName,
+          phoneNumber: customerPhoneNumber,
+          email: customerEmail
         }
+      });
 
-        state.currentOrder = {
-          ...order,
-          pgPaymentAmount: order.paymentAmount,
-          preview: { items: order.orderItems || [] }
-        };
-
-        renderPaymentScreen(state.currentOrder);
-        showCheckoutPage();
-      } catch (error) {
-        const target = window.location.pathname.startsWith("/orders/") ? $("orderDetailArea") : $("orderArea");
-        target.className = "";
-        target.insertAdjacentHTML("afterbegin", `<div class="status error">${friendlyMessage(error.message)}</div>`);
+      if (paymentResult?.code) {
+        $("paymentStatus").className = "status error";
+        $("paymentStatus").textContent = paymentResult.message || "결제가 취소되었거나 실패했습니다.";
+        return;
       }
-    }
 
-    function renderPaymentComplete(payment) {
-      $("paymentCompleteArea").innerHTML = `
+      await confirmPayment(orderId, portonePaymentId);
+    } catch (error) {
+      $("paymentStatus").className = "status error";
+      $("paymentStatus").textContent = friendlyMessage(error.message || "결제창을 열지 못했습니다.");
+    }
+  }
+
+  async function confirmPayment(orderId, portonePaymentId) {
+    try {
+      const result = await api("/api/payments/confirm", {
+        method: "POST",
+        body: JSON.stringify({ orderId: Number(orderId), portonePaymentId })
+      });
+      renderPaymentComplete(result.data);
+      showPaymentCompletePage();
+      await Promise.allSettled([loadCart(), loadAccount(), loadProducts(), loadOrders()]);
+    } catch (error) {
+      $("paymentStatus").className = "status error";
+      $("paymentStatus").textContent = friendlyMessage(error.message);
+    }
+  }
+
+  async function payExistingOrder(orderId) {
+    try {
+      const result = await api(`/api/orders/${orderId}`);
+      const order = result.data;
+
+      if (!order.portonePaymentId) {
+        throw new Error("결제 정보를 찾을 수 없습니다.");
+      }
+
+      state.currentOrder = {
+        ...order,
+        pgPaymentAmount: order.paymentAmount,
+        preview: { items: order.orderItems || [] }
+      };
+
+      renderPaymentScreen(state.currentOrder);
+      showCheckoutPage();
+    } catch (error) {
+      const target = window.location.pathname.startsWith("/orders/") ? $("orderDetailArea") : $("orderArea");
+      target.className = "";
+      target.insertAdjacentHTML("afterbegin", `<div class="status error">${friendlyMessage(error.message)}</div>`);
+    }
+  }
+
+  function renderPaymentComplete(payment) {
+    $("paymentCompleteArea").innerHTML = `
         <div class="checkout-layout">
           <div class="checkout-box">
             <strong>결제가 완료되었습니다.</strong>
@@ -2036,274 +2039,273 @@
           </div>
         </div>
       `;
+  }
+
+  async function requestRefund(paymentId) {
+    const reason = $("refundReasonInput")?.value?.trim();
+    if (!reason) {
+      showStatus("refundStatus", "취소 사유를 입력해 주세요.", "error");
+      return;
     }
 
-    async function requestRefund(paymentId) {
-      const reason = $("refundReasonInput")?.value?.trim();
-      if (!reason) {
-        showStatus("refundStatus", "취소 사유를 입력해 주세요.", "error");
-        return;
-      }
-
-      try {
-        const result = await api(`/api/payments/${paymentId}/refunds`, {
-          method: "POST",
-          body: JSON.stringify({ reason })
-        });
-        $("refundStatus").className = "status success";
-        $("refundStatus").innerHTML = `
+    try {
+      const result = await api(`/api/payments/${paymentId}/refunds`, {
+        method: "POST",
+        body: JSON.stringify({ reason })
+      });
+      $("refundStatus").className = "status success";
+      $("refundStatus").innerHTML = `
           환불이 완료되었습니다.
           <div class="actions-row" style="margin-top:10px">
             <button type="button" class="ghost" id="refundsAfterRequestButton">환불 내역 보기</button>
           </div>
         `;
-        await Promise.allSettled([loadCart(), loadAccount(), loadOrders(), loadProducts()]);
-      } catch (error) {
-        showStatus("refundStatus", friendlyMessage(error.message), "error");
-      }
+      await Promise.allSettled([loadCart(), loadAccount(), loadOrders(), loadProducts()]);
+    } catch (error) {
+      showStatus("refundStatus", friendlyMessage(error.message), "error");
+    }
+  }
+
+  async function signup() {
+    clearAuthMessages();
+    const email = $("signupEmailInput").value.trim();
+    const password = $("signupPasswordInput").value;
+    const name = $("nameInput").value.trim();
+    const phoneNumber = $("phoneInput").value.trim();
+
+    let hasError = false;
+    if (!email) {
+      showFieldError("signupEmailError", "이메일을 입력해 주세요.");
+      hasError = true;
+    } else if (!isValidEmail(email)) {
+      showFieldError("signupEmailError", "이메일 형식이 올바르지 않습니다.");
+      hasError = true;
     }
 
-    async function signup() {
-      clearAuthMessages();
-      const email = $("signupEmailInput").value.trim();
-      const password = $("signupPasswordInput").value;
-      const name = $("nameInput").value.trim();
-      const phoneNumber = $("phoneInput").value.trim();
+    if (!password) {
+      showFieldError("signupPasswordError", "비밀번호를 입력해 주세요.");
+      hasError = true;
+    } else if (password.length < 8) {
+      showFieldError("signupPasswordError", "비밀번호는 8자 이상이어야 합니다.");
+      hasError = true;
+    }
 
-      let hasError = false;
-      if (!email) {
-        showFieldError("signupEmailError", "이메일을 입력해 주세요.");
-        hasError = true;
-      } else if (!isValidEmail(email)) {
-        showFieldError("signupEmailError", "이메일 형식이 올바르지 않습니다.");
-        hasError = true;
-      }
+    if (!name) {
+      showFieldError("signupNameError", "이름을 입력해 주세요.");
+      hasError = true;
+    }
 
-      if (!password) {
-        showFieldError("signupPasswordError", "비밀번호를 입력해 주세요.");
-        hasError = true;
-      } else if (password.length < 8) {
-        showFieldError("signupPasswordError", "비밀번호는 8자 이상이어야 합니다.");
-        hasError = true;
-      }
+    if (!phoneNumber) {
+      showFieldError("signupPhoneError", "전화번호를 입력해 주세요.");
+      hasError = true;
+    } else if (!isValidPhoneNumber(phoneNumber)) {
+      showFieldError("signupPhoneError", "전화번호 형식이 올바르지 않습니다.");
+      hasError = true;
+    }
 
-      if (!name) {
-        showFieldError("signupNameError", "이름을 입력해 주세요.");
-        hasError = true;
-      }
+    if (hasError) {
+      return;
+    }
 
-      if (!phoneNumber) {
-        showFieldError("signupPhoneError", "전화번호를 입력해 주세요.");
-        hasError = true;
-      } else if (!isValidPhoneNumber(phoneNumber)) {
-        showFieldError("signupPhoneError", "전화번호 형식이 올바르지 않습니다.");
-        hasError = true;
-      }
-
-      if (hasError) {
+    try {
+      await api("/api/auth/signup", {
+        method: "POST",
+        auth: false,
+        body: JSON.stringify({
+          email,
+          password,
+          name,
+          phoneNumber: formatPhoneNumber(phoneNumber)
+        })
+      });
+      showLoginPage();
+    } catch (error) {
+      if (error.httpStatus === 409) {
+        showFieldError("signupEmailError", "이미 있는 회원 정보입니다.");
         return;
       }
 
-      try {
-        await api("/api/auth/signup", {
-          method: "POST",
-          auth: false,
-          body: JSON.stringify({
-            email,
-            password,
-            name,
-            phoneNumber: formatPhoneNumber(phoneNumber)
-          })
-        });
-        showStatus("loginStatus", "회원가입이 완료되었습니다. 로그인해 주세요.", "success");
-        showLoginPage();
-      } catch (error) {
-        if (error.httpStatus === 409) {
-          showFieldError("signupEmailError", "이미 있는 회원 정보입니다.");
-          return;
-        }
+      const fieldMessages = parseFieldMessages(error.message);
+      if (fieldMessages.email) showFieldError("signupEmailError", fieldMessages.email);
+      if (fieldMessages.password) showFieldError("signupPasswordError", fieldMessages.password);
+      if (fieldMessages.name) showFieldError("signupNameError", fieldMessages.name);
+      if (fieldMessages.phone || fieldMessages.phoneNumber) {
+        showFieldError("signupPhoneError", fieldMessages.phone || fieldMessages.phoneNumber);
+      }
 
-        const fieldMessages = parseFieldMessages(error.message);
-        if (fieldMessages.email) showFieldError("signupEmailError", fieldMessages.email);
-        if (fieldMessages.password) showFieldError("signupPasswordError", fieldMessages.password);
-        if (fieldMessages.name) showFieldError("signupNameError", fieldMessages.name);
-        if (fieldMessages.phone || fieldMessages.phoneNumber) {
-          showFieldError("signupPhoneError", fieldMessages.phone || fieldMessages.phoneNumber);
-        }
-
-        if (!Object.keys(fieldMessages).length) {
-          showStatus("signupStatus", friendlyMessage(error.message), "error");
-        }
+      if (!Object.keys(fieldMessages).length) {
+        showStatus("signupStatus", friendlyMessage(error.message), "error");
       }
     }
+  }
 
-    async function login() {
-      clearAuthMessages();
-      try {
-        const result = await api("/api/auth/login", {
-          method: "POST",
-          auth: false,
-          body: JSON.stringify({
-            email: $("emailInput").value,
-            password: $("passwordInput").value
-          })
-        });
-        localStorage.setItem(tokenKey, result.data.token);
-        updateAuthButton();
-        showStatus("loginStatus", "로그인되었습니다.", "success");
-        await Promise.all([loadCart(), loadAccount()]);
-        showHomePage();
-      } catch (error) {
-        showFieldError("loginPasswordError", "이메일 또는 비밀번호가 올바르지 않습니다.");
-      }
+  async function login() {
+    clearAuthMessages();
+    try {
+      const result = await api("/api/auth/login", {
+        method: "POST",
+        auth: false,
+        body: JSON.stringify({
+          email: $("emailInput").value,
+          password: $("passwordInput").value
+        })
+      });
+      localStorage.setItem(tokenKey, result.data.token);
+      updateAuthButton();
+      showStatus("loginStatus", "로그인되었습니다.", "success");
+      await Promise.all([loadCart(), loadAccount()]);
+      showHomePage();
+    } catch (error) {
+      showFieldError("loginPasswordError", "이메일 또는 비밀번호가 올바르지 않습니다.");
+    }
+  }
+
+  async function loadAccount() {
+    if (!token()) {
+      showStatus("accountStatus", "로그인이 필요합니다.", "error");
+      return;
     }
 
-    async function loadAccount() {
-      if (!token()) {
-        showStatus("accountStatus", "로그인이 필요합니다.", "error");
-        return;
-      }
+    try {
+      const [profile, membership, point] = await Promise.all([
+        api("/api/users/me"),
+        api("/api/users/me/memberships"),
+        api("/api/users/me/points")
+      ]);
 
-      try {
-        const [profile, membership, point] = await Promise.all([
-          api("/api/users/me"),
-          api("/api/users/me/memberships"),
-          api("/api/users/me/points")
-        ]);
+      renderProfile(profile.data, membership.data);
+      renderPoint(point.data);
+    } catch (error) {
+      showStatus("accountStatus", friendlyMessage(error.message), "error");
+    }
+  }
 
-        renderProfile(profile.data, membership.data);
-        renderPoint(point.data);
-      } catch (error) {
-        showStatus("accountStatus", friendlyMessage(error.message), "error");
-      }
+  async function loadOrders() {
+    if (!token()) {
+      $("orderArea").className = "empty";
+      $("orderArea").textContent = "로그인 후 주문 내역을 확인할 수 있습니다.";
+      return;
     }
 
-    async function loadOrders() {
-      if (!token()) {
-        $("orderArea").className = "empty";
-        $("orderArea").textContent = "로그인 후 주문 내역을 확인할 수 있습니다.";
-        return;
-      }
+    try {
+      const orders = await api("/api/orders");
+      renderOrders(orders.data || []);
+    } catch (error) {
+      $("orderArea").className = "empty";
+      $("orderArea").textContent = friendlyMessage(error.message);
+    }
+  }
 
-      try {
-        const orders = await api("/api/orders");
-        renderOrders(orders.data || []);
-      } catch (error) {
-        $("orderArea").className = "empty";
-        $("orderArea").textContent = friendlyMessage(error.message);
-      }
+  async function loadOrderDetail(orderId) {
+    if (!token()) {
+      $("orderDetailArea").className = "empty";
+      $("orderDetailArea").textContent = "로그인 후 주문 상세를 확인할 수 있습니다.";
+      return;
     }
 
-    async function loadOrderDetail(orderId) {
-      if (!token()) {
-        $("orderDetailArea").className = "empty";
-        $("orderDetailArea").textContent = "로그인 후 주문 상세를 확인할 수 있습니다.";
-        return;
-      }
+    $("orderDetailArea").className = "loading";
+    $("orderDetailArea").innerHTML = `<div class="spinner"></div>`;
 
-      $("orderDetailArea").className = "loading";
-      $("orderDetailArea").innerHTML = `<div class="spinner"></div>`;
+    try {
+      const result = await api(`/api/orders/${orderId}`);
+      renderOrderDetail(result.data);
+    } catch (error) {
+      $("orderDetailArea").className = "empty";
+      $("orderDetailArea").textContent = friendlyMessage(error.message);
+    }
+  }
 
-      try {
-        const result = await api(`/api/orders/${orderId}`);
-        renderOrderDetail(result.data);
-      } catch (error) {
-        $("orderDetailArea").className = "empty";
-        $("orderDetailArea").textContent = friendlyMessage(error.message);
-      }
+  async function loadPointTransactions() {
+    if (!token()) {
+      $("pointTransactionArea").className = "empty";
+      $("pointTransactionArea").textContent = "로그인 후 포인트 내역을 확인할 수 있습니다.";
+      return;
     }
 
-    async function loadPointTransactions() {
-      if (!token()) {
-        $("pointTransactionArea").className = "empty";
-        $("pointTransactionArea").textContent = "로그인 후 포인트 내역을 확인할 수 있습니다.";
-        return;
-      }
+    $("pointTransactionArea").className = "loading";
+    $("pointTransactionArea").innerHTML = `<div class="spinner"></div>`;
 
-      $("pointTransactionArea").className = "loading";
-      $("pointTransactionArea").innerHTML = `<div class="spinner"></div>`;
+    try {
+      const result = await api("/api/users/me/points/transactions");
+      renderPointTransactions(result.data || []);
+    } catch (error) {
+      $("pointTransactionArea").className = "empty";
+      $("pointTransactionArea").textContent = friendlyMessage(error.message);
+    }
+  }
 
-      try {
-        const result = await api("/api/users/me/points/transactions");
-        renderPointTransactions(result.data || []);
-      } catch (error) {
-        $("pointTransactionArea").className = "empty";
-        $("pointTransactionArea").textContent = friendlyMessage(error.message);
-      }
+  async function loadRefunds() {
+    if (!token()) {
+      $("refundArea").className = "empty";
+      $("refundArea").textContent = "로그인 후 환불 내역을 확인할 수 있습니다.";
+      return;
     }
 
-    async function loadRefunds() {
-      if (!token()) {
-        $("refundArea").className = "empty";
-        $("refundArea").textContent = "로그인 후 환불 내역을 확인할 수 있습니다.";
-        return;
-      }
+    $("refundArea").className = "loading";
+    $("refundArea").innerHTML = `<div class="spinner"></div>`;
 
-      $("refundArea").className = "loading";
-      $("refundArea").innerHTML = `<div class="spinner"></div>`;
+    try {
+      const result = await api("/api/refunds");
+      renderRefunds(result.data || []);
+    } catch (error) {
+      $("refundArea").className = "empty";
+      $("refundArea").textContent = friendlyMessage(error.message);
+    }
+  }
 
-      try {
-        const result = await api("/api/refunds");
-        renderRefunds(result.data || []);
-      } catch (error) {
-        $("refundArea").className = "empty";
-        $("refundArea").textContent = friendlyMessage(error.message);
-      }
+  async function loadRefundDetail(refundId) {
+    if (!token()) {
+      $("refundDetailArea").className = "empty";
+      $("refundDetailArea").textContent = "로그인 후 환불 상세를 확인할 수 있습니다.";
+      return;
     }
 
-    async function loadRefundDetail(refundId) {
-      if (!token()) {
-        $("refundDetailArea").className = "empty";
-        $("refundDetailArea").textContent = "로그인 후 환불 상세를 확인할 수 있습니다.";
-        return;
-      }
+    $("refundDetailArea").className = "loading";
+    $("refundDetailArea").innerHTML = `<div class="spinner"></div>`;
 
-      $("refundDetailArea").className = "loading";
-      $("refundDetailArea").innerHTML = `<div class="spinner"></div>`;
-
-      try {
-        const result = await api(`/api/refunds/${refundId}`);
-        renderRefundDetail(result.data);
-      } catch (error) {
-        $("refundDetailArea").className = "empty";
-        $("refundDetailArea").textContent = friendlyMessage(error.message);
-      }
+    try {
+      const result = await api(`/api/refunds/${refundId}`);
+      renderRefundDetail(result.data);
+    } catch (error) {
+      $("refundDetailArea").className = "empty";
+      $("refundDetailArea").textContent = friendlyMessage(error.message);
     }
+  }
 
-    function renderProfile(profile, membership) {
-      state.profile = profile;
-      $("profileArea").className = "";
-      $("profileArea").innerHTML = `
+  function renderProfile(profile, membership) {
+    state.profile = profile;
+    $("profileArea").className = "";
+    $("profileArea").innerHTML = `
         <div class="point-row">
           <div class="row-main"><span>${profile.name}</span><span>${membership.membershipGrade || "-"}</span></div>
           <div class="row-sub">${profile.email}</div>
           <div class="row-sub">${profile.phoneNumber}</div>
         </div>
       `;
-    }
+  }
 
-    function renderPoint(point) {
-      state.point = point;
-      $("pointArea").className = "";
-      $("pointArea").innerHTML = `
+  function renderPoint(point) {
+    state.point = point;
+    $("pointArea").className = "";
+    $("pointArea").innerHTML = `
         <div class="point-row">
           <div class="row-main"><span>잔액</span><span>${formatMoney(point.pointBalance || 0)}</span></div>
         </div>
         <button type="button" class="ghost point-detail-button" id="pointTransactionsButton">포인트 상세 조회</button>
       `;
+  }
+
+  function renderPointTransactions(transactions) {
+    const uniqueTransactions = uniquePointTransactions(transactions);
+
+    if (!uniqueTransactions.length) {
+      $("pointTransactionArea").className = "empty";
+      $("pointTransactionArea").textContent = "포인트 거래 내역이 없습니다.";
+      return;
     }
 
-    function renderPointTransactions(transactions) {
-      const uniqueTransactions = uniquePointTransactions(transactions);
-
-      if (!uniqueTransactions.length) {
-        $("pointTransactionArea").className = "empty";
-        $("pointTransactionArea").textContent = "포인트 거래 내역이 없습니다.";
-        return;
-      }
-
-      $("pointTransactionArea").className = "";
-      $("pointTransactionArea").innerHTML = uniqueTransactions.map((item) => `
+    $("pointTransactionArea").className = "";
+    $("pointTransactionArea").innerHTML = uniqueTransactions.map((item) => `
         <div class="point-row">
           <div class="row-main">
             <span>${pointTransactionLabels[item.pointTransactionType] || item.pointTransactionType}</span>
@@ -2312,17 +2314,17 @@
           <div class="row-sub">결제 ${item.paymentId || "-"} · ${item.createdAt || ""}</div>
         </div>
       `).join("");
+  }
+
+  function renderRefunds(refunds) {
+    if (!refunds.length) {
+      $("refundArea").className = "empty";
+      $("refundArea").textContent = "환불 내역이 없습니다.";
+      return;
     }
 
-    function renderRefunds(refunds) {
-      if (!refunds.length) {
-        $("refundArea").className = "empty";
-        $("refundArea").textContent = "환불 내역이 없습니다.";
-        return;
-      }
-
-      $("refundArea").className = "";
-      $("refundArea").innerHTML = refunds.map((refund) => `
+    $("refundArea").className = "";
+    $("refundArea").innerHTML = refunds.map((refund) => `
         <div class="order-row">
           <div class="row-main">
             <span>결제취소 내역</span>
@@ -2332,11 +2334,11 @@
           ${refund.refundId ? `<button type="button" class="ghost" data-refund-detail="${refund.refundId}">상세보기</button>` : ""}
         </div>
       `).join("");
-    }
+  }
 
-    function renderRefundDetail(refund) {
-      $("refundDetailArea").className = "";
-      $("refundDetailArea").innerHTML = `
+  function renderRefundDetail(refund) {
+    $("refundDetailArea").className = "";
+    $("refundDetailArea").innerHTML = `
         <div class="checkout-layout">
           <div class="checkout-box">
             <strong>${refundStatusLabels[refund.refundedStatus] || refund.refundedStatus}</strong>
@@ -2351,16 +2353,16 @@
           </div>
         </div>
       `;
-    }
+  }
 
-    function renderOrders(orders) {
-      if (!orders.length) {
-        $("orderArea").className = "empty";
-        $("orderArea").textContent = "주문 내역이 없습니다.";
-        return;
-      }
-      $("orderArea").className = "";
-      $("orderArea").innerHTML = orders.slice(0, 5).map((order) => `
+  function renderOrders(orders) {
+    if (!orders.length) {
+      $("orderArea").className = "empty";
+      $("orderArea").textContent = "주문 내역이 없습니다.";
+      return;
+    }
+    $("orderArea").className = "";
+    $("orderArea").innerHTML = orders.slice(0, 5).map((order) => `
         <div class="order-row">
           <div class="row-main"><span>${order.orderName}</span><span>${formatMoney(order.totalPrice)}</span></div>
           <div class="row-sub">${orderStatusLabels[order.status] || paymentStatusLabels[order.paymentStatus] || order.status}</div>
@@ -2371,12 +2373,12 @@
           </div>
         </div>
       `).join("");
-    }
+  }
 
-    function renderOrderDetail(order) {
-      const items = order.orderItems || [];
-      $("orderDetailArea").className = "";
-      $("orderDetailArea").innerHTML = `
+  function renderOrderDetail(order) {
+    const items = order.orderItems || [];
+    $("orderDetailArea").className = "";
+    $("orderDetailArea").innerHTML = `
         <div class="checkout-layout">
           <div class="checkout-box">
             <strong>${orderDetailStatusLabel(order)}</strong>
@@ -2430,338 +2432,338 @@
           </div>
         </div>
       `;
+  }
+
+  document.addEventListener("click", async (event) => {
+    const categoryButton = event.target.closest("[data-category]");
+    if (categoryButton) {
+      setPage("home");
+      state.category = categoryButton.dataset.category;
+      state.productPage = 1;
+      renderCategories();
+      await loadProducts();
+      document.querySelector("#shop").scrollIntoView({ behavior: "smooth" });
+      return;
     }
 
-    document.addEventListener("click", async (event) => {
-      const categoryButton = event.target.closest("[data-category]");
-      if (categoryButton) {
-        setPage("home");
-        state.category = categoryButton.dataset.category;
-        state.productPage = 1;
-        renderCategories();
-        await loadProducts();
-        document.querySelector("#shop").scrollIntoView({ behavior: "smooth" });
-        return;
-      }
+    const addButton = event.target.closest("[data-add-product]");
+    if (addButton) {
+      await addToCart(Number(addButton.dataset.addProduct));
+      return;
+    }
 
-      const addButton = event.target.closest("[data-add-product]");
-      if (addButton) {
-        await addToCart(Number(addButton.dataset.addProduct));
-        return;
-      }
+    const productPageButton = event.target.closest("[data-product-page]");
+    if (productPageButton) {
+      state.productPage = Number(productPageButton.dataset.productPage);
+      await loadProducts();
+      document.querySelector("#shop").scrollIntoView({ behavior: "smooth" });
+      return;
+    }
 
-      const productPageButton = event.target.closest("[data-product-page]");
-      if (productPageButton) {
-        state.productPage = Number(productPageButton.dataset.productPage);
-        await loadProducts();
-        document.querySelector("#shop").scrollIntoView({ behavior: "smooth" });
-        return;
-      }
+    const productCard = event.target.closest("[data-product-card]");
+    if (productCard && !event.target.closest("button, input")) {
+      await openProductDetail(Number(productCard.dataset.productCard));
+      return;
+    }
 
-      const productCard = event.target.closest("[data-product-card]");
-      if (productCard && !event.target.closest("button, input")) {
-        await openProductDetail(Number(productCard.dataset.productCard));
-        return;
-      }
+    const detailAddButton = event.target.closest("[data-add-detail-product]");
+    if (detailAddButton) {
+      const productId = Number(detailAddButton.dataset.addDetailProduct);
+      await addToCart(productId, `detail-qty-${productId}`);
+      return;
+    }
 
-      const detailAddButton = event.target.closest("[data-add-detail-product]");
-      if (detailAddButton) {
-        const productId = Number(detailAddButton.dataset.addDetailProduct);
-        await addToCart(productId, `detail-qty-${productId}`);
-        return;
-      }
+    if (event.target.closest("#backToProductsButton")) {
+      showCatalogPage();
+      return;
+    }
 
-      if (event.target.closest("#backToProductsButton")) {
-        showCatalogPage();
-        return;
-      }
+    const portOneButton = event.target.closest("[data-portone-pay]");
+    if (portOneButton) {
+      await requestPortOnePayment(
+              portOneButton.dataset.portonePay,
+              portOneButton.dataset.portonePaymentId,
+              portOneButton.dataset.pgAmount
+      );
+      return;
+    }
 
-      const portOneButton = event.target.closest("[data-portone-pay]");
-      if (portOneButton) {
-        await requestPortOnePayment(
-          portOneButton.dataset.portonePay,
-          portOneButton.dataset.portonePaymentId,
-          portOneButton.dataset.pgAmount
-        );
-        return;
-      }
+    const payExistingOrderButton = event.target.closest("[data-pay-existing-order]");
+    if (payExistingOrderButton) {
+      await payExistingOrder(Number(payExistingOrderButton.dataset.payExistingOrder));
+      return;
+    }
 
-      const payExistingOrderButton = event.target.closest("[data-pay-existing-order]");
-      if (payExistingOrderButton) {
-        await payExistingOrder(Number(payExistingOrderButton.dataset.payExistingOrder));
-        return;
-      }
-
-      if (event.target.closest("#backToCartFromCheckoutButton")) {
-        await showCartPage();
-        return;
-      }
-
-      if (event.target.closest("#submitOrderButton")) {
-        await submitOrder();
-        return;
-      }
-
-      const updateButton = event.target.closest("[data-update-cart]");
-      if (updateButton) {
-        try {
-          const cartItemId = updateButton.dataset.updateCart;
-          const quantity = Number($(`cart-qty-${cartItemId}`).value);
-          await api(`/api/carts/items/${cartItemId}`, {
-            method: "PUT",
-            body: JSON.stringify({ quantity })
-          });
-          await loadCart();
-        } catch (error) {
-          showStatus("cartStatus", friendlyMessage(error.message), "error");
-        }
-        return;
-      }
-
-      const deleteButton = event.target.closest("[data-delete-cart]");
-      if (deleteButton) {
-        try {
-          await api(`/api/carts/items/${deleteButton.dataset.deleteCart}`, { method: "DELETE" });
-          await loadCart();
-        } catch (error) {
-          showStatus("cartStatus", friendlyMessage(error.message), "error");
-        }
-        return;
-      }
-
-      const cancelButton = event.target.closest("[data-cancel-order]");
-      if (cancelButton) {
-        try {
-          await api(`/api/orders/${cancelButton.dataset.cancelOrder}/cancel`, { method: "POST" });
-          if (window.location.pathname.startsWith("/orders/")) {
-            await showOrdersPage();
-          } else {
-            await loadOrders();
-          }
-          await loadProducts();
-        } catch (error) {
-          const targetId = window.location.pathname.startsWith("/orders/") ? "orderDetailArea" : "orderArea";
-          $(targetId).className = "";
-          $(targetId).insertAdjacentHTML("afterbegin", `<div class="status error">${friendlyMessage(error.message)}</div>`);
-        }
-        return;
-      }
-
-      const orderDetailButton = event.target.closest("[data-order-detail]");
-      if (orderDetailButton) {
-        await showOrderDetailPage(Number(orderDetailButton.dataset.orderDetail));
-        return;
-      }
-
-      const refundButton = event.target.closest("[data-refund-payment]");
-      if (refundButton) {
-        await requestRefund(refundButton.dataset.refundPayment);
-        return;
-      }
-
-      if (event.target.closest("#showRefundFormButton")) {
-        const form = $("orderRefundForm");
-        if (form) form.hidden = false;
-        return;
-      }
-
-      if (event.target.closest("#paymentOrdersButton")) {
-        await showOrdersPage();
-        return;
-      }
-
-      if (event.target.closest("#paymentHomeButton")) {
-        showHomePage();
-        return;
-      }
-
-      if (event.target.closest("#pointTransactionsButton")) {
-        await showPointsPage();
-        return;
-      }
-
-      if (event.target.closest("#refundsAfterRequestButton")) {
-        await showRefundsPage();
-        return;
-      }
-
-      if (event.target.closest("#refundsPageButton")) {
-        await showRefundsPage();
-        return;
-      }
-
-      const refundDetailButton = event.target.closest("[data-refund-detail]");
-      if (refundDetailButton) {
-        await showRefundDetailPage(Number(refundDetailButton.dataset.refundDetail));
-        return;
-      }
-
-      if (event.target.closest("#backToRefundsButton")) {
-        await showRefundsPage();
-        return;
-      }
-
-      if (event.target.closest("#backToOrdersButton")) {
-        await showOrdersPage();
-        return;
-      }
-    });
-
-    document.addEventListener("input", (event) => {
-      if (event.target.id !== "checkoutUsedPointInput") return;
-
-      const totalPrice = Number(event.target.dataset.totalPrice || 0);
-      const pointBalance = Number(event.target.dataset.pointBalance || 0);
-      const usedPointAmount = normalizePointAmount(event.target.value);
-      event.target.value = String(usedPointAmount);
-      showCheckoutPointError("");
-      if (usedPointAmount > pointBalance) {
-        showCheckoutPointError("보유 포인트보다 많이 사용할 수 없습니다.");
-      } else if (usedPointAmount > totalPrice) {
-        showCheckoutPointError("상품 금액보다 많이 사용할 수 없습니다.");
-      }
-      $("checkoutPaymentAmount").textContent = formatMoney(Math.max(0, totalPrice - usedPointAmount));
-    });
-
-    $("homeButton").addEventListener("click", showHomePage);
-    $("accountButton").addEventListener("click", showAccountPage);
-    $("cartButton").addEventListener("click", showCartPage);
-    $("topAuthButton").addEventListener("click", async () => {
-      if (token()) {
-        logout();
-        return;
-      }
-      showLoginPage();
-    });
-    $("topSignupButton").addEventListener("click", showSignupPage);
-    $("refreshProductsButton").addEventListener("click", loadProducts);
-    $("sortSelect").addEventListener("change", () => {
-      state.productPage = 1;
-      loadProducts();
-    });
-    $("statusSelect").addEventListener("change", () => {
-      state.productPage = 1;
-      loadProducts();
-    });
-    $("signupButton").addEventListener("click", signup);
-    $("loginButton").addEventListener("click", login);
-    $("ordersPageButton").addEventListener("click", showOrdersPage);
-    $("continueShoppingButton").addEventListener("click", closeCartChoiceModal);
-    $("goCartButton").addEventListener("click", async () => {
-      closeCartChoiceModal();
+    if (event.target.closest("#backToCartFromCheckoutButton")) {
       await showCartPage();
-    });
-    function logout() {
-      localStorage.removeItem(tokenKey);
-      $("profileArea").className = "empty";
-      $("profileArea").textContent = "로그인이 필요합니다.";
-      $("pointArea").className = "empty";
-      $("pointArea").textContent = "포인트 정보가 여기에 표시됩니다.";
-      $("orderArea").className = "empty";
-      $("orderArea").textContent = "주문 내역이 여기에 표시됩니다.";
-      state.cart = null;
-      state.profile = null;
-      state.point = null;
-      renderCart();
-      updateAuthButton();
-      $("accountStatus").className = "status";
-      $("accountStatus").textContent = "";
-      showHomePage();
+      return;
     }
 
-    async function initializeRoute() {
-      isRouting = true;
-      try {
-        const route = window.location.hash
-          ? window.location.hash.replace(/^#/, "")
-          : window.location.pathname;
-        if (route === "/" || route === "/products") {
-          showHomePage();
-          return;
-        }
-        if (route === "/orders") {
-          await showOrdersPage();
-          return;
-        }
-        const orderMatch = route.match(/^\/orders\/(\d+)$/);
-        if (orderMatch) {
-          await showOrderDetailPage(Number(orderMatch[1]));
-          return;
-        }
-        if (route === "/users/me/points/transactions") {
-          await showPointsPage();
-          return;
-        }
-        if (route === "/refunds") {
-          await showRefundsPage();
-          return;
-        }
-        const refundMatch = route.match(/^\/refunds\/(\d+)$/);
-        if (refundMatch) {
-          await showRefundDetailPage(Number(refundMatch[1]));
-          return;
-        }
-        if (route === "/carts") {
-          await showCartPage();
-          return;
-        }
-        if (route === "/auth/login") {
-          showLoginPage();
-          return;
-        }
-        if (route === "/auth/signup") {
-          showSignupPage();
-          return;
-        }
-        if (route === "/users/me") {
-          await showAccountPage();
-          return;
-        }
-        if (route === "/orders/preview") {
-          showCheckoutPage();
-          return;
-        }
-        if (route === "/payments/confirm") {
-          showPaymentCompletePage();
-          return;
-        }
-        const productMatch = route.match(/^\/products\/(\d+)$/);
-        if (productMatch) {
-          await openProductDetail(Number(productMatch[1]));
-          return;
-        }
-        setPage("home");
-      } finally {
-        isRouting = false;
-      }
+    if (event.target.closest("#submitOrderButton")) {
+      await submitOrder();
+      return;
     }
 
-    $("loadAccountButton").addEventListener("click", loadAccount);
-    $("createOrderButton").addEventListener("click", createOrder);
-    $("clearCartButton").addEventListener("click", async () => {
-      if (!token()) {
-        showLoginPage();
-        return;
-      }
-
+    const updateButton = event.target.closest("[data-update-cart]");
+    if (updateButton) {
       try {
-        await api("/api/carts/items", { method: "DELETE" });
+        const cartItemId = updateButton.dataset.updateCart;
+        const quantity = Number($(`cart-qty-${cartItemId}`).value);
+        await api(`/api/carts/items/${cartItemId}`, {
+          method: "PUT",
+          body: JSON.stringify({ quantity })
+        });
         await loadCart();
       } catch (error) {
         showStatus("cartStatus", friendlyMessage(error.message), "error");
       }
-    });
-
-    renderCategories();
-    updateAuthButton();
-    loadProducts();
-    window.addEventListener("hashchange", initializeRoute);
-    window.addEventListener("popstate", initializeRoute);
-    setTimeout(initializeRoute, 0);
-    if (token()) {
-      loadCart().catch(() => {});
-      loadAccount().catch(() => {});
+      return;
     }
-  </script>
+
+    const deleteButton = event.target.closest("[data-delete-cart]");
+    if (deleteButton) {
+      try {
+        await api(`/api/carts/items/${deleteButton.dataset.deleteCart}`, { method: "DELETE" });
+        await loadCart();
+      } catch (error) {
+        showStatus("cartStatus", friendlyMessage(error.message), "error");
+      }
+      return;
+    }
+
+    const cancelButton = event.target.closest("[data-cancel-order]");
+    if (cancelButton) {
+      try {
+        await api(`/api/orders/${cancelButton.dataset.cancelOrder}/cancel`, { method: "POST" });
+        if (window.location.pathname.startsWith("/orders/")) {
+          await showOrdersPage();
+        } else {
+          await loadOrders();
+        }
+        await loadProducts();
+      } catch (error) {
+        const targetId = window.location.pathname.startsWith("/orders/") ? "orderDetailArea" : "orderArea";
+        $(targetId).className = "";
+        $(targetId).insertAdjacentHTML("afterbegin", `<div class="status error">${friendlyMessage(error.message)}</div>`);
+      }
+      return;
+    }
+
+    const orderDetailButton = event.target.closest("[data-order-detail]");
+    if (orderDetailButton) {
+      await showOrderDetailPage(Number(orderDetailButton.dataset.orderDetail));
+      return;
+    }
+
+    const refundButton = event.target.closest("[data-refund-payment]");
+    if (refundButton) {
+      await requestRefund(refundButton.dataset.refundPayment);
+      return;
+    }
+
+    if (event.target.closest("#showRefundFormButton")) {
+      const form = $("orderRefundForm");
+      if (form) form.hidden = false;
+      return;
+    }
+
+    if (event.target.closest("#paymentOrdersButton")) {
+      await showOrdersPage();
+      return;
+    }
+
+    if (event.target.closest("#paymentHomeButton")) {
+      showHomePage();
+      return;
+    }
+
+    if (event.target.closest("#pointTransactionsButton")) {
+      await showPointsPage();
+      return;
+    }
+
+    if (event.target.closest("#refundsAfterRequestButton")) {
+      await showRefundsPage();
+      return;
+    }
+
+    if (event.target.closest("#refundsPageButton")) {
+      await showRefundsPage();
+      return;
+    }
+
+    const refundDetailButton = event.target.closest("[data-refund-detail]");
+    if (refundDetailButton) {
+      await showRefundDetailPage(Number(refundDetailButton.dataset.refundDetail));
+      return;
+    }
+
+    if (event.target.closest("#backToRefundsButton")) {
+      await showRefundsPage();
+      return;
+    }
+
+    if (event.target.closest("#backToOrdersButton")) {
+      await showOrdersPage();
+      return;
+    }
+  });
+
+  document.addEventListener("input", (event) => {
+    if (event.target.id !== "checkoutUsedPointInput") return;
+
+    const totalPrice = Number(event.target.dataset.totalPrice || 0);
+    const pointBalance = Number(event.target.dataset.pointBalance || 0);
+    const usedPointAmount = normalizePointAmount(event.target.value);
+    event.target.value = String(usedPointAmount);
+    showCheckoutPointError("");
+    if (usedPointAmount > pointBalance) {
+      showCheckoutPointError("보유 포인트보다 많이 사용할 수 없습니다.");
+    } else if (usedPointAmount > totalPrice) {
+      showCheckoutPointError("상품 금액보다 많이 사용할 수 없습니다.");
+    }
+    $("checkoutPaymentAmount").textContent = formatMoney(Math.max(0, totalPrice - usedPointAmount));
+  });
+
+  $("homeButton").addEventListener("click", showHomePage);
+  $("accountButton").addEventListener("click", showAccountPage);
+  $("cartButton").addEventListener("click", showCartPage);
+  $("topAuthButton").addEventListener("click", async () => {
+    if (token()) {
+      logout();
+      return;
+    }
+    showLoginPage();
+  });
+  $("topSignupButton").addEventListener("click", showSignupPage);
+  $("refreshProductsButton").addEventListener("click", loadProducts);
+  $("sortSelect").addEventListener("change", () => {
+    state.productPage = 1;
+    loadProducts();
+  });
+  $("statusSelect").addEventListener("change", () => {
+    state.productPage = 1;
+    loadProducts();
+  });
+  $("signupButton").addEventListener("click", signup);
+  $("loginButton").addEventListener("click", login);
+  $("ordersPageButton").addEventListener("click", showOrdersPage);
+  $("continueShoppingButton").addEventListener("click", closeCartChoiceModal);
+  $("goCartButton").addEventListener("click", async () => {
+    closeCartChoiceModal();
+    await showCartPage();
+  });
+  function logout() {
+    localStorage.removeItem(tokenKey);
+    $("profileArea").className = "empty";
+    $("profileArea").textContent = "로그인이 필요합니다.";
+    $("pointArea").className = "empty";
+    $("pointArea").textContent = "포인트 정보가 여기에 표시됩니다.";
+    $("orderArea").className = "empty";
+    $("orderArea").textContent = "주문 내역이 여기에 표시됩니다.";
+    state.cart = null;
+    state.profile = null;
+    state.point = null;
+    renderCart();
+    updateAuthButton();
+    $("accountStatus").className = "status";
+    $("accountStatus").textContent = "";
+    showHomePage();
+  }
+
+  async function initializeRoute() {
+    isRouting = true;
+    try {
+      const route = window.location.hash
+              ? window.location.hash.replace(/^#/, "")
+              : window.location.pathname;
+      if (route === "/" || route === "/products") {
+        showHomePage();
+        return;
+      }
+      if (route === "/orders") {
+        await showOrdersPage();
+        return;
+      }
+      const orderMatch = route.match(/^\/orders\/(\d+)$/);
+      if (orderMatch) {
+        await showOrderDetailPage(Number(orderMatch[1]));
+        return;
+      }
+      if (route === "/users/me/points/transactions") {
+        await showPointsPage();
+        return;
+      }
+      if (route === "/refunds") {
+        await showRefundsPage();
+        return;
+      }
+      const refundMatch = route.match(/^\/refunds\/(\d+)$/);
+      if (refundMatch) {
+        await showRefundDetailPage(Number(refundMatch[1]));
+        return;
+      }
+      if (route === "/carts") {
+        await showCartPage();
+        return;
+      }
+      if (route === "/auth/login") {
+        showLoginPage();
+        return;
+      }
+      if (route === "/auth/signup") {
+        showSignupPage();
+        return;
+      }
+      if (route === "/users/me") {
+        await showAccountPage();
+        return;
+      }
+      if (route === "/orders/preview") {
+        showCheckoutPage();
+        return;
+      }
+      if (route === "/payments/confirm") {
+        showPaymentCompletePage();
+        return;
+      }
+      const productMatch = route.match(/^\/products\/(\d+)$/);
+      if (productMatch) {
+        await openProductDetail(Number(productMatch[1]));
+        return;
+      }
+      setPage("home");
+    } finally {
+      isRouting = false;
+    }
+  }
+
+  $("loadAccountButton").addEventListener("click", loadAccount);
+  $("createOrderButton").addEventListener("click", createOrder);
+  $("clearCartButton").addEventListener("click", async () => {
+    if (!token()) {
+      showLoginPage();
+      return;
+    }
+
+    try {
+      await api("/api/carts/items", { method: "DELETE" });
+      await loadCart();
+    } catch (error) {
+      showStatus("cartStatus", friendlyMessage(error.message), "error");
+    }
+  });
+
+  renderCategories();
+  updateAuthButton();
+  loadProducts();
+  window.addEventListener("hashchange", initializeRoute);
+  window.addEventListener("popstate", initializeRoute);
+  setTimeout(initializeRoute, 0);
+  if (token()) {
+    loadCart().catch(() => {});
+    loadAccount().catch(() => {});
+  }
+</script>
 </body>
 </html>
