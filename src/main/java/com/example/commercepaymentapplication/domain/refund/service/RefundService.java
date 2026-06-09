@@ -41,13 +41,8 @@ public class RefundService {
         List<Refund> refunds = refundRepository.findAllByUserId(userId);
 
         return refunds.stream()
-                .map(refund -> new GetRefundListResponse(
-                        refund.getId(),
-                        refund.getOrderName(),
-                        refund.getRefundRequestId(),
-                        refund.getStatus().name(),
-                        refund.getCreatedAt()
-                )).toList();
+                .map(GetRefundListResponse::from)
+                .toList();
     }
 
     @Transactional(readOnly = true)
@@ -57,15 +52,7 @@ public class RefundService {
                 () -> new BusinessException(ErrorCode.REFUND_NOT_FOUND)
         );
 
-        return new GetOneRefundResponse(
-                refund.getId(),
-                refund.getOrderName(),
-                refund.getReason(),
-                refund.getRefundedPointAmount(),
-                refund.getRefundedPgAmount(),
-                refund.getStatus().name(),
-                refund.getCreatedAt()
-        );
+        return GetOneRefundResponse.from(refund);
     }
 
     // 결제 ID 기준으로 환불 이력이 존재하는지 검증한다.
