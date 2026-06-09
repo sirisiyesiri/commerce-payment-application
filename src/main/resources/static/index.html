@@ -559,6 +559,12 @@
       gap: 14px;
     }
 
+    .auth-box {
+      width: min(640px, 100%);
+      margin: 0 auto;
+      padding: 24px;
+    }
+
     [hidden] {
       display: none !important;
     }
@@ -669,10 +675,32 @@
 
     .login-panel {
       display: grid;
-      grid-template-columns: repeat(2, minmax(0, 1fr));
-      gap: 10px;
+      grid-template-columns: 1fr;
+      gap: 14px;
       align-items: end;
-      margin-top: 24px;
+    }
+
+    .auth-submit {
+      justify-self: center;
+      width: min(260px, 100%);
+      min-height: 52px;
+      margin-top: 14px;
+    }
+
+    .point-detail-button {
+      margin-top: 10px;
+    }
+
+    .login-panel input {
+      min-height: 52px;
+    }
+
+    .field-error {
+      min-height: 18px;
+      color: var(--danger);
+      font-size: 12px;
+      font-weight: 850;
+      line-height: 1.4;
     }
 
     label {
@@ -805,6 +833,7 @@
     </nav>
     <div class="top-actions">
       <button type="button" class="ghost" id="topAuthButton">로그인</button>
+      <button type="button" class="ghost" id="topSignupButton">회원가입</button>
       <button type="button" class="ghost" id="accountButton">내정보</button>
       <button type="button" id="cartButton">장바구니 <span class="cart-count" id="cartCount">0</span></button>
     </div>
@@ -858,25 +887,48 @@
       <div id="productDetailPageContent"></div>
     </section>
 
+    <section class="section page" id="loginPage" hidden>
+      <div class="compact-head">
+        <p class="eyebrow">Login</p>
+        <h2>로그인</h2>
+      </div>
+
+      <div class="auth-box">
+        <div class="login-panel">
+          <label>이메일 <input id="emailInput" autocomplete="email"><span class="field-error" id="loginEmailError"></span></label>
+          <label>비밀번호 <input id="passwordInput" type="password" autocomplete="current-password"><span class="field-error" id="loginPasswordError"></span></label>
+          <button type="button" id="loginButton" class="auth-submit">로그인</button>
+        </div>
+        <div class="status" id="loginStatus"></div>
+      </div>
+    </section>
+
+    <section class="section page" id="signupPage" hidden>
+      <div class="compact-head">
+        <p class="eyebrow">Signup</p>
+        <h2>회원가입</h2>
+      </div>
+
+      <div class="auth-box">
+        <div class="login-panel">
+          <label>이메일 <input id="signupEmailInput" autocomplete="email"><span class="field-error" id="signupEmailError"></span></label>
+          <label>비밀번호 <input id="signupPasswordInput" type="password" autocomplete="new-password"><span class="field-error" id="signupPasswordError"></span></label>
+          <label>이름 <input id="nameInput" autocomplete="name"><span class="field-error" id="signupNameError"></span></label>
+          <label>전화번호 <input id="phoneInput" autocomplete="tel"><span class="field-error" id="signupPhoneError"></span></label>
+          <button type="button" id="signupButton" class="auth-submit">회원가입</button>
+        </div>
+        <div class="status" id="signupStatus"></div>
+      </div>
+    </section>
+
     <section class="section page" id="account" hidden>
       <div class="compact-head">
         <p class="eyebrow">Account</p>
         <h2>내정보</h2>
       </div>
-
-      <div class="auth-box" id="authBox">
-        <div class="login-panel">
-          <label>이메일 <input id="emailInput" value="front-test@example.com" autocomplete="email"></label>
-          <label>비밀번호 <input id="passwordInput" type="password" value="sparta1234" autocomplete="current-password"></label>
-          <label>이름 <input id="nameInput" value="프론트테스트"></label>
-          <label>전화번호 <input id="phoneInput" value="010-9999-0000"></label>
-          <button type="button" id="signupButton">회원가입</button>
-          <button type="button" id="loginButton">로그인</button>
-        </div>
-      </div>
       <div class="status" id="accountStatus"></div>
 
-      <div class="account">
+      <div class="account" id="accountSummary" hidden>
         <div class="account-section">
           <h3>프로필</h3>
           <div id="profileArea" class="empty">로그인이 필요합니다.</div>
@@ -1043,7 +1095,7 @@
     const orderStatusLabels = {
       PAYMENT_PENDING: "결제대기",
       ORDER_COMPLETED: "결제완료",
-      ORDER_CANCELED: "환불완료"
+      ORDER_CANCELED: "주문취소"
     };
 
     const paymentStatusLabels = {
@@ -1074,10 +1126,12 @@
       productTotalPages: 1,
       cart: null,
       currentOrder: null,
-      profile: null
+      profile: null,
+      point: null
     };
 
     let portOneConfig = null;
+    let isRouting = false;
 
     const $ = (id) => document.getElementById(id);
     const formatMoney = (value) => `${Number(value || 0).toLocaleString("ko-KR")}원`;
@@ -1085,7 +1139,7 @@
 
     function orderDetailStatusLabel(order) {
       if (order?.status === "ORDER_CANCELED") {
-        return "환불완료";
+        return "주문취소";
       }
 
       return orderStatusLabels[order?.status] || order?.status || "-";
@@ -1094,6 +1148,7 @@
     function paymentFlowStatusLabel(orderStatus, paymentStatus) {
       if (paymentStatus === "REFUND") return "환불완료";
       if (orderStatus === "ORDER_CANCELED" && paymentStatus === "REFUND") return "환불완료";
+      if (orderStatus === "ORDER_CANCELED") return "주문취소";
       return orderStatusLabels[orderStatus] || paymentStatusLabels[paymentStatus] || orderStatus || paymentStatus || "-";
     }
 
@@ -1148,6 +1203,78 @@
       const target = $(id);
       target.className = `status ${type}`;
       target.textContent = friendlyMessage(message);
+    }
+
+    function clearFieldErrors(ids) {
+      ids.forEach((id) => {
+        const target = $(id);
+        if (target) target.textContent = "";
+      });
+    }
+
+    function showFieldError(id, message) {
+      const target = $(id);
+      if (target) target.textContent = friendlyMessage(message);
+    }
+
+    function clearAuthMessages() {
+      clearFieldErrors([
+        "loginEmailError",
+        "loginPasswordError",
+        "signupEmailError",
+        "signupPasswordError",
+        "signupNameError",
+        "signupPhoneError"
+      ]);
+      ["loginStatus", "signupStatus"].forEach((id) => {
+        const target = $(id);
+        if (target) {
+          target.className = "status";
+          target.textContent = "";
+        }
+      });
+    }
+
+    function parseFieldMessages(message) {
+      return String(message || "")
+        .split(",")
+        .map((item) => item.trim())
+        .reduce((acc, item) => {
+          const match = item.match(/^([a-zA-Z]+):\s*(.+)$/);
+          if (match) acc[match[1]] = match[2];
+          return acc;
+        }, {});
+    }
+
+    function normalizePhoneNumber(value) {
+      return String(value || "").replace(/\D/g, "");
+    }
+
+    function isValidPhoneNumber(value) {
+      return /^01[016789]\d{7,8}$/.test(normalizePhoneNumber(value));
+    }
+
+    function isValidEmail(value) {
+      return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(String(value || "").trim());
+    }
+
+    function formatPhoneNumber(value) {
+      const digits = normalizePhoneNumber(value);
+      if (digits.length === 10) {
+        return digits.replace(/(\d{3})(\d{3})(\d{4})/, "$1-$2-$3");
+      }
+      if (digits.length === 11) {
+        return digits.replace(/(\d{3})(\d{4})(\d{4})/, "$1-$2-$3");
+      }
+      return value;
+    }
+
+    function formatValidationMessage(message) {
+      return String(message || "")
+        .split(",")
+        .map((item) => item.trim().replace(/^[a-zA-Z]+:\s*/, ""))
+        .filter(Boolean)
+        .join(" ");
     }
 
     function friendlyMessage(message) {
@@ -1213,7 +1340,10 @@
       if (text.includes("재고")) {
         return "재고 수량을 확인해 주세요.";
       }
-      return text;
+      if (text.includes("phoneNumber")) {
+        return "회원 전화번호를 확인해 주세요.";
+      }
+      return formatValidationMessage(text);
     }
 
     function queryString(params) {
@@ -1229,8 +1359,17 @@
     function updateAuthButton() {
       const isLoggedIn = Boolean(token());
       $("topAuthButton").textContent = isLoggedIn ? "로그아웃" : "로그인";
-      if ($("authBox")) {
-        $("authBox").hidden = isLoggedIn;
+      if ($("topSignupButton")) {
+        $("topSignupButton").hidden = isLoggedIn;
+      }
+      if ($("accountSummary")) {
+        $("accountSummary").hidden = !isLoggedIn;
+      }
+    }
+
+    function pushRoute(url) {
+      if (!isRouting && window.location.hash !== url && window.location.pathname + window.location.hash !== url) {
+        history.pushState({}, "", url);
       }
     }
 
@@ -1238,6 +1377,8 @@
       const visible = {
         home: ["categories", "shop"],
         detail: ["productDetailPage"],
+        login: ["loginPage"],
+        signup: ["signupPage"],
         account: ["account"],
         orders: ["ordersPage"],
         orderDetail: ["orderDetailPage"],
@@ -1253,6 +1394,8 @@
         "categories",
         "shop",
         "productDetailPage",
+        "loginPage",
+        "signupPage",
         "account",
         "ordersPage",
         "orderDetailPage",
@@ -1269,20 +1412,40 @@
 
     function showHomePage() {
       setPage("home");
-      history.pushState({}, "", "/");
+      pushRoute("/products");
       document.querySelector("#categories").scrollIntoView({ behavior: "smooth" });
     }
 
+    function showLoginPage() {
+      setPage("login");
+      pushRoute("/auth/login");
+      document.querySelector("#loginPage").scrollIntoView({ behavior: "smooth" });
+    }
+
+    function showSignupPage() {
+      setPage("signup");
+      pushRoute("/auth/signup");
+      document.querySelector("#signupPage").scrollIntoView({ behavior: "smooth" });
+    }
+
     async function showAccountPage() {
+      if (!token()) {
+        showLoginPage();
+        return;
+      }
       setPage("account");
-      history.pushState({}, "", "#/account");
+      pushRoute("/users/me");
       document.querySelector("#account").scrollIntoView({ behavior: "smooth" });
-      if (token()) await loadAccount();
+      await loadAccount();
     }
 
     async function showCartPage() {
+      if (!token()) {
+        showLoginPage();
+        return;
+      }
       setPage("cart");
-      history.pushState({}, "", "#/cart");
+      pushRoute("/carts");
       document.querySelector("#cartPage").scrollIntoView({ behavior: "smooth" });
       clearCartMessages();
       await loadCart();
@@ -1290,48 +1453,48 @@
 
     async function showOrdersPage() {
       setPage("orders");
-      history.pushState({}, "", "#/orders");
+      pushRoute("/orders");
       document.querySelector("#ordersPage").scrollIntoView({ behavior: "smooth" });
       await loadOrders();
     }
 
     async function showOrderDetailPage(orderId) {
       setPage("orderDetail");
-      history.pushState({}, "", `#/orders/${orderId}`);
+      pushRoute(`/orders/${orderId}`);
       document.querySelector("#orderDetailPage").scrollIntoView({ behavior: "smooth" });
       await loadOrderDetail(orderId);
     }
 
     async function showPointsPage() {
       setPage("points");
-      history.pushState({}, "", "#/points");
+      pushRoute("/users/me/points/transactions");
       document.querySelector("#pointsPage").scrollIntoView({ behavior: "smooth" });
       await loadPointTransactions();
     }
 
     async function showRefundsPage() {
       setPage("refunds");
-      history.pushState({}, "", "#/refunds");
+      pushRoute("/refunds");
       document.querySelector("#refundsPage").scrollIntoView({ behavior: "smooth" });
       await loadRefunds();
     }
 
     async function showRefundDetailPage(refundId) {
       setPage("refundDetail");
-      history.pushState({}, "", `#/refunds/${refundId}`);
+      pushRoute(`/refunds/${refundId}`);
       document.querySelector("#refundDetailPage").scrollIntoView({ behavior: "smooth" });
       await loadRefundDetail(refundId);
     }
 
     function showCheckoutPage() {
       setPage("checkout");
-      history.pushState({}, "", "#/checkout");
+      pushRoute("/orders/preview");
       document.querySelector("#checkoutPage").scrollIntoView({ behavior: "smooth" });
     }
 
     function showPaymentCompletePage() {
       setPage("paymentComplete");
-      history.pushState({}, "", "#/payment-complete");
+      pushRoute("/payments/confirm");
       document.querySelector("#paymentCompletePage").scrollIntoView({ behavior: "smooth" });
     }
 
@@ -1347,6 +1510,25 @@
       $("cartStatus").textContent = "";
       $("cartStatus").className = "status";
       $("orderPreviewArea").innerHTML = "";
+    }
+
+    function normalizePointAmount(value) {
+      const onlyDigits = String(value ?? "").replace(/\D/g, "");
+      return Number(onlyDigits || 0);
+    }
+
+    function readCheckoutPointAmount() {
+      const input = $("checkoutUsedPointInput");
+      if (!input) return 0;
+
+      const amount = normalizePointAmount(input.value);
+      input.value = String(amount);
+      return amount;
+    }
+
+    function showCheckoutPointError(message) {
+      const target = $("checkoutPointError");
+      if (target) target.textContent = message;
     }
 
     function loadScript(src) {
@@ -1492,7 +1674,7 @@
       try {
         const result = await api(`/api/products/${productId}`, { auth: false });
         renderProductDetail(result.data);
-        history.pushState({ productId }, "", `#/products/${productId}`);
+        pushRoute(`/products/${productId}`);
       } catch (error) {
         $("productDetailPageContent").innerHTML = `<div class="empty">${friendlyMessage(error.message)}</div>`;
       }
@@ -1586,6 +1768,11 @@
       `).join("");
     }
 
+    function isCartEmpty() {
+      const items = state.cart?.cartItemList || [];
+      return items.length === 0;
+    }
+
     async function previewOrder() {
       try {
         const result = await api("/api/orders/preview");
@@ -1599,6 +1786,20 @@
 
     async function createOrder() {
       try {
+        if (!state.cart) {
+          await loadCart();
+        }
+
+        if (isCartEmpty()) {
+          $("orderPreviewArea").innerHTML = `<div class="status error">장바구니가 비어 있습니다.</div>`;
+          return;
+        }
+
+        if (!state.point) {
+          const point = await api("/api/users/me/points");
+          state.point = point.data;
+        }
+
         const preview = await api("/api/orders/preview");
         state.currentOrder = { preview: preview.data, totalPrice: preview.data?.totalPrice || 0, usedPointAmount: 0 };
         renderPaymentScreen(state.currentOrder);
@@ -1610,7 +1811,21 @@
 
     async function submitOrder() {
       try {
-        const usedPointAmount = Number($("checkoutUsedPointInput")?.value || 0);
+        showCheckoutPointError("");
+        const usedPointAmount = readCheckoutPointAmount();
+        const pointBalance = Number(state.point?.pointBalance || 0);
+        const totalPrice = Number(state.currentOrder?.totalPrice || 0);
+
+        if (usedPointAmount > pointBalance) {
+          showCheckoutPointError("보유 포인트보다 많이 사용할 수 없습니다.");
+          return;
+        }
+
+        if (usedPointAmount > totalPrice) {
+          showCheckoutPointError("상품 금액보다 많이 사용할 수 없습니다.");
+          return;
+        }
+
         const result = await api("/api/carts/orders", {
           method: "POST",
           body: JSON.stringify({
@@ -1634,17 +1849,22 @@
         );
         await Promise.allSettled([loadOrders(), loadAccount(), loadProducts()]);
       } catch (error) {
-        const usedPointAmount = Number($("checkoutUsedPointInput")?.value || 0);
+        const usedPointAmount = readCheckoutPointAmount();
         const message = error.httpStatus === 400 && usedPointAmount > 0
           ? "포인트가 부족합니다."
           : friendlyMessage(error.message);
-        $("paymentStatus").className = "status error";
-        $("paymentStatus").textContent = message;
+        if (usedPointAmount > 0) {
+          showCheckoutPointError(message);
+        } else {
+          $("paymentStatus").className = "status error";
+          $("paymentStatus").textContent = message;
+        }
       }
     }
 
     function renderPaymentScreen(order) {
       const usedPointAmount = Number(order?.usedPointAmount || 0);
+      const pointBalance = Number(state.point?.pointBalance || 0);
       const pgAmount = order?.pgPaymentAmount ?? Math.max(0, Number(order?.totalPrice || 0) - usedPointAmount);
       const preview = order?.preview || {};
       const itemCount = preview.orderItems?.length || preview.previewOrderItemResponses?.length || preview.items?.length || 0;
@@ -1671,9 +1891,10 @@
               </div>
             </div>
             <div class="row-main"><span>상품 금액</span><span>${formatMoney(order?.totalPrice)}</span></div>
+            <div class="row-main"><span>보유 포인트</span><span>${formatMoney(pointBalance)}</span></div>
             ${isOrderCreated
               ? `<div class="row-main"><span>사용 포인트</span><span>${formatMoney(usedPointAmount)}</span></div>`
-              : `<label>사용 포인트 <input id="checkoutUsedPointInput" type="number" min="0" value="${usedPointAmount}" data-total-price="${order?.totalPrice || 0}"></label>`}
+              : `<label>사용 포인트 <input id="checkoutUsedPointInput" type="text" inputmode="numeric" pattern="[0-9]*" value="${usedPointAmount}" data-total-price="${order?.totalPrice || 0}" data-point-balance="${pointBalance}"><span class="field-error" id="checkoutPointError"></span></label>`}
             <div class="summary-line"><span>결제 금액</span><span id="checkoutPaymentAmount">${formatMoney(pgAmount)}</span></div>
           </div>
           <div class="checkout-box">
@@ -1708,6 +1929,16 @@
         }
 
         const config = await loadPortOneConfig();
+        const customerName = (state.profile?.name || $("nameInput").value || "구매자").trim();
+        const rawCustomerPhoneNumber = (state.profile?.phoneNumber || $("phoneInput").value || "").trim();
+        if (!isValidPhoneNumber(rawCustomerPhoneNumber)) {
+          $("paymentStatus").className = "status error";
+          $("paymentStatus").textContent = "회원 전화번호를 확인해 주세요.";
+          return;
+        }
+
+        const customerPhoneNumber = formatPhoneNumber(rawCustomerPhoneNumber);
+        const customerEmail = (state.profile?.email || $("emailInput").value || "").trim();
         const paymentResult = await window.PortOne.requestPayment({
           storeId: config.storeId,
           channelKey: config.channelKey,
@@ -1717,9 +1948,9 @@
           currency: "CURRENCY_KRW",
           payMethod: "CARD",
           customer: {
-            fullName: state.profile?.name || $("nameInput").value || "구매자",
-            phoneNumber: state.profile?.phoneNumber || $("phoneInput").value || "010-0000-0000",
-            email: state.profile?.email || $("emailInput").value
+            fullName: customerName,
+            phoneNumber: customerPhoneNumber,
+            email: customerEmail
           }
         });
 
@@ -1769,7 +2000,7 @@
         renderPaymentScreen(state.currentOrder);
         showCheckoutPage();
       } catch (error) {
-        const target = window.location.hash.startsWith("#/orders/") ? $("orderDetailArea") : $("orderArea");
+        const target = window.location.pathname.startsWith("/orders/") ? $("orderDetailArea") : $("orderArea");
         target.className = "";
         target.insertAdjacentHTML("afterbegin", `<div class="status error">${friendlyMessage(error.message)}</div>`);
       }
@@ -1819,10 +2050,9 @@
           method: "POST",
           body: JSON.stringify({ reason })
         });
-        const refund = result.data;
         $("refundStatus").className = "status success";
         $("refundStatus").innerHTML = `
-          환불이 처리되었습니다. ${paymentFlowStatusLabel(refund.orderStatus, refund.paymentStatus)}
+          환불이 완료되었습니다.
           <div class="actions-row" style="margin-top:10px">
             <button type="button" class="ghost" id="refundsAfterRequestButton">환불 내역 보기</button>
           </div>
@@ -1834,25 +2064,81 @@
     }
 
     async function signup() {
+      clearAuthMessages();
+      const email = $("signupEmailInput").value.trim();
+      const password = $("signupPasswordInput").value;
+      const name = $("nameInput").value.trim();
+      const phoneNumber = $("phoneInput").value.trim();
+
+      let hasError = false;
+      if (!email) {
+        showFieldError("signupEmailError", "이메일을 입력해 주세요.");
+        hasError = true;
+      } else if (!isValidEmail(email)) {
+        showFieldError("signupEmailError", "이메일 형식이 올바르지 않습니다.");
+        hasError = true;
+      }
+
+      if (!password) {
+        showFieldError("signupPasswordError", "비밀번호를 입력해 주세요.");
+        hasError = true;
+      } else if (password.length < 8) {
+        showFieldError("signupPasswordError", "비밀번호는 8자 이상이어야 합니다.");
+        hasError = true;
+      }
+
+      if (!name) {
+        showFieldError("signupNameError", "이름을 입력해 주세요.");
+        hasError = true;
+      }
+
+      if (!phoneNumber) {
+        showFieldError("signupPhoneError", "전화번호를 입력해 주세요.");
+        hasError = true;
+      } else if (!isValidPhoneNumber(phoneNumber)) {
+        showFieldError("signupPhoneError", "전화번호 형식이 올바르지 않습니다.");
+        hasError = true;
+      }
+
+      if (hasError) {
+        return;
+      }
+
       try {
         await api("/api/auth/signup", {
           method: "POST",
           auth: false,
           body: JSON.stringify({
-            email: $("emailInput").value,
-            password: $("passwordInput").value,
-            name: $("nameInput").value,
-            phoneNumber: $("phoneInput").value
+            email,
+            password,
+            name,
+            phoneNumber: formatPhoneNumber(phoneNumber)
           })
         });
-        showStatus("accountStatus", "회원가입이 완료되었습니다.", "success");
+        showStatus("loginStatus", "회원가입이 완료되었습니다. 로그인해 주세요.", "success");
+        showLoginPage();
       } catch (error) {
-        const message = error.httpStatus === 409 ? "이미 있는 회원 정보입니다." : friendlyMessage(error.message);
-        showStatus("accountStatus", message, "error");
+        if (error.httpStatus === 409) {
+          showFieldError("signupEmailError", "이미 있는 회원 정보입니다.");
+          return;
+        }
+
+        const fieldMessages = parseFieldMessages(error.message);
+        if (fieldMessages.email) showFieldError("signupEmailError", fieldMessages.email);
+        if (fieldMessages.password) showFieldError("signupPasswordError", fieldMessages.password);
+        if (fieldMessages.name) showFieldError("signupNameError", fieldMessages.name);
+        if (fieldMessages.phone || fieldMessages.phoneNumber) {
+          showFieldError("signupPhoneError", fieldMessages.phone || fieldMessages.phoneNumber);
+        }
+
+        if (!Object.keys(fieldMessages).length) {
+          showStatus("signupStatus", friendlyMessage(error.message), "error");
+        }
       }
     }
 
     async function login() {
+      clearAuthMessages();
       try {
         const result = await api("/api/auth/login", {
           method: "POST",
@@ -1864,10 +2150,11 @@
         });
         localStorage.setItem(tokenKey, result.data.token);
         updateAuthButton();
-        showStatus("accountStatus", "로그인되었습니다.", "success");
+        showStatus("loginStatus", "로그인되었습니다.", "success");
         await Promise.all([loadCart(), loadAccount()]);
+        showHomePage();
       } catch (error) {
-        showStatus("accountStatus", friendlyMessage(error.message), "error");
+        showFieldError("loginPasswordError", "이메일 또는 비밀번호가 올바르지 않습니다.");
       }
     }
 
@@ -1878,15 +2165,14 @@
       }
 
       try {
-        const [profile, membership, point, transactions] = await Promise.all([
+        const [profile, membership, point] = await Promise.all([
           api("/api/users/me"),
           api("/api/users/me/memberships"),
-          api("/api/users/me/points"),
-          api("/api/users/me/points/transactions")
+          api("/api/users/me/points")
         ]);
 
         renderProfile(profile.data, membership.data);
-        renderPoint(point.data, transactions.data || []);
+        renderPoint(point.data);
       } catch (error) {
         showStatus("accountStatus", friendlyMessage(error.message), "error");
       }
@@ -1996,20 +2282,14 @@
       `;
     }
 
-    function renderPoint(point, transactions) {
-      const uniqueTransactions = uniquePointTransactions(transactions);
+    function renderPoint(point) {
+      state.point = point;
       $("pointArea").className = "";
       $("pointArea").innerHTML = `
         <div class="point-row">
           <div class="row-main"><span>잔액</span><span>${formatMoney(point.pointBalance || 0)}</span></div>
         </div>
-        ${uniqueTransactions.slice(0, 5).map((item) => `
-          <div class="point-row">
-            <div class="row-main"><span>${pointTransactionLabels[item.pointTransactionType || item.type || item.transactionType] || item.pointTransactionType || item.type || item.transactionType}</span><span>${formatMoney(item.amount)}</span></div>
-            <div class="row-sub">${item.createdAt || ""}</div>
-          </div>
-        `).join("")}
-        <button type="button" class="ghost" id="pointTransactionsButton">포인트 내역 전체 보기</button>
+        <button type="button" class="ghost point-detail-button" id="pointTransactionsButton">포인트 상세 조회</button>
       `;
     }
 
@@ -2088,7 +2368,6 @@
             <button type="button" class="ghost" data-order-detail="${order.orderId}">상세보기</button>
             ${order.status === "PAYMENT_PENDING" ? `<button type="button" data-pay-existing-order="${order.orderId}">결제하기</button>` : ""}
             ${order.status === "PAYMENT_PENDING" ? `<button type="button" class="danger" data-cancel-order="${order.orderId}">주문 취소</button>` : ""}
-            ${order.status === "ORDER_COMPLETED" ? `<button type="button" class="danger" data-order-refund="${order.orderId}">환불하기</button>` : ""}
           </div>
         </div>
       `).join("");
@@ -2254,14 +2533,14 @@
       if (cancelButton) {
         try {
           await api(`/api/orders/${cancelButton.dataset.cancelOrder}/cancel`, { method: "POST" });
-          if (window.location.hash.startsWith("#/orders/")) {
+          if (window.location.pathname.startsWith("/orders/")) {
             await showOrdersPage();
           } else {
             await loadOrders();
           }
           await loadProducts();
         } catch (error) {
-          const targetId = window.location.hash.startsWith("#/orders/") ? "orderDetailArea" : "orderArea";
+          const targetId = window.location.pathname.startsWith("/orders/") ? "orderDetailArea" : "orderArea";
           $(targetId).className = "";
           $(targetId).insertAdjacentHTML("afterbegin", `<div class="status error">${friendlyMessage(error.message)}</div>`);
         }
@@ -2271,16 +2550,6 @@
       const orderDetailButton = event.target.closest("[data-order-detail]");
       if (orderDetailButton) {
         await showOrderDetailPage(Number(orderDetailButton.dataset.orderDetail));
-        return;
-      }
-
-      const orderRefundButton = event.target.closest("[data-order-refund]");
-      if (orderRefundButton) {
-        await showOrderDetailPage(Number(orderRefundButton.dataset.orderRefund));
-        setTimeout(() => {
-          const form = $("orderRefundForm");
-          if (form) form.hidden = false;
-        }, 0);
         return;
       }
 
@@ -2342,7 +2611,15 @@
       if (event.target.id !== "checkoutUsedPointInput") return;
 
       const totalPrice = Number(event.target.dataset.totalPrice || 0);
-      const usedPointAmount = Number(event.target.value || 0);
+      const pointBalance = Number(event.target.dataset.pointBalance || 0);
+      const usedPointAmount = normalizePointAmount(event.target.value);
+      event.target.value = String(usedPointAmount);
+      showCheckoutPointError("");
+      if (usedPointAmount > pointBalance) {
+        showCheckoutPointError("보유 포인트보다 많이 사용할 수 없습니다.");
+      } else if (usedPointAmount > totalPrice) {
+        showCheckoutPointError("상품 금액보다 많이 사용할 수 없습니다.");
+      }
       $("checkoutPaymentAmount").textContent = formatMoney(Math.max(0, totalPrice - usedPointAmount));
     });
 
@@ -2354,8 +2631,9 @@
         logout();
         return;
       }
-      await showAccountPage();
+      showLoginPage();
     });
+    $("topSignupButton").addEventListener("click", showSignupPage);
     $("refreshProductsButton").addEventListener("click", loadProducts);
     $("sortSelect").addEventListener("change", () => {
       state.productPage = 1;
@@ -2382,63 +2660,90 @@
       $("orderArea").className = "empty";
       $("orderArea").textContent = "주문 내역이 여기에 표시됩니다.";
       state.cart = null;
+      state.profile = null;
+      state.point = null;
       renderCart();
       updateAuthButton();
-      showStatus("accountStatus", "로그아웃되었습니다.", "success");
+      $("accountStatus").className = "status";
+      $("accountStatus").textContent = "";
       showHomePage();
     }
 
     async function initializeRoute() {
-      const hash = window.location.hash;
-      if (hash === "#/orders") {
-        await showOrdersPage();
-        return;
+      isRouting = true;
+      try {
+        const route = window.location.hash
+          ? window.location.hash.replace(/^#/, "")
+          : window.location.pathname;
+        if (route === "/" || route === "/products") {
+          showHomePage();
+          return;
+        }
+        if (route === "/orders") {
+          await showOrdersPage();
+          return;
+        }
+        const orderMatch = route.match(/^\/orders\/(\d+)$/);
+        if (orderMatch) {
+          await showOrderDetailPage(Number(orderMatch[1]));
+          return;
+        }
+        if (route === "/users/me/points/transactions") {
+          await showPointsPage();
+          return;
+        }
+        if (route === "/refunds") {
+          await showRefundsPage();
+          return;
+        }
+        const refundMatch = route.match(/^\/refunds\/(\d+)$/);
+        if (refundMatch) {
+          await showRefundDetailPage(Number(refundMatch[1]));
+          return;
+        }
+        if (route === "/carts") {
+          await showCartPage();
+          return;
+        }
+        if (route === "/auth/login") {
+          showLoginPage();
+          return;
+        }
+        if (route === "/auth/signup") {
+          showSignupPage();
+          return;
+        }
+        if (route === "/users/me") {
+          await showAccountPage();
+          return;
+        }
+        if (route === "/orders/preview") {
+          showCheckoutPage();
+          return;
+        }
+        if (route === "/payments/confirm") {
+          showPaymentCompletePage();
+          return;
+        }
+        const productMatch = route.match(/^\/products\/(\d+)$/);
+        if (productMatch) {
+          await openProductDetail(Number(productMatch[1]));
+          return;
+        }
+        setPage("home");
+      } finally {
+        isRouting = false;
       }
-      const orderMatch = hash.match(/^#\/orders\/(\d+)$/);
-      if (orderMatch) {
-        await showOrderDetailPage(Number(orderMatch[1]));
-        return;
-      }
-      if (hash === "#/points") {
-        await showPointsPage();
-        return;
-      }
-      if (hash === "#/refunds") {
-        await showRefundsPage();
-        return;
-      }
-      const refundMatch = hash.match(/^#\/refunds\/(\d+)$/);
-      if (refundMatch) {
-        await showRefundDetailPage(Number(refundMatch[1]));
-        return;
-      }
-      if (hash === "#/cart") {
-        await showCartPage();
-        return;
-      }
-      if (hash === "#/account") {
-        await showAccountPage();
-        return;
-      }
-      if (hash === "#/checkout") {
-        showCheckoutPage();
-        return;
-      }
-      if (hash === "#/payment-complete") {
-        showPaymentCompletePage();
-        return;
-      }
-      const productMatch = hash.match(/^#\/products\/(\d+)$/);
-      if (productMatch) {
-        await openProductDetail(Number(productMatch[1]));
-        return;
-      }
-      setPage("home");
     }
 
     $("loadAccountButton").addEventListener("click", loadAccount);
     $("createOrderButton").addEventListener("click", createOrder);
     $("clearCartButton").addEventListener("click", async () => {
+      if (!token()) {
+        showLoginPage();
+        return;
+      }
+
       try {
         await api("/api/carts/items", { method: "DELETE" });
         await loadCart();
@@ -2451,6 +2756,7 @@
     updateAuthButton();
     loadProducts();
     window.addEventListener("hashchange", initializeRoute);
+    window.addEventListener("popstate", initializeRoute);
     setTimeout(initializeRoute, 0);
     if (token()) {
       loadCart().catch(() => {});
