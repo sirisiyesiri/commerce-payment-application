@@ -43,7 +43,7 @@ public class PaymentFacade {
 
         // 이미 결제 완료된 요청은 중복 확정 요청으로 보고 멱등하게 성공 응답을 반환한다.
         if (payment.getStatus() == PaymentStatus.COMPLETED) {
-            return toConfirmPaymentResponse(payment);
+            return ConfirmPaymentResponse.from(payment);
         }
 
         // 결제 대기 상태가 아니면 결제 확정 처리가 불가능하다.
@@ -134,17 +134,5 @@ public class PaymentFacade {
         }
 
         return response;
-    }
-
-    // 결제 확정 응답 DTO를 생성한다.
-    private ConfirmPaymentResponse toConfirmPaymentResponse(Payment payment) {
-        return new ConfirmPaymentResponse(
-                payment.getId(),
-                payment.getOrder().getId(),
-                payment.getPgPaymentAmount(),
-                payment.getUsedPointAmount(),
-                payment.getOrder().getStatus().name(),
-                payment.getStatus().name()
-        );
     }
 }

@@ -53,7 +53,7 @@ public class PaymentCommandService {
 
         clearOrderedCartItems(order);
 
-        return toConfirmPaymentResponse(payment);
+        return ConfirmPaymentResponse.from(payment);
     }
 
     // PG사를 거친 결제 확정
@@ -77,7 +77,7 @@ public class PaymentCommandService {
 
         clearOrderedCartItems(order);
 
-        return toConfirmPaymentResponse(payment);
+        return ConfirmPaymentResponse.from(payment);
     }
 
     // 환불
@@ -104,13 +104,7 @@ public class PaymentCommandService {
         // 누적 결제 금액 차감 → 멤버쉽 등급 재계산
         order.getUser().refundPayment(payment.getPgPaymentAmount());
 
-        return new CancelPaymentResponse(
-                paymentId,
-                order.getId(),
-                payment.getPortonePaymentId(),
-                order.getStatus().name(),
-                payment.getStatus().name()
-        );
+        return CancelPaymentResponse.from(payment);
     }
 
     // 환불 실패
@@ -126,16 +120,5 @@ public class PaymentCommandService {
                 .toList();
 
         cartService.clearCartItems(cartItemIds, order.getUser().getId());
-    }
-
-    private ConfirmPaymentResponse toConfirmPaymentResponse(Payment payment) {
-        return new ConfirmPaymentResponse(
-                payment.getId(),
-                payment.getOrder().getId(),
-                payment.getPgPaymentAmount(),
-                payment.getUsedPointAmount(),
-                payment.getOrder().getStatus().name(),
-                payment.getStatus().name()
-        );
     }
 }
