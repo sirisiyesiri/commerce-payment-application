@@ -1,4 +1,4 @@
-package com.example.commercepaymentapplication.infra.portone.dto;
+package com.example.commercepaymentapplication.domain.portone.dto;
 
 /*
  * PortOne 결제창 초기화에 필요한 공개 설정 값을 전달하는 응답 DTO

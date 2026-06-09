@@ -1,4 +1,4 @@
-package com.example.commercepaymentapplication.infra.portone.dto;
+package com.example.commercepaymentapplication.domain.portone.dto;
 
 public record PortOneCancelRequest(
         String reason,   // [필수] 취소 사유

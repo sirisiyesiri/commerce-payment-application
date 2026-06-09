@@ -1,8 +1,8 @@
-package com.example.commercepaymentapplication.infra.portone.webhook.controller;
+package com.example.commercepaymentapplication.domain.portone.webhook.controller;
 
 import com.example.commercepaymentapplication.global.response.ApiResponse;
-import com.example.commercepaymentapplication.infra.portone.webhook.PortOneWebhookVerifier;
-import com.example.commercepaymentapplication.infra.portone.webhook.WebhookHandler;
+import com.example.commercepaymentapplication.domain.portone.webhook.PortOneWebhookVerifier;
+import com.example.commercepaymentapplication.domain.portone.webhook.WebhookHandler;
 import io.portone.sdk.server.errors.WebhookVerificationException;
 import io.portone.sdk.server.webhook.Webhook;
 import lombok.RequiredArgsConstructor;

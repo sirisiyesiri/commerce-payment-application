@@ -1,4 +1,4 @@
-package com.example.commercepaymentapplication.infra.portone.config;
+package com.example.commercepaymentapplication.global.config;
 
 import lombok.Getter;
 import lombok.Setter;

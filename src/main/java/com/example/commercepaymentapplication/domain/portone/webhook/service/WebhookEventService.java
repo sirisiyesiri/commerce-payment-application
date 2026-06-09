@@ -1,9 +1,9 @@
-package com.example.commercepaymentapplication.infra.portone.webhook.service;
+package com.example.commercepaymentapplication.domain.portone.webhook.service;
 
 import com.example.commercepaymentapplication.global.error.BusinessException;
 import com.example.commercepaymentapplication.global.error.ErrorCode;
-import com.example.commercepaymentapplication.infra.portone.webhook.entity.WebhookEvent;
-import com.example.commercepaymentapplication.infra.portone.webhook.repository.WebhookEventRepository;
+import com.example.commercepaymentapplication.domain.portone.webhook.entity.WebhookEvent;
+import com.example.commercepaymentapplication.domain.portone.webhook.repository.WebhookEventRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
