@@ -2,9 +2,7 @@ package com.example.commercepaymentapplication.domain.order.service;
 
 import com.example.commercepaymentapplication.domain.order.entity.Order;
 import com.example.commercepaymentapplication.domain.order.entity.OrderItem;
-import com.example.commercepaymentapplication.domain.order.entity.OrderStatus;
 import com.example.commercepaymentapplication.domain.order.repository.OrderRepository;
-import com.example.commercepaymentapplication.domain.payment.entity.Payment;
 import com.example.commercepaymentapplication.domain.user.entity.User;
 import com.example.commercepaymentapplication.global.error.BusinessException;
 import com.example.commercepaymentapplication.global.error.ErrorCode;
@@ -22,8 +20,8 @@ public class OrderService {
 
     // 주문 생성
     @Transactional
-    public Order createOrder(User user, List<OrderItem> orderItems, int totalPrice, int usedPointAmount) {
-        Order order = new Order(user, totalPrice, usedPointAmount, orderItems);
+    public Order createOrder(User user, List<OrderItem> orderItems, int usedPointAmount) {
+        Order order = Order.of(user, usedPointAmount, orderItems);
         return orderRepository.save(order);
     }
 

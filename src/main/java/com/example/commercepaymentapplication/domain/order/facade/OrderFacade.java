@@ -46,7 +46,7 @@ public class OrderFacade {
                 .mapToInt(PreviewOrderItemResponse::subtotal)
                 .sum();
 
-        return new PreviewOrderResponse(items, totalPrice);
+        return PreviewOrderResponse.of(items, totalPrice);
     }
 
     // 주문 생성 + 결제 생성
@@ -59,48 +59,22 @@ public class OrderFacade {
         user.validateUsablePoint(request.usedPointAmount());
 
         // 데드락 방지용 - productId가 작은 상품부터 순서대로 락 획득
-        // 같은 순서로 락을 잡게 하기 위한 오름차순 정렬
-        List<CartItem> orderCartItems = user.getOrderCartItems(request.cartItemIds()).stream()
-                .sorted(Comparator.comparing(CartItem::getProductId))
-                .toList();
+        List<CartItem> sortedOrderCartItems = getSortedOrderCartItems(user, request.cartItemIds());
 
         // CartItem → OrderItem 으로 변환
-        List<OrderItem> orderItems = orderCartItems.stream()
-                .map(cartItem -> {
-                    // 주문 생성 트랜잭션 동안 상품 row를 잠가 동시 재고 차감을 막는다.
-                    Product product = productService.findProductEntityForUpdate(cartItem.getProductId());
-
-                    product.deductStock(cartItem.getQuantity());
-
-                    return new OrderItem(
-                            product,
-                            product.getPrice(),
-                            cartItem.getQuantity(),
-                            cartItem.getId());
-                })
+        List<OrderItem> orderItems = sortedOrderCartItems.stream()
+                .map(this::createOrderItemWithStockDeduction)
                 .toList();
-
-        int totalPrice = (orderItems.stream()
-                .mapToInt(OrderItem::getSubtotal)
-                .sum());
 
         Order order = orderService.createOrder(
                 user,
                 orderItems,
-                totalPrice,
                 request.usedPointAmount()
         );
 
         Payment payment = paymentService.createPayment(order);
 
-        return new AddOrderResponse(
-                order.getId(),
-                payment.getPortonePaymentId(),
-                payment.getPgPaymentAmount(),
-                order.getOrderName(),
-                order.getStatus().name(),
-                order.getCreatedAt()
-        );
+        return AddOrderResponse.of(order, payment);
     }
 
     // 내 주문 내역 조회
@@ -120,7 +94,7 @@ public class OrderFacade {
 
         Payment payment = paymentService.findPaymentEntityByOrderId(order.getId());
 
-        return GetOrderResponse.from(order, payment);
+        return GetOrderResponse.of(order, payment);
     }
 
     // 주문 취소
@@ -136,12 +110,22 @@ public class OrderFacade {
         // 결제 상태 failed로 변경
         payment.markAsFailed();
 
-        return new CancelOrderResponse(
-                order.getId(),
-                order.getOrderNumber(),
-                order.getStatus(),
-                payment.getStatus(),
-                order.getCanceledAt()
-        );
+        return CancelOrderResponse.of(order, payment);
+    }
+
+    private List<CartItem> getSortedOrderCartItems(User user, List<Long> cartItemIds) {
+        // 같은 순서로 락을 잡게 하기 위한 오름차순 정렬
+        return user.getOrderCartItems(cartItemIds).stream()
+                .sorted(Comparator.comparing(CartItem::getProductId))
+                .toList();
+    }
+
+    private OrderItem createOrderItemWithStockDeduction(CartItem cartItem) {
+        // 주문 생성 트랜잭션 동안 상품 row를 잠가 동시 재고 차감을 막는다.
+        Product product = productService.findProductEntityForUpdate(cartItem.getProductId());
+
+        product.deductStock(cartItem.getQuantity());
+
+        return OrderItem.of(cartItem, product);
     }
 }
