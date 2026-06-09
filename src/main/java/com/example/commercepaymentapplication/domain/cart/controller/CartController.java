@@ -26,10 +26,10 @@ public class CartController {
             @AuthenticationPrincipal Long userId,
             @Valid @RequestBody AddCartRequest request
     ) {
-        Long cartItemId = cartFacade.addItem(userId, request);
+        AddCartResponse response = cartFacade.addItem(userId, request);
 
         return ResponseEntity.status(HttpStatus.CREATED)
-                .body(ApiResponse.created(new AddCartResponse(cartItemId)));
+                .body(ApiResponse.created(response));
     }
 
     @GetMapping

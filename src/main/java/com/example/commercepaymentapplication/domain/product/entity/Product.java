@@ -71,6 +71,16 @@ public class Product extends BaseTimeEntity {
         changeProductStatus(stockQuantity);
     }
 
+    public void validatePurchasable() {
+        if (!this.status.isPurchasable()) {
+            throw new BusinessException(ErrorCode.PRODUCT_NOT_AVAILABLE);
+        }
+    }
+
+    public void validateStock(int quantity) {
+        validate(this.stockQuantity, quantity);
+    }
+
     private void validate(int stockQuantity, int orderStockQuantity) {
         if (orderStockQuantity <= 0) {
             throw new BusinessException(ErrorCode.INVALID_QUANTITY);
