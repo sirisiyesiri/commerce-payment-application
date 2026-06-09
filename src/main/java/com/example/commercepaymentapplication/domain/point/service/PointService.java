@@ -34,22 +34,20 @@ public class PointService {
 	@Transactional(readOnly = true)
 	public List<GetPointTransactionResponse> getPointTransactions(Long userId) {
 		return pointTransactionRepository.findAllByUserIdOrderByCreatedAtDesc(userId)
-			.stream()
-			.map(GetPointTransactionResponse::from)
-			.toList();
+				.stream()
+				.map(GetPointTransactionResponse::from)
+				.toList();
 	}
 
 	// 결제 완료 시 사용 포인트를 차감하고 거래 내역을 기록한다.
 	@Transactional
 	public void usePoint(Long userId, Payment payment, int usedPointAmount) {
-		if (usedPointAmount == 0) {
-			return;
+		if (usedPointAmount > 0) {
+			User user = findUserForUpdate(userId);
+
+			user.usePoint(usedPointAmount);
+			savePointTransaction(user, payment, PointTransactionType.USED, usedPointAmount);
 		}
-
-		User user = findUserForUpdate(userId);
-
-		user.usePoint(usedPointAmount);
-		savePointTransaction(user, payment, PointTransactionType.USED, usedPointAmount);
 	}
 
 	// 결제 완료 시 포인트를 적립하고 거래 내역을 기록한다.
@@ -59,34 +57,35 @@ public class PointService {
 		User user = findUserForUpdate(userId);
 
 		int earnedPoint = user.earnPoint(payment.getPgPaymentAmount());
-		savePointTransaction(user, payment, PointTransactionType.EARNED, earnedPoint);
+
+		// 적립 포인트가 있을 때만 거래 내역을 기록한다.
+		if (earnedPoint > 0) {
+			savePointTransaction(user, payment, PointTransactionType.EARNED, earnedPoint);
+		}
+
 		return earnedPoint;
 	}
 
 	// 환불 시 결제에 사용했던 포인트를 복구하고 거래 내역을 기록한다.
 	@Transactional
 	public void restoreUsedPoint(Long userId, Payment payment, int usedPointAmount) {
-		if (usedPointAmount == 0) {
-			return;
+		if (usedPointAmount > 0) {
+			User user = findUserForUpdate(userId);
+
+			user.restoreUsedPoint(usedPointAmount);
+			savePointTransaction(user, payment, PointTransactionType.USE_RESTORED, usedPointAmount);
 		}
-
-		User user = findUserForUpdate(userId);
-
-		user.restoreUsedPoint(usedPointAmount);
-		savePointTransaction(user, payment, PointTransactionType.USE_RESTORED, usedPointAmount);
 	}
 
 	// 환불 시 결제 완료로 적립된 포인트를 회수하고 거래 내역을 기록한다.
 	@Transactional
 	public void revokeEarnedPoint(Long userId, Payment payment, int earnedPointAmount) {
-		if (earnedPointAmount == 0) {
-			return;
+		if (earnedPointAmount > 0) {
+			User user = findUserForUpdate(userId);
+
+			user.revokeEarnedPoint(earnedPointAmount);
+			savePointTransaction(user, payment, PointTransactionType.EARN_REVOKED, earnedPointAmount);
 		}
-
-		User user = findUserForUpdate(userId);
-
-		user.revokeEarnedPoint(earnedPointAmount);
-		savePointTransaction(user, payment, PointTransactionType.EARN_REVOKED, earnedPointAmount);
 	}
 
 	// 포인트 거래 내역을 생성하고 저장한다.
