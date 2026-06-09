@@ -20,10 +20,8 @@ public class PortOneClient implements PaymentGateway {
 
     @Override
     public PaymentGatewayResponse getPayment(String paymentId) {
-        // paymentId logging
         log.info("PortOne 결제 조회: {}", paymentId);
 
-        // portOneRestClient https://api.portone.io/payments/{paymnetId}?storeId={storeId}
         PortOnePaymentResponse response = portOneRestClient.get()
                 .uri(uriBuilder -> uriBuilder
                         .path("/payments/{paymentId}")
@@ -32,8 +30,7 @@ public class PortOneClient implements PaymentGateway {
                 .retrieve()
                 .body(PortOnePaymentResponse.class);
 
-        // PortOne 응답 결과인 PortOnePaymentResponse를 PaymentGatewayResponse로 변환
-        return new PaymentGatewayResponse(
+        return PaymentGatewayResponse.of(
                 response.id(),
                 response.status(),
                 response.amount().total()
@@ -45,10 +42,9 @@ public class PortOneClient implements PaymentGateway {
         // paymentId logging
         log.info("PortOne 결제 취소 요청: paymentId={}, reason={}", paymentId, reason);
 
-        // portOneRestClient https://api.portone.io/payments/{paymnetId}/cancel body: {reason, storeId}
         portOneRestClient.post()
                 .uri("/payments/{paymentId}/cancel", paymentId)
-                .body(new PortOneCancelRequest(reason, portOneProperties.getStoreId()))
+                .body(PortOneCancelRequest.of(reason, portOneProperties.getStoreId()))
                 .retrieve()
                 .toBodilessEntity();
     }
