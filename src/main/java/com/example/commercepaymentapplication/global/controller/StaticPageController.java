@@ -1,4 +1,4 @@
-package com.example.commercepaymentapplication.global.config;
+package com.example.commercepaymentapplication.global.controller;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
