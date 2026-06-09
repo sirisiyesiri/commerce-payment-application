@@ -15,7 +15,6 @@ import java.util.List;
 @Table(name = "users")
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@AllArgsConstructor
 public class User extends BaseTimeEntity {
 
     @Id
@@ -50,7 +49,6 @@ public class User extends BaseTimeEntity {
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<CartItem> cartItems = new ArrayList<>();
 
-    @Builder
     public User(String email, String password, String name, String phoneNumber) {
         this.email = email;
         this.password = password;
