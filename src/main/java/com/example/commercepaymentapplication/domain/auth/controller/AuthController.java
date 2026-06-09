@@ -22,8 +22,8 @@ public class AuthController {
     ) {
         SignupResponse response = authService.signup(request);
 
-        return ResponseEntity.status(HttpStatus.CREATED).
-                body(ApiResponse.created(response));
+        return ResponseEntity.status(HttpStatus.CREATED)
+                .body(ApiResponse.created(response));
     }
 
     @PostMapping("/login")

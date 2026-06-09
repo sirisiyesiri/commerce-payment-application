@@ -25,7 +25,8 @@ public class UserController {
     ) {
         GetUserResponse response = userService.getMyInfo(userId);
 
-        return ResponseEntity.status(HttpStatus.OK).body(ApiResponse.ok(response));
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(ApiResponse.ok(response));
     }
 
     @GetMapping("/memberships")
@@ -34,6 +35,7 @@ public class UserController {
     ) {
         GetMembershipResponse response = userService.getMyMembership(userId);
 
-        return ResponseEntity.status(HttpStatus.OK).body(ApiResponse.ok(response));
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(ApiResponse.ok(response));
     }
 }
