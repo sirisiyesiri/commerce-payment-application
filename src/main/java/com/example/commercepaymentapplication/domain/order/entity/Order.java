@@ -47,7 +47,9 @@ public class Order extends BaseTimeEntity {
     @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<OrderItem> orderItems = new ArrayList<>();
 
-    public Order(User user,int totalPrice, int usedPointAmount, List<OrderItem> orderItems) {
+    public Order(User user, int usedPointAmount, List<OrderItem> orderItems) {
+        int totalPrice = calculateTotalPrice(orderItems);
+
         validateOrderAmount(totalPrice, usedPointAmount);
 
         this.user = user;
@@ -55,6 +57,14 @@ public class Order extends BaseTimeEntity {
         this.totalPrice = totalPrice;
         this.usedPointAmount = usedPointAmount;
         orderItems.forEach(this::addOrderItem);
+    }
+
+    public static Order of(User user, int usedPointAmount, List<OrderItem> orderItems) {
+        return new Order(
+                user,
+                usedPointAmount,
+                orderItems
+        );
     }
 
     public void addOrderItem(OrderItem orderItem) {
@@ -80,6 +90,12 @@ public class Order extends BaseTimeEntity {
 
     private static String generateOrderNumber() {
         return "order_" + UUID.randomUUID();
+    }
+
+    private int calculateTotalPrice(List<OrderItem> orderItems) {
+        return orderItems.stream()
+                .mapToInt(OrderItem::getSubtotal)
+                .sum();
     }
 
     // 주문 상태 변경 로직

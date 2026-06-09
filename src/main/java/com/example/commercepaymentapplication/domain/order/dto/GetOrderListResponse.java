@@ -3,7 +3,6 @@ package com.example.commercepaymentapplication.domain.order.dto;
 import com.example.commercepaymentapplication.domain.order.entity.Order;
 
 import java.time.LocalDateTime;
-import java.util.List;
 
 public record GetOrderListResponse(
         Long orderId,

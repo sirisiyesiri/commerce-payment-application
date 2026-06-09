@@ -45,8 +45,7 @@ public class OrderItem {
         this.cartItemId = cartItemId;
     }
 
-    public static OrderItem from(CartItem cartItem) {
-        Product product = cartItem.getProduct();
+    public static OrderItem of(CartItem cartItem, Product product) {
 
         return new OrderItem(
                 product,
