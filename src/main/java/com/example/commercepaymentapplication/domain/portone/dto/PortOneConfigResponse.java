@@ -8,4 +8,9 @@ package com.example.commercepaymentapplication.domain.portone.dto;
 public record PortOneConfigResponse(
         String storeId,
         String channelKey
-) {}
+) {
+    // PortOne 공개 설정 값으로 응답 DTO를 생성한다.
+    public static PortOneConfigResponse of(String storeId, String channelKey) {
+        return new PortOneConfigResponse(storeId, channelKey);
+    }
+}
